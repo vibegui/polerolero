@@ -275,7 +275,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "Houve um programa de desinvestimento que vendeu refinarias, distribuidoras e participações — não a companhia. Se os preços foram baixos é disputa técnica de avaliação, com laudos nos dois sentidos. 'Quase venderam a Petrobras' exagera o que ocorreu; 'não venderam nada' também não descreve o período."
+    "explain": "Houve um programa de desinvestimento que vendeu refinarias, distribuidoras e participações — não a companhia. Mas a acusação de preço vil não se sustenta no órgão que auditou: o TCU rejeitou a denúncia sobre a RLAM em 2021 sem apontar irregularidade no preço, e em 2023 concluiu que as alienações garantiram as propostas mais vantajosas. As estimativas de subavaliação vêm de audiência na Câmara em 2021 e de analistas, não de achado de auditoria. Nos dois sentidos: 'quase venderam a Petrobras' exagera, e 'foi tudo a preço de banana' é afirmação que o TCU não respalda.",
+    "source": "https://portal.tcu.gov.br/imprensa/noticias/alienacao-de-refinarias-garantiu-propostas-mais-vantajosas-a-petrobras"
   },
   {
     "id": "lula-privataria",
@@ -342,8 +343,8 @@
     ],
     "register": "orgulhoso",
     "verdict": "verdadeiro",
-    "explain": "Os dados do INPE mostram queda expressiva do desmatamento a partir de 2023, depois de anos de alta. A série é pública e o método é o mesmo antes e depois, o que torna a comparação válida. Queda de desmatamento não é o mesmo que floresta recuperada — é menos destruição nova, não reversão.",
-    "source": "http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates"
+    "explain": "Os dados do PRODES/INPE mostram quatro quedas anuais seguidas: 9.064 km² em 2023 (−21,8%), 6.518 km² em 2024 e 5.731 km² em 2025 (−12,07%), o menor em onze anos. A série é pública e o método é o mesmo antes e depois, o que torna a comparação válida. Duas ressalvas honestas: o ritmo de queda desacelerou, e o Mato Grosso foi o único estado a subir em 2025, +26,7%. Queda de desmatamento também não é floresta recuperada — é menos destruição nova.",
+    "source": "https://www.gov.br/inpe/pt-br/assuntos/ultimas-noticias/sistema-do-inpe-aponta-5-731-km2-de-desmatamento-na-amazonia-em-2025"
   },
   {
     "id": "lula-clima",
