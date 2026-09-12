@@ -1,13 +1,29 @@
 import { type Ref, useEffect, useRef, useState } from "react";
 import { type ArgNode, type TraceData, personaLabel } from "./app.tsx";
 
-// Both panels are native <dialog>. showModal() gives Esc-to-close, a focus
+// Every panel here is a native <dialog>. showModal() gives Esc-to-close, a focus
 // trap, ::backdrop and inert on the rest of the page — every bit of the
 // accessibility you would otherwise hand-roll, for free.
 
+/**
+ * Click outside to dismiss, which <dialog> does not give you.
+ *
+ * A click on the ::backdrop reports the dialog itself as the target, so the
+ * usual `e.target === dialog` test mostly works — but it also fires for any
+ * padding inside the dialog box, closing the panel when someone clicks the gap
+ * between two cards. Comparing against the box geometry is unambiguous.
+ */
+function closeOnBackdrop(e: React.MouseEvent<HTMLDialogElement>) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const outside =
+    e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right;
+  if (outside) el.close();
+}
+
 export function About({ ref }: { ref: Ref<HTMLDialogElement> }) {
   return (
-    <dialog ref={ref} className="sheet about">
+    <dialog ref={ref} className="sheet about" onClick={closeOnBackdrop}>
       <h2>O que é isto?</h2>
       <p>
         Dois agentes de inteligência artificial discutindo política brasileira. Para sempre.
@@ -71,6 +87,7 @@ export function Landing() {
       <dialog
         ref={ref}
         className={`sheet drawer ${open ? "open" : ""}`}
+        onClick={closeOnBackdrop}
         onClose={() => setOpen(false)}
       >
         <form method="dialog" className="drawer-close">
@@ -165,6 +182,14 @@ const VERDICT: Record<ArgNode["verdict"], { label: string; hint: string }> = {
 export function Trace({ data, onClose }: { data: TraceData | null; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
 
+  // Keep rendering the last trace while the panel slides out. Rendering `data`
+  // directly emptied the panel the instant it was closed, and the 340ms exit
+  // transition then played over a blank sheet showing only the disclaimer —
+  // which looked exactly like a panel that had failed to load.
+  const last = useRef<TraceData | null>(null);
+  if (data) last.current = data;
+  const shown = data ?? last.current;
+
   // <dialog> has no declarative open-with-animation, so drive it from the data:
   // showModal() on arrival, and let close() run through the CSS transition.
   useEffect(() => {
@@ -174,12 +199,13 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
     if (!data && el.open) el.close();
   }, [data]);
 
-  const persona = data ? personaLabel(data.side, data.persona) : null;
+  const persona = shown ? personaLabel(shown.side, shown.persona) : null;
 
   return (
     <dialog
       ref={ref}
-      className={`sheet trace from-${data?.side ?? "lula"}`}
+      className={`sheet trace from-${shown?.side ?? "lula"}`}
+      onClick={closeOnBackdrop}
       onClose={onClose}
     >
       <div className="trace-head">
@@ -193,8 +219,8 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
       </div>
 
       <div className="trace-body">
-        {data?.answering && <Card node={data.answering} role="Respondendo a" />}
-        {data?.using && <Card node={data.using} role="Contra-atacando com" />}
+        {shown?.answering && <Card node={shown.answering} role="Respondendo a" />}
+        {shown?.using && <Card node={shown.using} role="Contra-atacando com" />}
         <p className="fine">
           Os veredictos são resumo editorial deste projeto, não checagem
           profissional — e existem para ser contestados.{" "}

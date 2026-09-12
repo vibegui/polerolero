@@ -96,3 +96,21 @@ test("guard drops a restarted draft glued onto the first one", () => {
   const fine = "Fila de cirurgia? E a fila do caixão, meu amigo? Fila é fila.";
   expect(guard(fine)).toBe(fine);
 });
+
+test("over-long messages end on a sentence, never mid-word", () => {
+  // Non-repeating on purpose: repeated text would be eaten by the restart
+  // detector before it ever reached the length cap.
+  const sentences = Array.from(
+    { length: 40 },
+    (_, i) => `Argumento inflamado numero ${i} que segue sem parar nenhuma vez.`,
+  ).join(" ");
+  const out = guard(`${sentences} Togacracia, cens`)!;
+  expect(out.length).toBeLessThanOrEqual(760);
+  expect(out.endsWith(".")).toBe(true);
+
+  // No sentence break at all -> fall back to a word boundary, never mid-word.
+  const noStops = Array.from({ length: 300 }, (_, i) => `palavra${i}`).join(" ");
+  const out2 = guard(noStops)!;
+  expect(out2.endsWith("…")).toBe(true);
+  expect(/palavra\d+…$/.test(out2)).toBe(true);
+});

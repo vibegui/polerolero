@@ -145,16 +145,40 @@ export const MOVES = [
 ] as const;
 
 /**
- * Length is sampled too, and weighted toward short. A feed where every bubble
- * is the same height reads as a machine; the variation is what makes it read as
- * a group chat. `paragraphs` above 1 means the model must separate them with a
- * blank line.
+ * Length is sampled per message, and the multi-paragraph buckets carry real
+ * weight — the first cut put 67% on a single paragraph and the feed came out
+ * looking uniform, with only three messages in twenty containing a line break.
+ *
+ * `spec` is injected into the SYSTEM prompt, not trailed onto the end of the
+ * user turn, because that is where the model actually honours it; as the last
+ * line after the rhetorical move it was being read as a suggestion.
  */
 export const LENGTHS = [
-  { weight: 34, paragraphs: 1, spec: "UMA frase curta, no máximo 120 caracteres. Seca, sem explicar." },
-  { weight: 33, paragraphs: 1, spec: "Um parágrafo de 2 ou 3 frases, entre 140 e 300 caracteres." },
-  { weight: 22, paragraphs: 2, spec: "DOIS parágrafos separados por linha em branco, 300 a 480 caracteres no total." },
-  { weight: 11, paragraphs: 3, spec: "TRÊS parágrafos curtos separados por linha em branco, 400 a 700 caracteres no total. Desabafo." },
+  {
+    weight: 26,
+    paragraphs: 1,
+    spec: "UM parágrafo de UMA frase, entre 80 e 140 caracteres. Seca, sem explicar, sem quebra de linha.",
+  },
+  {
+    weight: 30,
+    paragraphs: 1,
+    spec: "UM parágrafo de 2 ou 3 frases, entre 150 e 300 caracteres. Sem quebra de linha.",
+  },
+  {
+    weight: 28,
+    paragraphs: 2,
+    spec:
+      "DOIS parágrafos, entre 300 e 500 caracteres no total. OBRIGATÓRIO separar os " +
+      "dois com uma LINHA EM BRANCO. O primeiro reage ao oponente; o segundo emenda " +
+      "o seu argumento.",
+  },
+  {
+    weight: 16,
+    paragraphs: 3,
+    spec:
+      "TRÊS parágrafos curtos, entre 450 e 750 caracteres no total, um desabafo. " +
+      "OBRIGATÓRIO separar cada um com uma LINHA EM BRANCO.",
+  },
 ] as const;
 
 export function pickLength(rand = Math.random()): (typeof LENGTHS)[number] {

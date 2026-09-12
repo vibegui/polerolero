@@ -61,7 +61,7 @@ function sample<T>(xs: T[]): T {
 // Prompt
 // -----------------------------------------------------------------------------
 
-function systemPrompt(side: Side, persona: Persona): string {
+function systemPrompt(side: Side, persona: Persona, length: string): string {
   const emoji =
     persona.emoji.length > 0
       ? `Na maioria das mensagens não use emoji nenhum. Quando usar, no máximo UM, e só destes: ${persona.emoji.join(" ")}`
@@ -84,24 +84,27 @@ REGRAS:
   FORMA do argumento (whataboutismo, ad hominem, teoria da conspiração),
   nunca em acusação inventada.
 - Nunca saia do personagem. Nunca concorde. Nunca explique que é uma IA.
-- Responda APENAS com a mensagem, sem aspas e sem prefixo de nome.`;
+- Responda APENAS com a mensagem, sem aspas e sem prefixo de nome.
+
+FORMATO OBRIGATÓRIO DESTA MENSAGEM:
+${length}
+
+Quando o formato pedir mais de um parágrafo, separe-os assim — com uma linha
+inteiramente vazia entre eles, exatamente como neste exemplo:
+
+Primeiro parágrafo aqui.
+
+Segundo parágrafo aqui.`;
 }
 
-function userPrompt(
-  transcript: Message[],
-  node: ArgNode,
-  move: string,
-  lengthSpec: string,
-): string {
+function userPrompt(transcript: Message[], node: ArgNode, move: string): string {
   const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
   return `${lines}
 
 Seu próximo argumento (reescreva com suas palavras, tom ${node.register}):
 ${node.claim}
 
-MOVIMENTO RETÓRICO desta mensagem — ${move}
-
-TAMANHO desta mensagem — ${lengthSpec}`;
+MOVIMENTO RETÓRICO desta mensagem — ${move}`;
 }
 
 // -----------------------------------------------------------------------------
@@ -116,6 +119,29 @@ const BLOCKLIST = [
 
 /** Signs the model broke frame instead of playing the character. */
 const FRAME_LEAKS = ["fã do ", "como uma ia", "como ia,", "sou uma ia", "```", "assistente"];
+
+/**
+ * Cut at the last sentence that fits, not at the last character.
+ *
+ * A hard slice ends the bubble mid-word — the feed had one closing on
+ * "Togacracia, ce…", which reads as a broken render rather than as someone
+ * trailing off. Falls back to a word boundary, then to a hard cut, so this can
+ * always return something.
+ */
+function truncate(text: string): string {
+  const head = text.slice(0, MAX_BODY_CHARS);
+  const sentence = Math.max(
+    head.lastIndexOf("."),
+    head.lastIndexOf("!"),
+    head.lastIndexOf("?"),
+  );
+  // Only honour a sentence break that leaves a real message behind; otherwise a
+  // stray early period would throw away almost everything.
+  if (sentence > MAX_BODY_CHARS * 0.5) return head.slice(0, sentence + 1).trimEnd();
+
+  const word = head.lastIndexOf(" ");
+  return `${(word > MAX_BODY_CHARS * 0.5 ? head.slice(0, word) : head.slice(0, MAX_BODY_CHARS - 1)).trimEnd()}…`;
+}
 
 /**
  * Models asked for a multi-paragraph answer sometimes write the whole message,
@@ -156,7 +182,7 @@ export function guard(raw: string): string | null {
   // Length is the only cap. An earlier two-sentence trim looked tidier and
   // amputated the argument: "Mexe nos dados? Fala sério kkk." kept the sneer
   // and threw away the point, which is the one thing a message must carry.
-  if (text.length > MAX_BODY_CHARS) text = `${text.slice(0, MAX_BODY_CHARS - 1).trimEnd()}…`;
+  if (text.length > MAX_BODY_CHARS) text = truncate(text);
 
   return text || null;
 }
@@ -194,10 +220,10 @@ export async function composeMessage(
     const raw = await chat(
       env,
       [
-        { role: "system", content: systemPrompt(side, persona) },
+        { role: "system", content: systemPrompt(side, persona, length.spec) },
         {
           role: "user",
-          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move, length.spec),
+          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move),
         },
       ],
       AbortSignal.timeout(25_000),

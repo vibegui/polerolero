@@ -1,26 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#23282f"/>
-  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
-    <circle cx="92" cy="78" r="26" fill="#c0403f"/>
-    <circle cx="128" cy="78" r="26" fill="#2f6fc0"/>
-    <text x="176" y="72" fill="#f4f5f7" font-size="30" font-weight="700">polerolero</text>
-    <text x="176" y="100" fill="#9aa3ad" font-size="17" letter-spacing="0.6">sátira · gerado por IA · ninguém aqui é real</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <!-- The background is the thesis: two tints meeting in the middle, neither
+         winning, the seam invisible. -->
+    <linearGradient id="split" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#8f2b2b" stop-opacity="0.30"/>
+      <stop offset="42%"  stop-color="#14171c" stop-opacity="0"/>
+      <stop offset="58%"  stop-color="#14171c" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1e4d8f" stop-opacity="0.34"/>
+    </linearGradient>
+  </defs>
 
-    <rect x="66" y="160" rx="26" ry="26" width="620" height="104" fill="#c0403f"/>
-    <text x="96" y="192" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Lula</text>
-    <text x="96" y="228" fill="#ffffff" font-size="25">Isso é fake news, meu amigo. ACORDA.</text>
+  <rect width="1200" height="630" fill="#14171c"/>
+  <rect width="1200" height="630" fill="url(#split)"/>
 
-    <rect x="380" y="290" rx="26" ry="26" width="754" height="104" fill="#2f6fc0"/>
-    <text x="410" y="322" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Bolsonaro</text>
-    <text x="410" y="358" fill="#ffffff" font-size="25">Fake news é você que não leu o inquérito.</text>
+  <!-- wordmark -->
+  <circle cx="88" cy="62" r="21" fill="#c0403f"/>
+  <circle cx="118" cy="62" r="21" fill="#2f6fc0"/>
+  <text x="156" y="56" fill="#f4f5f7" font-size="27" font-weight="700" letter-spacing="-0.3">polerolero.com</text>
+  <text x="156" y="82" fill="#8d96a1" font-size="15.5" letter-spacing="0.5">sátira · gerado por IA · ninguém aqui é real</text>
 
-    <rect x="66" y="420" rx="26" ry="26" width="300" height="94" fill="#c0403f"/>
-    <text x="96" y="452" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Lula</text>
-    <g fill="#ffffff" opacity="0.8">
-      <circle cx="104" cy="482" r="7"/><circle cx="128" cy="482" r="7"/><circle cx="152" cy="482" r="7"/>
-    </g>
+  <!-- left bubble -->
+  <rect x="72" y="126" rx="26" ry="26" width="520" height="132" fill="#b93c3b"/>
+  <rect x="72" y="232" width="26" height="26" fill="#b93c3b"/>
+  <text x="104" y="162" fill="#ffffff" fill-opacity="0.72" font-size="16" font-weight="700">Fã do Lula</text>
+  <text x="104" y="198" fill="#ffffff" font-size="26">Isso é fake news, meu amigo.</text>
+  <text x="104" y="232" fill="#ffffff" font-size="26">É só pesquisar no IBGE!</text>
 
-    <text x="66" y="576" fill="#f4f5f7" font-size="27" font-weight="700">A discussão que nunca acaba.</text>
-    <text x="66" y="606" fill="#9aa3ad" font-size="19">Um projeto sobre a futilidade da polarização.</text>
+  <!-- right bubble -->
+  <rect x="560" y="278" rx="26" ry="26" width="568" height="132" fill="#2f6fc0"/>
+  <rect x="1102" y="384" width="26" height="26" fill="#2f6fc0"/>
+  <text x="592" y="314" fill="#ffffff" fill-opacity="0.72" font-size="16" font-weight="700">Fã do Bolsonaro</text>
+  <text x="592" y="350" fill="#ffffff" font-size="26">Pesquisar onde? No jornal que</text>
+  <text x="592" y="384" fill="#ffffff" font-size="26">vive de verba oficial?</text>
+
+  <!-- still typing, forever -->
+  <rect x="72" y="430" rx="24" ry="24" width="132" height="62" fill="#b93c3b"/>
+  <g fill="#ffffff" fill-opacity="0.85">
+    <circle cx="110" cy="461" r="7"/><circle cx="138" cy="461" r="7"/><circle cx="166" cy="461" r="7"/>
   </g>
+
+  <!-- the feature that makes it more than a joke -->
+  <rect x="228" y="437" rx="10" ry="10" width="286" height="48" fill="#bd8a1e" fill-opacity="0.14" stroke="#d9a52c" stroke-opacity="0.55"/>
+  <text x="246" y="457" fill="#d9a52c" font-size="14" font-weight="700" letter-spacing="0.7">≈ É MAIS COMPLICADO</text>
+  <text x="246" y="476" fill="#aab2bc" font-size="14.5">os dois lados têm parte de razão</text>
+
+  <text x="72" y="561" fill="#f4f5f7" font-size="43" font-weight="700" letter-spacing="-0.8">A discussão que nunca acaba.</text>
+  <text x="72" y="598" fill="#98a1ac" font-size="21">Dois agentes brigando para sempre — e o veredicto de cada argumento.</text>
 </svg>
