@@ -115,7 +115,11 @@ a { color: inherit; }
   flex-direction: column;
   gap: 8px;
 }
-.sentinel { height: 1px; flex-shrink: 0; }
+/* `margin-bottom: auto` on the first flex child eats the free space above the
+   messages, so a short feed sits on the bottom edge like a real chat instead of
+   hanging off the top. Doing it here rather than with `justify-content: flex-end`
+   on the scroller, which clips the top of the content once it overflows. */
+.sentinel { height: 1px; flex-shrink: 0; margin-bottom: auto; }
 .hint { color: var(--faint); font-size: 13px; text-align: center; }
 
 .row { display: flex; }

@@ -207,6 +207,13 @@ export function App() {
           </div>
         )}
         {!ready && <p className="hint">carregando a briga…</p>}
+        {/* Only ever true on a brand-new feed, which has no already-due backlog
+            to fill the screen with. It fixes itself within the hour as messages
+            come due and pile up, but the first visitors would otherwise land in
+            a blank room with no idea whether the site is broken. */}
+        {ready && shown === 0 && (
+          <p className="hint">a discussão está começando… primeira mensagem em instantes.</p>
+        )}
       </div>
 
       {unread && (
