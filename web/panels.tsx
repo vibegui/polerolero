@@ -84,28 +84,32 @@ export function Landing() {
             repetirem, sem descanso, os mesmos argumentos que ocupam o país inteiro há anos.
           </p>
           <p className="fine">
-            Os personagens são <strong>fãs</strong>, não os políticos. Nada aqui é notícia,
-            declaração de pessoa real ou acusação. É sátira gerada por máquina sobre a{" "}
-            <em>forma</em> do argumento — o whataboutismo, o ad hominem, a teoria da
-            conspiração. Toque em <strong>“ver o argumento”</strong> em qualquer mensagem para
-            ver de onde ela saiu e se aquilo é verdadeiro, falso ou mais complicado que isso.
-          </p>
-          <p>
-            O desconforto de assistir não vem de elas serem artificiais. Vem de serem{" "}
-            <strong>familiares</strong>.
+            Os personagens são <strong>fãs</strong>, não os políticos, e falam por si. Toque em{" "}
+            <strong>“ver o argumento”</strong> em qualquer mensagem para ver de onde ela saiu e
+            se aquilo é verdadeiro, falso ou mais complicado que isso.
           </p>
 
-          <h3>A quem serve a briga</h3>
+          <h3>Os dois lados gritam. Os dois lados não são iguais.</h3>
           <p>
-            Divisão não é um efeito colateral da corrupção. É a condição de trabalho dela. Enquanto
-            a discussão for sobre a discussão, ninguém está olhando para o que está sendo levado.
-            Dois lados gritando um com o outro é o melhor sistema de segurança que o desvio já
-            teve: barato, automático e voluntário.
+            Este projeto não finge equilíbrio. Fingir que os dois lados se equivalem é uma
+            forma de mentira, e é a mais confortável de todas.
           </p>
           <p>
-            Cada ano gasto nessa briga é um ano de produtividade parada, escola ruim, fila de
-            cirurgia e oportunidade perdida. Essa conta não é ideológica. Ela chega para os dois
-            lados igual.
+            Um dos lados defende um governo <strong>medíocre</strong>: produtividade travada,
+            obra parada, promessa entregue pela metade, um histórico de corrupção que foi
+            julgado e condenado. Isso é ruim, e é justo cobrar.
+          </p>
+          <p>
+            O outro defende um governo que terminou com um{" "}
+            <strong>ex-presidente condenado a 27 anos</strong> pelo Supremo por tentativa de
+            abolir o Estado Democrático de Direito, ao lado de três generais, mais o caso das
+            joias de presente de Estado e um pedido de tarifa estrangeira de 50% contra o
+            próprio país. Isso não é “pior”. É de outra categoria.
+          </p>
+          <p className="fine">
+            Nada disso é opinião deste site: é sentença publicada, inquérito em curso e
+            cronologia pública, com as fontes no painel de cada argumento. Cada mensagem do
+            feed continua sendo caricatura — os fatos por trás dela, não.
           </p>
 
           <h3>Onde a conversa recomeça</h3>
@@ -208,6 +212,16 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
       </div>
 
       <div className="trace-body">
+        {shown?.topic && (
+          <aside className="topic">
+            <span className="topic-kicker">assunto do momento</span>
+            <strong>{shown.topic.title}</strong>
+            <p>{shown.topic.summary}</p>
+            {shown.topic.source && (
+              <a href={shown.topic.source} target="_blank" rel="noreferrer">sobre o caso →</a>
+            )}
+          </aside>
+        )}
         {shown?.answering && <Card node={shown.answering} role="Respondendo a" />}
         {shown?.using && <Card node={shown.using} role="Contra-atacando com" />}
         <p className="fine">

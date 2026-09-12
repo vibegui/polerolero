@@ -64,7 +64,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "As condenações foram anuladas pelo STF — primeiro por incompetência do juízo de Curitiba, depois com o reconhecimento da suspeição do juiz. Anulação não é absolvição no mérito: os fatos não chegaram a ser rejulgados. Quem diz 'foi inocentado' e quem diz 'só escapou por tecnicalidade' estão ambos apertando a mesma decisão para caber no próprio lado."
+    "explain": "As condenações foram anuladas pelo STF — primeiro por incompetência do juízo de Curitiba, depois com o reconhecimento da suspeição do juiz. Anulação não é absolvição no mérito: os fatos não chegaram a ser rejulgados. Quem diz 'foi inocentado' e quem diz 'só escapou por tecnicalidade' estão ambos apertando a mesma decisão para caber no próprio lado.",
+    "source": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Lava_Jato"
   },
   {
     "id": "lula-vaza-jato",
@@ -80,7 +81,8 @@
     ],
     "register": "indignado",
     "verdict": "verdadeiro",
-    "explain": "As mensagens publicadas a partir de 2019 mostraram coordenação entre o juiz do caso e a acusação. O STF admitiu o material e reconheceu a suspeição do juiz. O que segue em disputa é o alcance: parte dos juristas entende que contamina todo o processo, outra parte que atinge atos específicos."
+    "explain": "As mensagens publicadas a partir de 2019 mostraram coordenação entre o juiz do caso e a acusação. O STF admitiu o material e reconheceu a suspeição do juiz. O que segue em disputa é o alcance: parte dos juristas entende que contamina todo o processo, outra parte que atinge atos específicos.",
+    "source": "https://pt.wikipedia.org/wiki/Vaza_Jato"
   },
   {
     "id": "lula-moro-ministro",
@@ -96,7 +98,8 @@
     ],
     "register": "deboche",
     "verdict": "verdadeiro",
-    "explain": "O juiz que conduziu as condenações assumiu o Ministério da Justiça do governo eleito logo depois, fato público e incontroverso. Isso não prova, por si só, que a sentença foi motivada politicamente — mas é exatamente o tipo de aparência que as regras de impedimento existem para evitar, e foi central no reconhecimento posterior da suspeição."
+    "explain": "O juiz que conduziu as condenações assumiu o Ministério da Justiça do governo eleito logo depois, fato público e incontroverso. Isso não prova, por si só, que a sentença foi motivada politicamente — mas é exatamente o tipo de aparência que as regras de impedimento existem para evitar, e foi central no reconhecimento posterior da suspeição.",
+    "source": "https://pt.wikipedia.org/wiki/S%C3%A9rgio_Moro"
   },
   {
     "id": "lula-8-janeiro",
@@ -312,7 +315,7 @@
       "mercado"
     ],
     "register": "indignado",
-    "verdict": "verdadeiro",
+    "verdict": "depende",
     "explain": "A emenda do teto de gastos previa vigência de vinte anos com correção apenas pela inflação, o que na prática congelava o gasto real por habitante em saúde e educação conforme a população crescesse. Foi substituída em 2023. Se o congelamento era necessário diante da trajetória da dívida é debate econômico real, com economistas sérios dos dois lados."
   },
   {
@@ -412,7 +415,8 @@
     ],
     "register": "deboche",
     "verdict": "verdadeiro",
-    "explain": "O mecanismo de emendas de relator sem identificação do autor e do destino existiu e foi declarado inconstitucional pelo STF justamente por falta de transparência. É um dos poucos pontos aqui em que a descrição factual não está em disputa séria."
+    "explain": "O mecanismo de emendas de relator sem identificação do autor e do destino existiu e foi declarado inconstitucional pelo STF justamente por falta de transparência. É um dos poucos pontos aqui em que a descrição factual não está em disputa séria.",
+    "source": "https://pt.wikipedia.org/wiki/Or%C3%A7amento_secreto"
   },
   {
     "id": "lula-joias",
@@ -498,5 +502,195 @@
     "register": "deboche",
     "verdict": "depende",
     "explain": "A assimetria de confiança entre boato de rede social e estatística oficial é real e medida. Mas o argumento ataca o interlocutor, não o conteúdo, e o mesmo padrão aparece nos dois lados quando o dado oficial é inconveniente."
+  },
+  {
+    "id": "lula-isencao-ir",
+    "claim": "Quem ganha até 5 mil não paga mais imposto de renda, e quem ganha muito passou a pagar mais. Isso é justiça tributária, não é discurso.",
+    "tags": [
+      "imposto",
+      "economia",
+      "social"
+    ],
+    "rebuts": [
+      "imposto",
+      "gastanca",
+      "fiscal"
+    ],
+    "register": "orgulhoso",
+    "verdict": "verdadeiro",
+    "explain": "A Lei 15.270/2025 foi sancionada em novembro de 2025 e passou a valer em janeiro de 2026: isenta do IRPF quem recebe até R$ 5 mil por mês, dá desconto parcial até cerca de R$ 7,3 mil e eleva a tributação das rendas altas para compensar. A medida existe e está em vigor. O que continua em disputa é se a compensação sobre altas rendas cobre de fato a renúncia.",
+    "source": "https://www.gov.br/fazenda/pt-br/assuntos/noticias/2026/janeiro/receita-divulga-nova-tabela-do-irpf-com-as-mudancas-apos-isencao-para-quem-ganha-ate-r-5-mil"
+  },
+  {
+    "id": "lula-6x1",
+    "claim": "A gente acabou com a escala 6x1 e devolveu o fim de semana pro trabalhador brasileiro.",
+    "tags": [
+      "trabalho",
+      "social"
+    ],
+    "rebuts": [
+      "trabalho",
+      "mercado",
+      "gastanca"
+    ],
+    "register": "orgulhoso",
+    "verdict": "falso",
+    "explain": "A escala 6x1 não acabou. A PEC 148/2015 — que reduz a jornada de forma progressiva e garante dois dias de descanso — foi aprovada na Comissão de Constituição e Justiça do Senado em dezembro de 2025. Aprovação em comissão é o primeiro passo de uma emenda constitucional, não a sua promulgação: ainda faltam os dois turnos em plenário nas duas Casas. Dizer que já acabou é anunciar como feito o que é só tramitação.",
+    "source": "https://pt.wikipedia.org/wiki/PEC_do_Fim_da_Escala_6x1"
+  },
+  {
+    "id": "lula-master-inss",
+    "claim": "O rombo do Master em cima de aposentado não nasceu do nada: as regras do consignado do INSS foram afrouxadas antes, e adivinha em qual governo.",
+    "tags": [
+      "master",
+      "inss",
+      "corrupcao",
+      "aposentado"
+    ],
+    "rebuts": [
+      "master",
+      "inss",
+      "corrupcao",
+      "gestao"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O acordo que permitiu ao Master operar consignado junto a aposentados vigorou de setembro de 2020 a setembro de 2025, ou seja, começou no governo anterior e correu por boa parte do atual. Reportagens apontam mudanças de regra no INSS feitas após pedido do banco, mas isso está sob apuração, não julgado. Atribuir o esquema inteiro a um único governo ignora que ele atravessou os dois.",
+    "source": "https://en.wikipedia.org/wiki/Banco_Master_scandal"
+  },
+  {
+    "id": "lula-anistia",
+    "claim": "Eles chamam de perseguição, mas o que pedem é anistia pra quem tentou rasgar o resultado de uma eleição. Perdão antes de responder não é justiça.",
+    "tags": [
+      "anistia",
+      "golpe",
+      "democracia"
+    ],
+    "rebuts": [
+      "anistia",
+      "justica",
+      "stf",
+      "presos"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "A anistia aos envolvidos nos atos e na trama golpista é pauta legislativa real e disputada, e o debate sobre alcance e proporcionalidade das penas é legítimo — há juristas críticos de algumas condenações que não defendem os atos. O que não se sustenta é tratar quem defende anistia como quem nega que houve tentativa: são discussões diferentes, e o argumento funde as duas.",
+    "source": "https://www.gazetadopovo.com.br/eleicoes/2026/como-lula-e-flavio-bolsonaro-se-posicionam-em-6-temas-centrais-da-corrida-presidencial/"
+  },
+  {
+    "id": "lula-tarifa-50",
+    "claim": "Tarifa de 50% em cima do produto brasileiro, e o motivo declarado lá fora foi processo judicial aqui dentro. Quem foi pedir isso não estava defendendo o Brasil.",
+    "tags": [
+      "soberania",
+      "internacional",
+      "economia"
+    ],
+    "rebuts": [
+      "patriotismo",
+      "internacional",
+      "soberania",
+      "economia"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "Os Estados Unidos anunciaram tarifa de 50% sobre produtos brasileiros, e o próprio governo americano vinculou publicamente a medida à situação judicial de Jair Bolsonaro — isso é documentado. A atuação de aliados brasileiros junto a Washington também foi noticiada e admitida em parte. Chamar de traição é juízo político; a parte factual do vínculo entre a tarifa e o processo é pública.",
+    "source": "https://www.aljazeera.com/news/2025/12/6/flavio-bolsonaro-enters-brazils-2026-presidential-race-with-fathers-nod"
+  },
+  {
+    "id": "lula-maioridade",
+    "claim": "Baixar a maioridade penal pra 16 não derruba crime nenhum. Só enche cadeia de moleque pobre e devolve ele pior.",
+    "tags": [
+      "maioridade",
+      "seguranca",
+      "social"
+    ],
+    "rebuts": [
+      "maioridade",
+      "seguranca",
+      "bandido",
+      "crime"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "A PEC 32/2015, que reduz a maioridade penal de 18 para 16 anos, foi aprovada na CCJ da Câmara em junho de 2026 por 44 votos a 18 e ainda precisa passar por comissão especial e dois turnos em plenário. A literatura criminológica majoritária não encontra queda de criminalidade associada à redução da maioridade, mas o tema é contestado e envolve valores além da evidência. Adolescentes já respondem por ato infracional com internação — a mudança altera o regime, não cria responsabilização do zero.",
+    "source": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-06/comissao-da-camara-aprova-reducao-da-maioridade-penal-para-16-anos"
+  },
+  {
+    "id": "lula-golpe-condenado",
+    "claim": "Não é opinião minha: o STF condenou o ex-presidente a 27 anos por tentar abolir o Estado Democrático de Direito. Isso é sentença, não narrativa de esquerda.",
+    "tags": [
+      "golpe",
+      "democracia",
+      "justica"
+    ],
+    "rebuts": [
+      "stf",
+      "justica",
+      "lawfare",
+      "anistia",
+      "presos"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "Em 11 de setembro de 2025 a Primeira Turma do STF condenou Jair Bolsonaro a 27 anos e 3 meses de prisão em regime fechado por tentativa de abolição violenta do Estado Democrático de Direito, golpe de Estado e organização criminosa armada. Ele cumpriu parte da pena em regime fechado e hoje está em prisão domiciliar por razões de saúde. Há recurso de revisão criminal em curso. A condenação é fato processual, não versão — o que segue em disputa é a proporcionalidade das penas, não a existência da decisão.",
+    "source": "https://noticias.stf.jus.br/postsnoticias/stf-fixa-penas-de-16-a-27-anos-para-condenados-por-tentativa-de-golpe-de-estado/"
+  },
+  {
+    "id": "lula-generais",
+    "claim": "Três generais e um ex-presidente presos pela mesma trama. Isso não é perseguição a um homem, é um projeto de poder que passou por dentro do quartel.",
+    "tags": [
+      "golpe",
+      "democracia",
+      "militares"
+    ],
+    "rebuts": [
+      "stf",
+      "lawfare",
+      "anistia",
+      "patriotismo"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "Além do ex-presidente, oficiais-generais como Augusto Heleno, Braga Netto e Paulo Sérgio Nogueira foram condenados e começaram a cumprir pena pela mesma trama, com penas fixadas entre 16 e 27 anos para o chamado núcleo crucial. O envolvimento de militares da alta hierarquia é o que distingue este caso de um episódio isolado de rua. A crítica legítima que resta é sobre dosimetria e sobre o uso de delação, não sobre a existência da organização.",
+    "source": "https://noticias.stf.jus.br/postsnoticias/stf-fixa-penas-de-16-a-27-anos-para-condenados-por-tentativa-de-golpe-de-estado/"
+  },
+  {
+    "id": "lula-joias-fab",
+    "claim": "Joia de presente de Estado saindo do país em avião da Força Aérea pra ser vendida lá fora. Se fosse do meu lado vocês pediriam prisão perpétua.",
+    "tags": [
+      "corrupcao",
+      "instituicoes",
+      "joias"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "ladrao",
+      "honestidade",
+      "mensalao",
+      "petrolao"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "A investigação da Polícia Federal aponta peculato: conjuntos de joias recebidos da Arábia Saudita e do Bahrein em viagens oficiais, entre eles um Rolex e um Patek Philippe, teriam sido apropriados e levados aos Estados Unidos para venda, com apoio de militares lotados no Planalto. Presente recebido em função do cargo integra o acervo público por regra escrita. O caso foi denunciado e segue em processamento judicial.",
+    "source": "https://pt.wikipedia.org/wiki/Caso_das_joias_envolvendo_Jair_Bolsonaro"
+  },
+  {
+    "id": "lula-submissao-eua",
+    "claim": "Pediram tarifa de 50% contra o próprio país pra tentar salvar um homem de um processo. Isso não é direita, é entreguismo com bandeira na mão.",
+    "tags": [
+      "soberania",
+      "internacional",
+      "golpe"
+    ],
+    "rebuts": [
+      "patriotismo",
+      "bandeira",
+      "internacional",
+      "soberania"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "A tarifa de 50% sobre produtos brasileiros foi anunciada pelos Estados Unidos com vinculação pública à situação judicial de Jair Bolsonaro, e a atuação de aliados brasileiros junto ao governo americano foi noticiada e parcialmente admitida. A parte factual — medida econômica contra o Brasil justificada por processo interno — é pública. Chamar de entreguismo é juízo político; a cronologia não é.",
+    "source": "https://www.aljazeera.com/news/2025/12/6/flavio-bolsonaro-enters-brazils-2026-presidential-race-with-fathers-nod"
   }
 ]

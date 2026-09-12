@@ -3,6 +3,7 @@ import lulaTree from "../arguments/lula.json" with { type: "json" };
 import type { ArgNode, Env, Message, Side } from "./env.ts";
 import { chat } from "./gateway.ts";
 import { MOVES, pickLength } from "./style.ts";
+import { TOPIC_BY_ID, topicNodes } from "./topics.ts";
 
 export const TREES: Record<Side, ArgNode[]> = {
   lula: lulaTree as ArgNode[],
@@ -33,11 +34,33 @@ export const MAX_BODY_CHARS = 900;
  * `recent` is newest-first, which is what makes step 5 a least-recently-used
  * pick: the largest index is the one seen longest ago.
  */
-export function pickArgument(side: Side, oppArgId: string | null, recent: string[]): ArgNode {
-  const tree = TREES[side];
-  const oppTags = TREES[OTHER[side]].find((n) => n.id === oppArgId)?.tags ?? [];
+/** Turns of history an argument must sit out. Must stay well below tree size. */
+export const EXCLUSION_WINDOW = 24;
 
-  const unused = (n: ArgNode) => !recent.includes(n.id);
+export function pickArgument(
+  side: Side,
+  oppArgId: string | null,
+  recent: string[],
+  /** Restrict to a hot topic's arguments. Defaults to the standing tree. */
+  tree: ArgNode[] = TREES[side],
+  oppTree: ArgNode[] = TREES[OTHER[side]],
+): ArgNode {
+  const oppTags = oppTree.find((n) => n.id === oppArgId)?.tags ?? [];
+
+  // A topic tree is tiny by design, so its whole point is repeating inside a
+  // short run; only the standing tree needs an exclusion window.
+  const EXCLUSION = Math.min(EXCLUSION_WINDOW, Math.max(0, tree.length - 4));
+  // The exclusion window must be SMALLER than the tree, or nothing is ever
+  // eligible and the whole selector collapses. This shipped broken: `recent`
+  // held 200 ids across both sides against ~36 nodes per side, so every node was
+  // always "recent", `unused` was always false, and every pick fell through to
+  // the LRU branch — which is itself a fixed point, because prepending to
+  // `recent` shifts every index equally and never changes the argmax. The live
+  // feed repeated a single argument per side for over an hour. Twelve turns per
+  // side is enough to stop an echo without starving the tag graph.
+  const window = recent.slice(0, EXCLUSION);
+
+  const unused = (n: ArgNode) => !window.includes(n.id);
   const onTopic = (n: ArgNode) => n.rebuts.some((t) => oppTags.includes(t));
 
   const responsive = tree.filter((n) => onTopic(n) && unused(n));
@@ -46,11 +69,14 @@ export function pickArgument(side: Side, oppArgId: string | null, recent: string
   const anyUnused = tree.filter(unused);
   if (anyUnused.length > 0) return sample(anyUnused);
 
-  // Tree fully cycled inside the window. Least-recently-used, and there is
-  // always one because `tree` is never empty.
-  return tree.reduce((best, n) =>
-    recent.lastIndexOf(n.id) > recent.lastIndexOf(best.id) ? n : best,
-  );
+  // `recent` is newest-first, so the FIRST occurrence is the most recent use and
+  // a node absent from it is the stalest of all. The old code used lastIndexOf
+  // and ranked a never-used argument (-1) as the freshest — exactly backwards.
+  const lastUsed = (n: ArgNode) => {
+    const i = recent.indexOf(n.id);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
+  return tree.reduce((best, n) => (lastUsed(n) > lastUsed(best) ? n : best));
 }
 
 function sample<T>(xs: T[]): T {
@@ -88,6 +114,12 @@ REGRAS:
 - Nunca invente crimes, números, datas exatas ou falas de pessoas reais. Se não
   souber o número, descreva a ordem de grandeza ou a direção ("caiu muito",
   "é uma das maiores do mundo") em vez de inventar o valor.
+- Você pode contestar a JUSTIÇA de uma decisão judicial, a pena aplicada ou a
+  imparcialidade de quem julgou. Você NUNCA pode negar que a decisão existe.
+  Condenação transitada, inquérito aberto e sentença publicada são fato: negar
+  que aconteceram é inventar, e inventar é a única coisa proibida aqui.
+- O candidato de 2026 pela direita é Flávio Bolsonaro, senador — não é militar e
+  não é o pai dele. Nunca atribua a ele condenação, cargo ou ato de outra pessoa.
 - Nunca concorde com o oponente, nunca conclua que os dois lados têm razão,
   nunca termine em ponderação. Você está convencido.
 - Nunca saia do papel. Nunca explique que é uma IA.
@@ -105,9 +137,18 @@ Primeiro parágrafo aqui.
 Segundo parágrafo aqui.`;
 }
 
-function userPrompt(transcript: Message[], node: ArgNode, move: string): string {
+function userPrompt(
+  transcript: Message[],
+  node: ArgNode,
+  move: string,
+  topicSummary?: string,
+): string {
   const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
+  const topic = topicSummary
+    ? `\nASSUNTO DO MOMENTO — a discussão agora é sobre isto:\n${topicSummary}\n`
+    : "";
   return `${lines}
+${topic}
 
 O ARGUMENTO QUE VOCÊ VAI USAR AGORA:
 "${node.claim}"
@@ -223,9 +264,13 @@ export async function composeMessage(
   transcript: Message[],
   recent: string[],
   allowLlm: boolean,
+  topicId: string | null,
 ): Promise<{ body: string; argId: string }> {
   const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
-  const node = pickArgument(side, oppArgId, recent);
+  const topic = topicId ? TOPIC_BY_ID.get(topicId) : undefined;
+  const node = topic
+    ? pickArgument(side, oppArgId, recent, topicNodes(topic, side), topicNodes(topic, OTHER[side]))
+    : pickArgument(side, oppArgId, recent);
 
   // Move and length are sampled independently, so the same argument never comes
   // back shaped the same way twice.
@@ -241,7 +286,7 @@ export async function composeMessage(
         { role: "system", content: systemPrompt(side, length.spec) },
         {
           role: "user",
-          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move),
+          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move, topic?.summary),
         },
       ],
       AbortSignal.timeout(25_000),

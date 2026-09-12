@@ -1,0 +1,51 @@
+{
+  "id": "banco-master",
+  "title": "O caso Banco Master",
+  "summary": "Banco liquidado pelo Banco Central em novembro de 2025, Operação Compliance Zero da PF, e cerca de 250 mil contratos de consignado com indício de irregularidade em cima de aposentados do INSS.",
+  "active": true,
+  "source": "https://en.wikipedia.org/wiki/Banco_Master_scandal",
+  "lula": [
+    {
+      "id": "master-l-regras",
+      "claim": "O acordo que soltou o Master em cima de aposentado começou em 2020. O esquema foi montado antes, e quem afrouxou a regra sabia o que estava afrouxando.",
+      "tags": ["master", "inss", "corrupcao"],
+      "rebuts": ["master", "inss", "gestao"],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "O acordo de cooperação que permitiu ao Master operar consignado junto a aposentados vigorou de setembro de 2020 a setembro de 2025 — começou no governo anterior e correu por boa parte do atual. Reportagens apontam mudanças de regra no INSS feitas após pedido do banco, mas isso está sob apuração e não julgado. O esquema atravessou dois governos: nenhum dos dois pode se apresentar como espectador.",
+      "source": "https://en.wikipedia.org/wiki/Banco_Master_scandal"
+    },
+    {
+      "id": "master-l-liquidacao",
+      "claim": "Quem liquidou o banco e mandou a PF entrar foi este governo. Se fosse blindagem, o Vorcaro estaria em casa e não respondendo a operação.",
+      "tags": ["master", "gestao", "corrupcao"],
+      "rebuts": ["master", "gestao", "corrupcao"],
+      "register": "orgulhoso",
+      "verdict": "verdadeiro",
+      "explain": "O Banco Central liquidou o Master em novembro de 2025 e a Polícia Federal deflagrou a Operação Compliance Zero, com o STF autorizando aprofundamento da investigação em 2026. A ação de fiscalização e apuração ocorreu sob o governo atual. Isso não responde à crítica sobre ter demorado, nem sobre a reparação travada — responde apenas a quem diz que não houve ação.",
+      "source": "https://www.bloomberg.com/news/articles/2026-02-20/stf-autoriza-policia-federal-a-aprofundar-investigacao-do-master"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "master-b-reparacao",
+      "claim": "Dois anos e o aposentado lesado não viu um centavo de volta. O INSS admitiu que não sabe nem calcular quanto cada um perdeu.",
+      "tags": ["master", "inss", "aposentado", "gestao"],
+      "rebuts": ["master", "gestao", "inss", "social"],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "O INSS afirmou publicamente que não tem elementos para calcular o prejuízo individual das vítimas nem competência legal para representá-las ou cobrar em nome delas, e a reparação segue emperrada. Cerca de 250 mil contratos foram identificados com indício de problema. A crítica à ausência de um caminho claro de ressarcimento está factualmente correta.",
+      "source": "https://jornaldebrasilia.com.br/noticias/economia/inss-desconhece-tamanho-de-fraudes-do-master-e-diz-que-nao-atuara-por-prioridade-a-aposentados/"
+    },
+    {
+      "id": "master-b-fiscalizacao",
+      "claim": "O rombo estourou com o INSS na mão deste governo. Fiscalizar não é mérito quando o dinheiro já saiu do bolso do velhinho.",
+      "tags": ["master", "inss", "gestao"],
+      "rebuts": ["master", "gestao", "corrupcao"],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Os descontos indevidos ocorreram ao longo de todo o período do acordo, inclusive nos anos mais recentes, e falha de fiscalização é cobrança legítima a quem estava com a caneta. Mas o acordo foi firmado em 2020 e o produto operou sob duas gestões — recortar a linha do tempo no ponto conveniente é o que os dois lados fazem neste caso.",
+      "source": "https://en.wikipedia.org/wiki/Banco_Master_scandal"
+    }
+  ]
+}

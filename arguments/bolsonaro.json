@@ -33,7 +33,8 @@
     ],
     "register": "indignado",
     "verdict": "verdadeiro",
-    "explain": "Houve julgamento e condenações no Mensalão pelo próprio STF, e condenações no âmbito da Lava Jato. Isso não é invenção de imprensa. O que veio depois — anulações por vício processual — não apaga que os julgamentos existiram; muda o que restou de pé deles."
+    "explain": "Houve julgamento e condenações no Mensalão pelo próprio STF, e condenações no âmbito da Lava Jato. Isso não é invenção de imprensa. O que veio depois — anulações por vício processual — não apaga que os julgamentos existiram; muda o que restou de pé deles.",
+    "source": "https://pt.wikipedia.org/wiki/Esc%C3%A2ndalo_do_Mensal%C3%A3o"
   },
   {
     "id": "bolso-lavajato",
@@ -49,7 +50,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "Foi de fato a maior operação anticorrupção da história do país em volume de casos e recuperação de ativos. O que a desmontou não foi um decreto: foram decisões do STF sobre competência, devido processo e suspeição, muitas delas provocadas pelo próprio material vazado. Chamar de 'destruição' pressupõe que não havia nada errado a corrigir."
+    "explain": "Foi de fato a maior operação anticorrupção da história do país em volume de casos e recuperação de ativos. O que a desmontou não foi um decreto: foram decisões do STF sobre competência, devido processo e suspeição, muitas delas provocadas pelo próprio material vazado. Chamar de 'destruição' pressupõe que não havia nada errado a corrigir.",
+    "source": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Lava_Jato"
   },
   {
     "id": "bolso-stf",
@@ -67,7 +69,8 @@
     ],
     "register": "conspiratorio",
     "verdict": "depende",
-    "explain": "Controle de constitucionalidade por corte não eleita é desenho institucional deliberado, não anomalia — existe para proteger minorias de maioria conjuntural. Isso não encerra a crítica: a discussão sobre expansão de competência, decisões monocráticas e inquéritos de ofício é séria e tem juristas dos dois lados. O rótulo 'togacracia' entrega o argumento antes de fazê-lo."
+    "explain": "Controle de constitucionalidade por corte não eleita é desenho institucional deliberado, não anomalia — existe para proteger minorias de maioria conjuntural. Isso não encerra a crítica: a discussão sobre expansão de competência, decisões monocráticas e inquéritos de ofício é séria e tem juristas dos dois lados. O rótulo 'togacracia' entrega o argumento antes de fazê-lo.",
+    "source": "https://pt.wikipedia.org/wiki/Supremo_Tribunal_Federal"
   },
   {
     "id": "bolso-censura",
@@ -505,5 +508,160 @@
     "register": "orgulhoso",
     "verdict": "depende",
     "explain": "Disputa simbólica, não factual. Vale notar que o símbolo nacional não pertence a projeto político nenhum — foi usado por governos de todos os lados — e que a apropriação partidária de bandeira é o que torna estranho usá-la fora do período eleitoral."
+  },
+  {
+    "id": "bolso-master-aposentado",
+    "claim": "Desconto indevido na aposentadoria de gente que trabalhou a vida inteira, e até hoje o governo não sabe dizer quanto cada um perdeu nem devolve o dinheiro.",
+    "tags": [
+      "master",
+      "inss",
+      "aposentado",
+      "gestao"
+    ],
+    "rebuts": [
+      "master",
+      "inss",
+      "social",
+      "gestao"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "O INSS afirmou publicamente que não tem elementos para calcular o prejuízo individual das vítimas das fraudes ligadas ao Master, nem competência legal para representá-las ou cobrar em nome delas, e a reparação segue emperrada. Cerca de 250 mil contratos foram identificados com indícios de problema. A crítica à demora e à falta de um caminho claro de ressarcimento está factualmente correta.",
+    "source": "https://jornaldebrasilia.com.br/noticias/economia/inss-desconhece-tamanho-de-fraudes-do-master-e-diz-que-nao-atuara-por-prioridade-a-aposentados/"
+  },
+  {
+    "id": "bolso-master-governo",
+    "claim": "O banco quebrou agora, o esquema estourou agora, e o INSS é deste governo. Fiscalização é responsabilidade de quem está com a caneta na mão.",
+    "tags": [
+      "master",
+      "inss",
+      "corrupcao",
+      "gestao"
+    ],
+    "rebuts": [
+      "master",
+      "inss",
+      "corrupcao",
+      "transparencia"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O Banco Master foi liquidado pelo Banco Central em novembro de 2025 e a Polícia Federal deflagrou a Operação Compliance Zero, com o STF autorizando aprofundamento da investigação em 2026 — a apuração corre sob o governo atual, e falha de fiscalização é cobrança legítima. Mas o acordo com o INSS vigorou de 2020 a 2025, atravessando dois governos: responsabilizar só o atual é recortar a linha do tempo onde convém, exatamente como o outro lado faz na direção oposta.",
+    "source": "https://www.bloomberg.com/news/articles/2026-02-20/stf-autoriza-policia-federal-a-aprofundar-investigacao-do-master"
+  },
+  {
+    "id": "bolso-anistia",
+    "claim": "Pena de décadas por depredação enquanto traficante sai pela porta da frente. Anistia aqui é pedir proporcionalidade, não é pedir impunidade.",
+    "tags": [
+      "anistia",
+      "justica",
+      "presos",
+      "stf"
+    ],
+    "rebuts": [
+      "anistia",
+      "golpe",
+      "democracia",
+      "justica"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "A proporcionalidade de parte das penas ligadas aos atos de 8 de janeiro foi criticada por juristas que não defendem os atos, e houve revisão de penas — a cobrança tem base. Mas a comparação com penas de tráfico mistura tipos penais e regimes diferentes, e as condenações mais pesadas foram por organização e financiamento, não por presença. O argumento trata o caso extremo como se fosse a regra.",
+    "source": "https://www.gazetadopovo.com.br/eleicoes/2026/como-lula-e-flavio-bolsonaro-se-posicionam-em-6-temas-centrais-da-corrida-presidencial/"
+  },
+  {
+    "id": "bolso-maioridade",
+    "claim": "Moleque de 16 anos que mata sabe perfeitamente o que está fazendo. Quem defende ele não é humanista, é quem nunca perdeu ninguém.",
+    "tags": [
+      "maioridade",
+      "seguranca",
+      "crime",
+      "bandido"
+    ],
+    "rebuts": [
+      "maioridade",
+      "seguranca",
+      "social",
+      "milicia"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "A PEC que reduz a maioridade penal para 16 anos avançou na CCJ da Câmara em junho de 2026 e o tema é uma das pautas centrais da eleição — a demanda por resposta penal tem apoio popular amplo e não é irracional. O que o argumento omite é que adolescentes já respondem com medida socioeducativa, incluindo internação, e que os estudos disponíveis não associam a redução a queda de criminalidade. É debate de valores tanto quanto de evidência.",
+    "source": "https://www.camara.leg.br/noticias/1280551-comissao-de-constituicao-e-justica-aprova-pec-que-reduz-maioridade-penal/"
+  },
+  {
+    "id": "bolso-ir-conta",
+    "claim": "Isenção não cai do céu. Alguém paga essa conta, e esse alguém é quem produz, investe e gera emprego neste país.",
+    "tags": [
+      "imposto",
+      "fiscal",
+      "economia",
+      "mercado"
+    ],
+    "rebuts": [
+      "imposto",
+      "economia",
+      "social",
+      "gastanca"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "É correto que a renúncia da isenção até R$ 5 mil foi desenhada para ser compensada — a própria Lei 15.270/2025 eleva a tributação sobre rendas altas e dividendos. Se essa compensação cobre integralmente a perda de arrecadação é disputa técnica real, com projeções divergentes. O que não se sustenta é apresentar a isenção como gasto sem contrapartida: a contrapartida está escrita na lei.",
+    "source": "https://agenciabrasil.ebc.com.br/economia/noticia/2025-12/isencao-de-ir-para-quem-ganha-ate-r-5-mil-entra-em-vigor"
+  },
+  {
+    "id": "bolso-6x1-custo",
+    "claim": "Acabar com 6x1 no grito quebra padaria, mercadinho e oficina. Quem nunca teve funcionário acha que folha de pagamento é detalhe.",
+    "tags": [
+      "trabalho",
+      "mercado",
+      "economia"
+    ],
+    "rebuts": [
+      "trabalho",
+      "social",
+      "emprego"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O impacto de custo sobre pequenos negócios de uma redução de jornada sem redução de salário é preocupação legítima e aparece na literatura econômica, com resultados que variam conforme setor, produtividade e prazo de transição. Também é verdade que a PEC prevê redução progressiva, não imediata — e que ela ainda não foi aprovada. Tratar como decreto em vigor é discutir uma medida que não existe nesses termos.",
+    "source": "https://pt.wikipedia.org/wiki/PEC_do_Fim_da_Escala_6x1"
+  },
+  {
+    "id": "bolso-lula-medíocre",
+    "claim": "Terceiro mandato e o país segue com produtividade travada, obra parada e imposto subindo. Não é catástrofe, é mediocridade administrada, e isso também custa caro.",
+    "tags": [
+      "gestao",
+      "economia",
+      "fiscal"
+    ],
+    "rebuts": [
+      "economia",
+      "emprego",
+      "gestao",
+      "social"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "Baixo crescimento da produtividade, execução lenta de investimento público e carga tributária alta são críticas com base em indicadores reais e atravessam governos de vários partidos. O argumento acerta ao apontar que desempenho medíocre não vira aceitável só porque a alternativa é pior. O que ele omite é que parte desses indicadores melhorou no período, e que produtividade responde a fatores estruturais de décadas.",
+    "source": "https://www.gazetadopovo.com.br/eleicoes/2026/como-lula-e-flavio-bolsonaro-se-posicionam-em-6-temas-centrais-da-corrida-presidencial/"
+  },
+  {
+    "id": "bolso-flavio-arquivado",
+    "claim": "O caso do Flávio foi arquivado pela Justiça. Vocês repetem acusação encerrada porque não têm o que dizer do governo de vocês.",
+    "tags": [
+      "justica",
+      "corrupcao",
+      "familia"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "familia",
+      "ladrao"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O caso da chamada rachadinha no gabinete de Flávio Bolsonaro foi efetivamente encerrado na Justiça por vícios processuais, com anulação de provas obtidas sem autorização judicial adequada. Encerramento por nulidade não é absolvição no mérito: os fatos não chegaram a ser julgados. Tanto 'foi inocentado' quanto 'está provado' são afirmações que o processo não sustenta.",
+    "source": "https://www.gazetadopovo.com.br/eleicoes/2026/como-lula-e-flavio-bolsonaro-se-posicionam-em-6-temas-centrais-da-corrida-presidencial/"
   }
 ]

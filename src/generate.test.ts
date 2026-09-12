@@ -1,24 +1,33 @@
 import { expect, test } from "bun:test";
-import { MAX_BODY_CHARS, TREES, guard, pickArgument } from "./generate.ts";
+import { EXCLUSION_WINDOW, MAX_BODY_CHARS, TREES, guard, pickArgument } from "./generate.ts";
 import { LENGTHS, MOVES, pickLength } from "./style.ts";
+import type { Side } from "./env.ts";
+import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
 
 // Selection is the one piece of logic here that rots silently: it keeps
 // returning *something* while quietly repeating the same three arguments, and
 // nobody notices until the feed is visibly a loop. Two assertions cover it.
 
-test("never reuses an argument that is still inside the recent window", () => {
-  const recent = TREES.lula.map((n) => n.id).slice(0, TREES.lula.length - 1);
-  for (let i = 0; i < 50; i++) {
-    const picked = pickArgument("lula", "bolso-ladrao", recent);
-    expect(recent).not.toContain(picked.id);
+test("never reuses an argument from inside the exclusion window", () => {
+  const recent = TREES.lula.slice(0, EXCLUSION_WINDOW).map((n) => n.id);
+  for (let i = 0; i < 60; i++) {
+    expect(recent).not.toContain(pickArgument("lula", "bolso-ladrao", recent).id);
   }
 });
 
-test("still returns an argument when the whole tree has been used", () => {
-  // Newest-first, so the last entry is the least recently used.
-  const recent = TREES.bolsonaro.map((n) => n.id);
+// The window has to stay well under the tree size. When it does not, nothing is
+// ever eligible, every pick falls through to the least-recently-used branch, and
+// the feed emits one argument forever — which is precisely what shipped.
+test("the exclusion window leaves room to choose", () => {
+  for (const side of ["lula", "bolsonaro"] as const) {
+    expect(TREES[side].length).toBeGreaterThan(EXCLUSION_WINDOW + 4);
+  }
+});
+
+test("still returns an argument when history is saturated", () => {
+  const recent = [...TREES.bolsonaro, ...TREES.bolsonaro].map((n) => n.id);
   const picked = pickArgument("bolsonaro", "lula-anulado", recent);
-  expect(picked.id).toBe(recent.at(-1) as string);
+  expect(TREES.bolsonaro.map((n) => n.id)).toContain(picked.id);
 });
 
 test("prefers an argument that rebuts the opponent's topic", () => {
@@ -106,4 +115,89 @@ test("over-long messages end on a sentence, never mid-word", () => {
   const out2 = guard(noStops)!;
   expect(out2.endsWith("…")).toBe(true);
   expect(/palavra\d+…$/.test(out2)).toBe(true);
+});
+
+// The trees carry adjudicated facts now, so a node asserting one has to carry the
+// citation with it — an unsourced "STF condenou" on a public page is just a claim.
+test("nodes about convictions and investigations carry a source", () => {
+  const mustCite = /condenou|condenad|STF|Polícia Federal|inquérito|sentença|PEC |Lei \d/i;
+  for (const side of ["lula", "bolsonaro"] as const) {
+    for (const node of TREES[side]) {
+      if (mustCite.test(node.explain)) {
+        expect(node.source, `${node.id} asserts a legal fact without a source`).toBeTruthy();
+      }
+    }
+  }
+});
+
+test("both trees stayed answerable to each other after expanding", () => {
+  for (const side of ["lula", "bolsonaro"] as const) {
+    const oppTags = new Set(TREES[side === "lula" ? "bolsonaro" : "lula"].flatMap((n) => n.tags));
+    const orphans = TREES[side].filter((n) => !n.rebuts.some((t) => oppTags.has(t)));
+    expect(orphans.map((n) => n.id)).toEqual([]);
+  }
+});
+
+// The bug this catches shipped to production and ran for over an hour: the feed
+// emitted ONE argument per side, forever. Every unit test passed, because they
+// all fed synthetic inputs instead of running the actual loop. This one runs the
+// loop the way index.ts does — alternating sides, prepending each pick onto a
+// shared history — and asserts the feed keeps moving.
+test("the selector does not lock onto one argument over a long run", () => {
+  const recent: string[] = [];
+  const picked: Record<Side, string[]> = { lula: [], bolsonaro: [] };
+  let side: Side = "lula";
+  let opp: string | null = null;
+
+  for (let i = 0; i < 600; i++) {
+    const node = pickArgument(side, opp, recent);
+    (picked[side] as string[]).push(node.id);
+    recent.unshift(node.id);
+    opp = node.id;
+    side = side === "lula" ? "bolsonaro" : "lula";
+  }
+
+  for (const s of ["lula", "bolsonaro"] as const) {
+    const tail = (picked[s] as string[]).slice(-30);
+    // A locked selector scores 1 here. A healthy one uses most of its tree.
+    expect(new Set(tail).size, `${s} repeated itself in the last 30 turns`).toBeGreaterThan(10);
+    expect(new Set(picked[s] as string[]).size).toBeGreaterThan(TREES[s].length / 2);
+  }
+});
+
+test("every hot topic arms both sides and cites the episode", () => {
+  expect(TOPICS.length).toBeGreaterThan(0);
+  for (const t of TOPICS) {
+    // A one-sided topic is not a topic, it is a talking point with a title.
+    expect(t.lula.length, `${t.id} has no lula arguments`).toBeGreaterThan(0);
+    expect(t.bolsonaro.length, `${t.id} has no bolsonaro arguments`).toBeGreaterThan(0);
+    expect(t.summary.length).toBeGreaterThan(60);
+    for (const n of [...t.lula, ...t.bolsonaro]) {
+      expect(["verdadeiro", "falso", "depende"]).toContain(n.verdict);
+      expect(n.explain.length).toBeGreaterThan(80);
+      expect(n.source, `${n.id} has no source`).toBeTruthy();
+    }
+    // The two sides must be able to answer each other inside the topic.
+    const lulaTags = new Set(t.lula.flatMap((n) => n.tags));
+    expect(t.bolsonaro.some((n) => n.rebuts.some((x) => lulaTags.has(x)))).toBe(true);
+  }
+});
+
+test("a topic holds for a run and then releases the feed", () => {
+  const id = TOPICS[0]!.id;
+  // Mid-run: keeps going regardless of the roll.
+  expect(pickTopic([id, id], 0.99)).toBe(id);
+  // Run complete: must hand back, or a topic could hold the feed forever.
+  expect(pickTopic(Array(TOPIC_RUN).fill(id), 0.0)).toBeNull();
+  // Idle: a high roll stays out, a low roll enters.
+  expect(pickTopic([null, null], 0.99)).toBeNull();
+  expect(pickTopic([null, null], 0.0)).not.toBeNull();
+});
+
+test("topics eventually fire but do not dominate the feed", () => {
+  const history: (string | null)[] = [];
+  for (let i = 0; i < 2000; i++) history.unshift(pickTopic(history));
+  const onTopic = history.filter(Boolean).length / history.length;
+  expect(onTopic).toBeGreaterThan(0.05);
+  expect(onTopic).toBeLessThan(0.6);
 });

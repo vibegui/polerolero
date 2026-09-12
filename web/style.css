@@ -442,3 +442,24 @@ a { color: inherit; }
   border: 1px solid var(--line);
 }
 .cta.ghost:hover { border-color: var(--faint); }
+
+/* Hot-topic header inside the trace panel. Tinted rather than bordered so it
+   reads as context for the two cards below, not as a third card. */
+.topic {
+  border-radius: 12px;
+  padding: 12px 14px 13px;
+  margin-bottom: 14px;
+  background: color-mix(in oklch, var(--ink) 7%, transparent);
+}
+.topic-kicker {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--faint);
+  margin-bottom: 5px;
+}
+.topic strong { display: block; font-size: 15px; margin-bottom: 5px; }
+.topic p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--ink); opacity: 0.85; }
+.topic a { display: inline-block; margin-top: 8px; font-size: 12.5px; }

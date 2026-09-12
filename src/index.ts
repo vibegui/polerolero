@@ -1,5 +1,6 @@
 import type { Env, Message, Side } from "./env.ts";
 import { OTHER, composeMessage } from "./generate.ts";
+import { pickTopic } from "./topics.ts";
 
 const PAGE = 40;
 /** How far back to look for already-used arguments, and for the transcript. */
@@ -26,10 +27,10 @@ export default {
 
     const { results } = before === null
       ? await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at FROM messages ORDER BY id DESC LIMIT ?1",
+          "SELECT id, side, body, arg_id, due_at, topic FROM messages ORDER BY id DESC LIMIT ?1",
         ).bind(PAGE).all<Message>()
       : await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
+          "SELECT id, side, body, arg_id, due_at, topic FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
         ).bind(before, PAGE).all<Message>();
 
     return Response.json(
@@ -78,7 +79,7 @@ export async function topUp(env: Env): Promise<void> {
   // Newest row first: it carries the last side, the last arg_id and MAX(due_at)
   // in one read, because due_at is monotonic with id.
   const { results: recentRows } = await env.DB.prepare(
-    "SELECT id, side, body, arg_id, due_at FROM messages ORDER BY id DESC LIMIT ?1",
+    "SELECT id, side, body, arg_id, due_at, topic FROM messages ORDER BY id DESC LIMIT ?1",
   ).bind(RECENT_WINDOW).all<Message>();
 
   const newest = recentRows[0];
@@ -96,23 +97,27 @@ export async function topUp(env: Env): Promise<void> {
   // recentRows is newest-first; the transcript reads oldest-first.
   const transcript: Message[] = recentRows.slice().reverse();
   const recent: string[] = recentRows.map((m) => m.arg_id);
+  // Newest-first, same as recentRows — pickTopic reads run length off the head.
+  const topics: (string | null)[] = recentRows.map((m) => m.topic);
   let side: Side = newest ? OTHER[newest.side] : "lula";
   let dueAt = Math.max(newest?.due_at ?? now, now);
 
   const insert = env.DB.prepare(
-    "INSERT INTO messages (side, body, arg_id, due_at, created_at) VALUES (?1, ?2, ?3, ?4, unixepoch())",
+    "INSERT INTO messages (side, body, arg_id, due_at, topic, created_at) VALUES (?1, ?2, ?3, ?4, ?5, unixepoch())",
   );
 
   while (toGenerate-- > 0) {
     // One call per message, never one call writing both sides: a single
     // completion covering the whole exchange makes the two personas converge in
     // register, and the two voices being distinct is the entire joke.
-    const { body, argId } = await composeMessage(env, side, transcript, recent, allowLlm);
+    const topic = pickTopic(topics);
+    const { body, argId } = await composeMessage(env, side, transcript, recent, allowLlm, topic);
     dueAt += interval;
-    await insert.bind(side, body, argId, dueAt).run();
+    await insert.bind(side, body, argId, dueAt, topic).run();
 
-    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt });
+    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt, topic });
     recent.unshift(argId);
+    topics.unshift(topic);
     side = OTHER[side];
   }
 }

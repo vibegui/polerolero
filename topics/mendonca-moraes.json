@@ -1,0 +1,51 @@
+{
+  "id": "mendonca-moraes",
+  "title": "Mendonça x Moraes no STF",
+  "summary": "Setembro de 2026: Mendonça determina o afastamento do diretor-geral da PF no âmbito do caso Master; Moraes retira o sigilo do inquérito das fake news e aponta improbidade e escolha seletiva de sigilo. Analistas falam em crise dentro do próprio Supremo.",
+  "active": true,
+  "source": "https://pt.wikipedia.org/wiki/Andr%C3%A9_Mendon%C3%A7a",
+  "lula": [
+    {
+      "id": "mm-l-seletivo",
+      "claim": "Abriu o sigilo do que interessava e manteve fechado o que não interessava. Transparência de um lado só tem outro nome.",
+      "tags": ["stf", "instituicoes", "transparencia", "master"],
+      "rebuts": ["stf", "censura", "justica", "lawfare"],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Mendonça levantou parcialmente o sigilo do caso Master mantendo sob reserva outra investigação, e Moraes contestou apontando 'escolha seletiva' e ausência de cerca de 180 documentos. A acusação é de um ministro contra outro dentro do próprio tribunal, não uma conclusão apurada: nenhuma instância decidiu quem está certo. Levantar sigilo por partes também pode ter fundamento processual legítimo.",
+      "source": "https://pt.wikipedia.org/wiki/Andr%C3%A9_Mendon%C3%A7a"
+    },
+    {
+      "id": "mm-l-pf",
+      "claim": "Afastar o diretor-geral da Polícia Federal com base em conversa extraída é decisão grave demais pra sair de uma canetada só.",
+      "tags": ["stf", "instituicoes", "justica"],
+      "rebuts": ["stf", "justica", "lawfare", "censura"],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Mendonça determinou o afastamento do diretor-geral da PF, Andrei Rodrigues, a partir de conversas extraídas que mencionavam seu nome, no âmbito do caso Master. Decisão monocrática sobre o comando de uma polícia é objeto legítimo de crítica — e o mesmo argumento vale contra decisões monocráticas que o outro lado aplaude. Menção em conversa não é imputação provada, e afastamento não é condenação.",
+      "source": "https://pt.wikipedia.org/wiki/Andr%C3%A9_Mendon%C3%A7a"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "mm-b-retaliacao",
+      "claim": "Dois dias depois da decisão que incomodou, saiu a retirada de sigilo contra quem decidiu. Isso não é justiça, é recado.",
+      "tags": ["stf", "lawfare", "justica", "censura"],
+      "rebuts": ["stf", "instituicoes", "transparencia", "democracia"],
+      "register": "conspiratorio",
+      "verdict": "depende",
+      "explain": "A cronologia é pública: dois dias após Mendonça determinar o afastamento do diretor da PF, Moraes retirou o sigilo do inquérito das fake news e apontou improbidade administrativa contra ele. Proximidade temporal é indício, não prova de motivação — decisões judiciais respondem a prazos e provocações que não aparecem no calendário. Mas a sequência é factual e a crise interna foi reconhecida por analistas.",
+      "source": "https://pt.wikipedia.org/wiki/Andr%C3%A9_Mendon%C3%A7a"
+    },
+    {
+      "id": "mm-b-inquerito",
+      "claim": "O inquérito das fake news vira arma toda vez que alguém contraria o relator. Um inquérito sem fim, com relator fixo, não é investigação.",
+      "tags": ["stf", "censura", "lawfare"],
+      "rebuts": ["stf", "instituicoes", "democracia", "transparencia"],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "As críticas ao inquérito das fake news — abertura de ofício, duração prolongada, concentração no mesmo relator — são levantadas há anos por juristas de campos diversos, inclusive fora do bolsonarismo, e ganharam peso quando o material foi usado no conflito entre ministros. Do outro lado, o inquérito produziu apurações que sustentaram condenações. É uma disputa real sobre desenho institucional, não um caso de bandido e mocinho.",
+      "source": "https://pt.wikipedia.org/wiki/Andr%C3%A9_Mendon%C3%A7a"
+    }
+  ]
+}

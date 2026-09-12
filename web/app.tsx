@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
 import lulaTree from "../arguments/lula.json" with { type: "json" };
+import { TOPICS, TOPIC_BY_ID } from "../src/topics.ts";
 import { Landing, Trace } from "./panels.tsx";
 
 export type Side = "lula" | "bolsonaro";
@@ -11,6 +12,7 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
+  topic: string | null;
 }
 
 export interface ArgNode {
@@ -31,8 +33,14 @@ export const TREES: Record<Side, ArgNode[]> = {
   bolsonaro: bolsonaroTree as ArgNode[],
 };
 
+// Topic nodes go in the same lookup: a message only carries an arg_id, and the
+// trace panel should not have to know where the argument came from.
 export const NODES = new Map(
-  [...TREES.lula, ...TREES.bolsonaro].map((n) => [n.id, n] as const),
+  [
+    ...TREES.lula,
+    ...TREES.bolsonaro,
+    ...TOPICS.flatMap((t) => [...t.lula, ...t.bolsonaro]),
+  ].map((n) => [n.id, n] as const),
 );
 
 /** What the trace panel shows: the opponent claim being deflated, and the one
@@ -42,6 +50,7 @@ export interface TraceData {
   side: Side;
   answering: ArgNode | null;
   using: ArgNode | null;
+  topic: { title: string; summary: string; source?: string } | null;
 }
 
 const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bolsonaro" };
@@ -229,8 +238,10 @@ export function App() {
       const i = messages.findIndex((x) => x.id === m.id);
       // The message being answered is the previous one from the other side.
       const prev = messages.slice(0, i).findLast((x) => x.side !== m.side);
+      const t = m.topic ? TOPIC_BY_ID.get(m.topic) : undefined;
       setTrace({
         side: m.side,
+        topic: t ? { title: t.title, summary: t.summary, source: t.source } : null,
         answering: prev ? (NODES.get(prev.arg_id) ?? null) : null,
         using: NODES.get(m.arg_id) ?? null,
       });

@@ -23,6 +23,8 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
+  /** Hot topic this message belongs to, or null for the standing trees. */
+  topic: string | null;
 }
 
 export interface ArgNode {
