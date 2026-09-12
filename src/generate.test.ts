@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { TREES, guard, pickArgument } from "./generate.ts";
+import { LENGTHS, MOVES, PERSONAS, pickLength } from "./personas.ts";
 
 // Selection is the one piece of logic here that rots silently: it keeps
 // returning *something* while quietly repeating the same three arguments, and
@@ -33,7 +34,7 @@ test("prefers an argument that rebuts the opponent's topic", () => {
 });
 
 test("guard caps length and strips only balanced wrapping quotes", () => {
-  expect(guard("a".repeat(500))!.length).toBeLessThanOrEqual(220);
+  expect(guard("a".repeat(2000))!.length).toBeLessThanOrEqual(900);
   expect(guard('"Cercado dos dois lados"')).toBe("Cercado dos dois lados");
   // A lone leading quote must survive, or stripping it orphans the closing one.
   expect(guard('"Mexer nos dados" é veredito?')).toBe('"Mexer nos dados" é veredito?');
@@ -52,4 +53,46 @@ test("every argument can answer at least one opponent tag", () => {
       expect(node.rebuts.some((t) => oppTags.has(t))).toBe(true);
     }
   }
+});
+
+// The trace panel renders these straight onto a public page, so a node missing
+// a verdict or shipping an empty explanation is a visible hole, not a warning.
+test("every argument carries a verdict and an explanation", () => {
+  for (const side of ["lula", "bolsonaro"] as const) {
+    for (const node of TREES[side]) {
+      expect(["verdadeiro", "falso", "depende"]).toContain(node.verdict);
+      expect(node.explain.length).toBeGreaterThan(80);
+    }
+  }
+});
+
+// A cast that has collapsed back to one voice is the exact failure this replaced
+// — a feed where every message had the same rhythm and the same clown emoji.
+test("each side has a cast of distinct personas", () => {
+  for (const side of ["lula", "bolsonaro"] as const) {
+    const cast = PERSONAS[side];
+    expect(cast.length).toBeGreaterThanOrEqual(5);
+    expect(new Set(cast.map((p) => p.id)).size).toBe(cast.length);
+    for (const p of cast) expect(p.voice.length).toBeGreaterThan(60);
+    // At least one character that never reaches for an emoji at all.
+    expect(cast.some((p) => p.emoji.length === 0)).toBe(true);
+  }
+});
+
+test("length sampler covers every bucket and stays in range", () => {
+  expect(pickLength(0).spec).toBe(LENGTHS[0]!.spec);
+  expect(pickLength(0.999).spec).toBe(LENGTHS.at(-1)!.spec);
+  const seen = new Set(Array.from({ length: 400 }, () => pickLength().paragraphs));
+  expect(seen.size).toBe(new Set(LENGTHS.map((l) => l.paragraphs)).size);
+  expect(MOVES.length).toBeGreaterThanOrEqual(6);
+});
+
+test("guard drops a restarted draft glued onto the first one", () => {
+  const draft = "O senhor pergunta quem controla o INPE. Eu pergunto quem controla o bairro.";
+  // Exactly the failure seen in the feed: model wrote it, stopped, wrote it again.
+  const out = guard(`${draft} Ordem invertida.${draft} Prioridade invertida.`)!;
+  expect(out).toBe(`${draft} Ordem invertida.`);
+  // A message that merely repeats a short phrase must survive untouched.
+  const fine = "Fila de cirurgia? E a fila do caixão, meu amigo? Fila é fila.";
+  expect(guard(fine)).toBe(fine);
 });

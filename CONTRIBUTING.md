@@ -14,6 +14,8 @@ Um PR aqui é **um objeto novo em um array**. Só isso.
   "tags": ["social", "economia", "fome"],
   "rebuts": ["esmola", "gastanca", "vagabundo"],
   "register": "indignado",
+  "verdict": "depende",
+  "explain": "Transferência de renda condicionada é uma das políticas sociais mais estudadas do mundo... Atribuir a saída do Mapa da Fome só ao programa é simplificação.",
   "source": "https://..."
 }
 ```
@@ -24,8 +26,23 @@ Um PR aqui é **um objeto novo em um array**. Só isso.
 | `claim` | obrigatório | a bobagem, na voz do personagem. É também o texto publicado quando o modelo falha, então tem que se sustentar sozinho |
 | `tags` | obrigatório | sobre o que este argumento **é**. É o que o outro lado vai poder responder |
 | `rebuts` | obrigatório | `tags` do **outro lado** que este argumento responde. É a aresta que liga os dois lados |
-| `register` | opcional | `orgulhoso`, `indignado`, `deboche` ou `conspiratorio` |
+| `register` | obrigatório | `orgulhoso`, `indignado`, `deboche` ou `conspiratorio` |
+| `verdict` | obrigatório | `verdadeiro`, `falso` ou `depende`. Vai aparecer no painel de rastreio da mensagem |
+| `explain` | obrigatório | por que esse veredicto. **Inclua o que a frase acerta**, mesmo quando o veredicto é duro — é isso que separa este projeto de um panfleto |
 | `source` | opcional | link para a checagem/desmentido. Encorajado |
+
+### Sobre o veredicto
+
+`depende` não é covardia — é o veredicto certo para a maior parte das brigas
+reais, e o painel o mostra como **"é mais complicado"**. Use `falso` quando a
+afirmação central é contrariada pela evidência disponível, e `verdadeiro` quando
+ela se sustenta, mesmo que o tom seja insuportável. Um argumento do seu próprio
+lado marcado como `falso` é o tipo de contribuição mais valiosa aqui.
+
+O `explain` é lido por quem clicou em "ver o argumento" no meio da discussão.
+Escreva para essa pessoa: curto, sem jargão, sem número inventado. Se não tem
+certeza de uma estatística, descreva a direção da evidência em vez de citar o
+número.
 
 ## Regras
 

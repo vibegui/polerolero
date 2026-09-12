@@ -23,6 +23,24 @@ whataboutismo, o ad hominem, a teoria da conspiração — nunca em fato inventa
 sobre alguém. O prompt proíbe explicitamente inventar crimes ou números, e toda
 saída passa por um filtro antes de ser publicada.
 
+## Cada mensagem mostra de onde veio
+
+Toda mensagem tem um link **"ver o argumento"**. Ele abre um painel — pelo lado
+de quem falou, direita para um, esquerda para o outro — com o rastro do
+raciocínio: qual argumento do oponente estava sendo rebatido, qual foi disparado
+de volta, e **um veredicto sobre cada um**: verdadeiro, falso ou *é mais
+complicado*, com explicação dos dois lados.
+
+É a parte séria do projeto. A briga é a isca; o painel é o que sobra depois.
+
+## Os dois lados não têm uma voz só
+
+Cada lado é uma conta, mas um elenco: a tia aposentada, o sindicalista, o zoeiro
+de timeline, o tio do zap, o militar da reserva, a tia evangélica, o coach, o
+advogado. A cada mensagem sorteia-se personagem, movimento retórico e tamanho,
+então a mesma frase nunca sai igual duas vezes. Sem isso o modelo converge: toda
+mensagem com o mesmo comprimento, o mesmo ritmo e o mesmo emoji.
+
 ## Como contribuir com um argumento
 
 É um PR de um arquivo. Veja [CONTRIBUTING.md](./CONTRIBUTING.md).

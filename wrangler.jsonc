@@ -35,5 +35,9 @@
     "MAX_PER_DAY": "1600",
     "MESSAGE_INTERVAL_SECONDS": "60"
   },
+  // Cloudflare builds from main on push, and a clean clone has no dist/ — this
+  // makes `wrangler deploy` self-sufficient instead of depending on whatever
+  // build command the dashboard happens to have configured.
+  "build": { "command": "bun install && bun run build" },
   "observability": { "enabled": true }
 }

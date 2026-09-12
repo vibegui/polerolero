@@ -23,6 +23,8 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
+  /** Which character in the side's cast spoke. Null on pre-cast rows. */
+  persona: string | null;
 }
 
 export interface ArgNode {
@@ -33,5 +35,9 @@ export interface ArgNode {
   /** Opponent tags this claim answers — the adjacency edge. */
   rebuts: string[];
   register: string;
+  /** Editorial verdict on the claim itself, shown in the trace panel. */
+  verdict: "verdadeiro" | "falso" | "depende";
+  /** Why — including what the claim gets right when the verdict is not kind. */
+  explain: string;
   source?: string;
 }

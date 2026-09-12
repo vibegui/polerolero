@@ -1,4 +1,5 @@
-import { type Ref, useRef, useState } from "react";
+import { type Ref, useEffect, useRef, useState } from "react";
+import { type ArgNode, type TraceData, personaLabel } from "./app.tsx";
 
 // Both panels are native <dialog>. showModal() gives Esc-to-close, a focus
 // trap, ::backdrop and inert on the rest of the page — every bit of the
@@ -143,5 +144,91 @@ export function Landing() {
         </div>
       </dialog>
     </>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// Trace — where the argument came from
+// -----------------------------------------------------------------------------
+
+const VERDICT: Record<ArgNode["verdict"], { label: string; hint: string }> = {
+  verdadeiro: { label: "verdadeiro", hint: "a afirmação central se sustenta" },
+  falso: { label: "falso", hint: "a afirmação central não se sustenta" },
+  depende: { label: "é mais complicado", hint: "os dois lados têm parte de razão" },
+};
+
+/**
+ * Slides in from the side that spoke — right for Bolsonaro, left for Lula —
+ * because the panel is that character's reasoning, and having it arrive from
+ * the other edge reads as a reply rather than as a source.
+ */
+export function Trace({ data, onClose }: { data: TraceData | null; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  // <dialog> has no declarative open-with-animation, so drive it from the data:
+  // showModal() on arrival, and let close() run through the CSS transition.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (data && !el.open) el.showModal();
+    if (!data && el.open) el.close();
+  }, [data]);
+
+  const persona = data ? personaLabel(data.side, data.persona) : null;
+
+  return (
+    <dialog
+      ref={ref}
+      className={`sheet trace from-${data?.side ?? "lula"}`}
+      onClose={onClose}
+    >
+      <div className="trace-head">
+        <div>
+          <strong>De onde saiu essa mensagem</strong>
+          {persona && <span className="trace-persona">no papel: {persona}</span>}
+        </div>
+        <form method="dialog">
+          <button type="submit" aria-label="fechar">✕</button>
+        </form>
+      </div>
+
+      <div className="trace-body">
+        {data?.answering && <Card node={data.answering} role="Respondendo a" />}
+        {data?.using && <Card node={data.using} role="Contra-atacando com" />}
+        <p className="fine">
+          Os veredictos são resumo editorial deste projeto, não checagem
+          profissional — e existem para ser contestados.{" "}
+          <a href="https://github.com/vibegui/polerolero" target="_blank" rel="noreferrer">
+            discorda? manda um PR
+          </a>
+          .
+        </p>
+      </div>
+    </dialog>
+  );
+}
+
+function Card({ node, role }: { node: ArgNode; role: string }) {
+  const v = VERDICT[node.verdict];
+  return (
+    <article className="card">
+      <span className="card-role">{role}</span>
+      <p className="card-claim">“{node.claim}”</p>
+      <div className={`verdict ${node.verdict}`}>
+        <strong>{v.label}</strong>
+        <span>{v.hint}</span>
+      </div>
+      <p className="card-explain">{node.explain}</p>
+      <div className="card-tags">
+        {node.tags.map((t) => (
+          <span key={t} className="tag">{t}</span>
+        ))}
+      </div>
+      {node.source && (
+        <a className="card-source" href={node.source} target="_blank" rel="noreferrer">
+          fonte →
+        </a>
+      )}
+    </article>
   );
 }

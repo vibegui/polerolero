@@ -2,6 +2,7 @@ import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
 import lulaTree from "../arguments/lula.json" with { type: "json" };
 import type { ArgNode, Env, Message, Side } from "./env.ts";
 import { chat } from "./gateway.ts";
+import { MOVES, PERSONAS, type Persona, pickLength } from "./personas.ts";
 
 export const TREES: Record<Side, ArgNode[]> = {
   lula: lulaTree as ArgNode[],
@@ -14,7 +15,9 @@ const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bol
 
 /** Transcript handed to the model. Six turns, not twenty — this is the cost lever. */
 const CONTEXT_TURNS = 6;
-const MAX_BODY_CHARS = 220;
+// Generous, because the length sampler asks for up to three paragraphs. This is
+// the backstop against a model that ignores the spec entirely, not the target.
+const MAX_BODY_CHARS = 760;
 
 // -----------------------------------------------------------------------------
 // Argument selection
@@ -58,15 +61,25 @@ function sample<T>(xs: T[]): T {
 // Prompt
 // -----------------------------------------------------------------------------
 
-function systemPrompt(side: Side): string {
-  return `Você é "${NAME[side]}" num grupo de WhatsApp, discutindo com ${NAME[OTHER[side]]}.
+function systemPrompt(side: Side, persona: Persona): string {
+  const emoji =
+    persona.emoji.length > 0
+      ? `Na maioria das mensagens não use emoji nenhum. Quando usar, no máximo UM, e só destes: ${persona.emoji.join(" ")}`
+      : "Este personagem NUNCA usa emoji.";
+
+  return `Você é ${NAME[side]} num grupo de WhatsApp, discutindo com ${NAME[OTHER[side]]}.
 Você é caricato, inflamado, e nunca admite estar errado.
 
+SEU PERSONAGEM NESTA MENSAGEM — ${persona.label}:
+${persona.voice}
+
 REGRAS:
-- 1 ou 2 frases. Máximo 180 caracteres. Português informal brasileiro, gírias, CAPS ocasional.
-- Comece desqualificando a última mensagem do oponente em no máximo 6 palavras.
-- Depois emende o SEU argumento, com suas palavras — não copie literalmente.
-- No máximo 1 emoji. Nunca use hashtag. Nunca use markdown.
+- Português informal brasileiro. Escreva EXATAMENTE na voz do personagem acima:
+  o jeito de escrever importa mais que o conteúdo.
+- ${emoji}
+- Nunca use hashtag, markdown, asterisco ou lista.
+- Comece reagindo à última mensagem do oponente do jeito que ESTE personagem reagiria.
+- Depois emende o seu argumento com suas palavras — não copie a frase literalmente.
 - Nunca invente crimes, números ou fatos sobre pessoas reais. A piada está na
   FORMA do argumento (whataboutismo, ad hominem, teoria da conspiração),
   nunca em acusação inventada.
@@ -74,12 +87,21 @@ REGRAS:
 - Responda APENAS com a mensagem, sem aspas e sem prefixo de nome.`;
 }
 
-function userPrompt(transcript: Message[], node: ArgNode): string {
+function userPrompt(
+  transcript: Message[],
+  node: ArgNode,
+  move: string,
+  lengthSpec: string,
+): string {
   const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
   return `${lines}
 
 Seu próximo argumento (reescreva com suas palavras, tom ${node.register}):
-${node.claim}`;
+${node.claim}
+
+MOVIMENTO RETÓRICO desta mensagem — ${move}
+
+TAMANHO desta mensagem — ${lengthSpec}`;
 }
 
 // -----------------------------------------------------------------------------
@@ -94,6 +116,22 @@ const BLOCKLIST = [
 
 /** Signs the model broke frame instead of playing the character. */
 const FRAME_LEAKS = ["fã do ", "como uma ia", "como ia,", "sou uma ia", "```", "assistente"];
+
+/**
+ * Models asked for a multi-paragraph answer sometimes write the whole message,
+ * stop, and then write it again slightly differently — the two drafts arrive
+ * glued together. Seen in the feed as one 900-character bubble that says the
+ * same thing twice ("...é descomando.O senhor pergunta quem controla o INPE...").
+ *
+ * If the opening line shows up again further in, the second copy is a restart:
+ * keep the first draft and drop everything from there.
+ */
+function dropRestart(text: string): string {
+  const head = text.slice(0, 40).trim();
+  if (head.length < 24) return text;
+  const again = text.indexOf(head, 40);
+  return again === -1 ? text : text.slice(0, again).trimEnd();
+}
 
 /**
  * Returns the cleaned message, or null if it must be thrown away.
@@ -112,6 +150,8 @@ export function guard(raw: string): string | null {
   let text = raw.trim();
   const wrapped = /^(["“'`])([\s\S]+)(["”'`])$/.exec(text);
   if (wrapped) text = (wrapped[2] as string).trim();
+
+  text = dropRestart(text);
 
   // Length is the only cap. An earlier two-sentence trim looked tidier and
   // amputated the argument: "Mexe nos dados? Fala sério kkk." kept the sneer
@@ -137,24 +177,34 @@ export async function composeMessage(
   transcript: Message[],
   recent: string[],
   allowLlm: boolean,
-): Promise<{ body: string; argId: string }> {
+): Promise<{ body: string; argId: string; persona: string }> {
   const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
   const node = pickArgument(side, oppArgId, recent);
 
-  if (!allowLlm) return { body: node.claim, argId: node.id };
+  // Persona, rhetorical move and length are sampled independently, so the same
+  // argument never comes back the same way twice.
+  const cast = PERSONAS[side];
+  const persona = cast[Math.floor(Math.random() * cast.length)] as Persona;
+  const move = MOVES[Math.floor(Math.random() * MOVES.length)] as string;
+  const length = pickLength();
+
+  if (!allowLlm) return { body: node.claim, argId: node.id, persona: persona.id };
 
   try {
     const raw = await chat(
       env,
       [
-        { role: "system", content: systemPrompt(side) },
-        { role: "user", content: userPrompt(transcript.slice(-CONTEXT_TURNS), node) },
+        { role: "system", content: systemPrompt(side, persona) },
+        {
+          role: "user",
+          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move, length.spec),
+        },
       ],
-      AbortSignal.timeout(20_000),
+      AbortSignal.timeout(25_000),
     );
-    return { body: guard(raw) ?? node.claim, argId: node.id };
+    return { body: guard(raw) ?? node.claim, argId: node.id, persona: persona.id };
   } catch (err) {
     console.error("composeMessage fell back to the tree:", err);
-    return { body: node.claim, argId: node.id };
+    return { body: node.claim, argId: node.id, persona: persona.id };
   }
 }

@@ -2,211 +2,501 @@
   {
     "id": "lula-bolsa-familia",
     "claim": "Esmola é o que voces chamam de esmola. Bolsa Família tirou o Brasil do Mapa da Fome, e isso te incomoda porque pobre comendo te incomoda.",
-    "tags": ["social", "economia", "fome"],
-    "rebuts": ["esmola", "gastanca", "vagabundo"],
-    "register": "indignado"
+    "tags": [
+      "social",
+      "economia",
+      "fome"
+    ],
+    "rebuts": [
+      "esmola",
+      "gastanca",
+      "vagabundo"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "Transferência de renda condicionada é uma das políticas sociais mais estudadas do mundo, e a literatura é amplamente favorável: reduz pobreza extrema e melhora frequência escolar. Atribuir a saída do Mapa da Fome só ao programa é simplificação — ela dependeu também de emprego, salário mínimo e preço de alimentos. O apelido de 'esmola' não se sustenta na evidência; a disputa real é sobre quanto custa e o que mais deveria vir junto."
   },
   {
     "id": "lula-mapa-da-fome",
     "claim": "O Brasil saiu do Mapa da Fome e voltou. Duas vezes. Adivinha quem tava no poder em cada uma 🙃",
-    "tags": ["fome", "social"],
-    "rebuts": ["economia", "gestao"],
-    "register": "deboche"
+    "tags": [
+      "fome",
+      "social"
+    ],
+    "rebuts": [
+      "economia",
+      "gestao"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "O Brasil de fato saiu do Mapa da Fome da ONU, voltou anos depois e saiu novamente. A cronologia é verificável. O que não é simples é a atribuição: a subnutrição responde a emprego, renda, câmbio e preço de comida, e nenhum governo controla tudo isso sozinho. Os dois lados usam a mesma linha do tempo e param de contar onde convém."
   },
   {
     "id": "lula-aeroporto",
     "claim": "Nunca na história desse país filho de porteiro entrou em aeroporto pela porta da frente. É isso que voces não perdoam.",
-    "tags": ["social", "elite", "classe"],
-    "rebuts": ["elite", "arrogancia", "vagabundo"],
-    "register": "orgulhoso"
+    "tags": [
+      "social",
+      "elite",
+      "classe"
+    ],
+    "rebuts": [
+      "elite",
+      "arrogancia",
+      "vagabundo"
+    ],
+    "register": "orgulhoso",
+    "verdict": "depende",
+    "explain": "A expansão do acesso ao ensino superior e ao consumo por famílias de baixa renda nos anos 2000 é documentada. 'Nunca na história' é figura de retórica, não dado. E o argumento é de origem social, não de política pública: ele responde a quem ataca a pessoa, não a quem ataca o programa."
   },
   {
     "id": "lula-anulado",
     "claim": "ANULADO. Não foi absolvido por bondade, foi ANULADO porque o processo era juridicamente uma fraude. Leia a decisão antes de falar.",
-    "tags": ["justica", "lawfare", "corrupcao"],
-    "rebuts": ["corrupcao", "ladrao", "triplex", "condenado"],
-    "register": "indignado"
+    "tags": [
+      "justica",
+      "lawfare",
+      "corrupcao"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "ladrao",
+      "triplex",
+      "condenado"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "As condenações foram anuladas pelo STF — primeiro por incompetência do juízo de Curitiba, depois com o reconhecimento da suspeição do juiz. Anulação não é absolvição no mérito: os fatos não chegaram a ser rejulgados. Quem diz 'foi inocentado' e quem diz 'só escapou por tecnicalidade' estão ambos apertando a mesma decisão para caber no próprio lado."
   },
   {
     "id": "lula-vaza-jato",
     "claim": "Juiz combinando com o promotor no Telegram. Isso tem nome e não é 'combate à corrupção', é PERSEGUIÇÃO.",
-    "tags": ["lawfare", "justica"],
-    "rebuts": ["corrupcao", "lavajato", "ladrao"],
-    "register": "indignado"
+    "tags": [
+      "lawfare",
+      "justica"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "lavajato",
+      "ladrao"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "As mensagens publicadas a partir de 2019 mostraram coordenação entre o juiz do caso e a acusação. O STF admitiu o material e reconheceu a suspeição do juiz. O que segue em disputa é o alcance: parte dos juristas entende que contamina todo o processo, outra parte que atinge atos específicos."
   },
   {
     "id": "lula-moro-ministro",
     "claim": "O juiz que te condenou virou MINISTRO de quem se beneficiou da condenação. E voce ainda chama isso de imparcialidade 😂",
-    "tags": ["lawfare", "justica"],
-    "rebuts": ["lavajato", "corrupcao", "isento"],
-    "register": "deboche"
+    "tags": [
+      "lawfare",
+      "justica"
+    ],
+    "rebuts": [
+      "lavajato",
+      "corrupcao",
+      "isento"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "O juiz que conduziu as condenações assumiu o Ministério da Justiça do governo eleito logo depois, fato público e incontroverso. Isso não prova, por si só, que a sentença foi motivada politicamente — mas é exatamente o tipo de aparência que as regras de impedimento existem para evitar, e foi central no reconhecimento posterior da suspeição."
   },
   {
     "id": "lula-8-janeiro",
     "claim": "Invadiram o Congresso, o Planalto e o STF. Quebraram o relógio de D. João VI. Mas o autoritário sou eu, né?",
-    "tags": ["democracia", "golpe", "instituicoes"],
-    "rebuts": ["ditadura", "stf", "censura", "autoritario"],
-    "register": "deboche"
+    "tags": [
+      "democracia",
+      "golpe",
+      "instituicoes"
+    ],
+    "rebuts": [
+      "ditadura",
+      "stf",
+      "censura",
+      "autoritario"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "A invasão e depredação das sedes dos três Poderes em 8 de janeiro de 2023 é fato registrado em vídeo, perícia e centenas de processos. A disputa real não é sobre ter acontecido, e sim sobre quem organizou, quem financiou e se a resposta penal foi proporcional."
   },
   {
     "id": "lula-golpe",
     "claim": "Teve minuta de golpe impressa. IMPRESSA. Não é teoria da conspiração quando tá no inquérito.",
-    "tags": ["golpe", "democracia"],
-    "rebuts": ["ditadura", "autoritario", "stf"],
-    "register": "indignado"
+    "tags": [
+      "golpe",
+      "democracia"
+    ],
+    "rebuts": [
+      "ditadura",
+      "autoritario",
+      "stf"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "A existência de uma minuta de decreto para reverter o resultado eleitoral foi apurada e incorporada às investigações. Ter existido um documento não equivale a ter havido tentativa executada — e é precisamente isso que o processo discute. Chamar de 'teoria da conspiração' é ignorar os autos; chamar de golpe consumado é ignorar que não houve execução."
   },
   {
     "id": "lula-tarifaco",
     "claim": "Pedir tarifa do gringo contra o próprio país tem nome: traição. Não é patriotismo, é capacho de bandeira alheia.",
-    "tags": ["soberania", "internacional", "economia"],
-    "rebuts": ["patriotismo", "bandeira", "internacional", "comunismo"],
-    "register": "indignado"
+    "tags": [
+      "soberania",
+      "internacional",
+      "economia"
+    ],
+    "rebuts": [
+      "patriotismo",
+      "bandeira",
+      "internacional",
+      "comunismo"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "Houve atuação de brasileiros junto ao governo dos EUA por medidas contra o Brasil, e tarifas foram efetivamente aplicadas. Isso é verificável. Chamar de 'traição' é juízo político, não fato: pressão externa para mudar política interna é instrumento antigo e usado por todos os lados quando lhes convém."
   },
   {
     "id": "lula-soberania",
     "claim": "Verde e amarelo no peito e joelho no chão pro Tio Sam. Escolhe uma, campeão.",
-    "tags": ["soberania", "internacional"],
-    "rebuts": ["patriotismo", "bandeira", "internacional"],
-    "register": "deboche"
+    "tags": [
+      "soberania",
+      "internacional"
+    ],
+    "rebuts": [
+      "patriotismo",
+      "bandeira",
+      "internacional"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "Retórica, não afirmação verificável. Vale como observação de coerência — símbolo nacional e alinhamento externo automático convivem mal — mas não decide nada. Todo governo brasileiro negocia autonomia contra acesso a mercado e tecnologia; a diferença é de grau, não de natureza."
   },
   {
     "id": "lula-pandemia",
     "claim": "700 mil mortos. Fila de vacina que chegou atrasada porque zombaram do imunizante. Isso não foi opinião, foi conta que o povo pagou.",
-    "tags": ["saude", "pandemia", "gestao"],
-    "rebuts": ["gestao", "sus", "liberdade"],
-    "register": "indignado"
+    "tags": [
+      "saude",
+      "pandemia",
+      "gestao"
+    ],
+    "rebuts": [
+      "gestao",
+      "sus",
+      "liberdade"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O número de mortes está entre os maiores do mundo em termos absolutos e é dado oficial. A CPI concluiu que houve atraso e desestímulo à vacinação. Quanto desse total é atribuível à condução federal, e não a densidade urbana, desigualdade ou variantes, é objeto de estudo e não tem resposta fechada."
   },
   {
     "id": "lula-vacina",
     "claim": "Imitar jacaré em cadeia nacional sobre vacina foi o ápice da gestão técnica de voces 🐊",
-    "tags": ["pandemia", "saude"],
-    "rebuts": ["liberdade", "gestao", "ciencia"],
-    "register": "deboche"
+    "tags": [
+      "pandemia",
+      "saude"
+    ],
+    "rebuts": [
+      "liberdade",
+      "gestao",
+      "ciencia"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "A declaração sobre virar jacaré foi feita publicamente e está registrada em vídeo. É fato. O que se discute é o efeito: piada presidencial sobre vacina mede-se em hesitação vacinal, e essa medição existe mas não é consensual."
   },
   {
     "id": "lula-mais-medicos",
     "claim": "Mais Médicos levou médico pro interior onde NENHUM dos seus ia. Voces acabaram e o povo ficou sem. Simples assim.",
-    "tags": ["saude", "sus", "social"],
-    "rebuts": ["sus", "gestao", "gastanca"],
-    "register": "orgulhoso"
+    "tags": [
+      "saude",
+      "sus",
+      "social"
+    ],
+    "rebuts": [
+      "sus",
+      "gestao",
+      "gastanca"
+    ],
+    "register": "orgulhoso",
+    "verdict": "depende",
+    "explain": "A saída em massa dos médicos cubanos, após declarações do governo eleito em 2018, deixou vagas abertas sobretudo em municípios pequenos e remotos — isso é documentado. O programa não foi extinto: foi reformulado e depois reexpandido. 'Acabaram com o programa' é atalho."
   },
   {
     "id": "lula-universidade",
     "claim": "ProUni, cotas, 18 universidades federais. Filho de empregada virou doutor. É por isso que voces odeiam universidade.",
-    "tags": ["educacao", "social"],
-    "rebuts": ["doutrinacao", "universidade", "ideologia"],
-    "register": "orgulhoso"
+    "tags": [
+      "educacao",
+      "social"
+    ],
+    "rebuts": [
+      "doutrinacao",
+      "universidade",
+      "ideologia"
+    ],
+    "register": "orgulhoso",
+    "verdict": "verdadeiro",
+    "explain": "A expansão de vagas federais, o ProUni e as cotas são política pública documentada, e a mudança no perfil socioeconômico e racial do ensino superior aparece nos dados. O debate legítimo que sobra é sobre qualidade, evasão e custo por aluno — não sobre se a expansão existiu."
   },
   {
     "id": "lula-doutrinacao",
     "claim": "Chamam de doutrinação qualquer coisa que exija ler mais de dois parágrafos.",
-    "tags": ["educacao", "cultura"],
-    "rebuts": ["doutrinacao", "ideologia", "escola"],
-    "register": "deboche"
+    "tags": [
+      "educacao",
+      "cultura"
+    ],
+    "rebuts": [
+      "doutrinacao",
+      "ideologia",
+      "escola"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "Deboche, não argumento. Serve como resposta ao ad hominem do outro lado e tem o mesmo defeito dele: desqualifica quem fala em vez de tratar do que foi dito. O mérito da acusação de doutrinação está avaliado na carta correspondente do outro lado."
   },
   {
     "id": "lula-petrobras",
     "claim": "Quase venderam a Petrobras a preço de banana e chamaram de eficiência. Pré-sal é do povo brasileiro, não de acionista em Nova York.",
-    "tags": ["petrobras", "soberania", "economia"],
-    "rebuts": ["estatal", "privatizacao", "gastanca", "petrobras"],
-    "register": "indignado"
+    "tags": [
+      "petrobras",
+      "soberania",
+      "economia"
+    ],
+    "rebuts": [
+      "estatal",
+      "privatizacao",
+      "gastanca",
+      "petrobras"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "Houve um programa de desinvestimento que vendeu refinarias, distribuidoras e participações — não a companhia. Se os preços foram baixos é disputa técnica de avaliação, com laudos nos dois sentidos. 'Quase venderam a Petrobras' exagera o que ocorreu; 'não venderam nada' também não descreve o período."
   },
   {
     "id": "lula-privataria",
     "claim": "Privatizaram a Eletrobras e a conta de luz caiu, né? NÉ? Abre a fatura aí e me conta.",
-    "tags": ["economia", "privatizacao"],
-    "rebuts": ["privatizacao", "estatal", "mercado"],
-    "register": "deboche"
+    "tags": [
+      "economia",
+      "privatizacao"
+    ],
+    "rebuts": [
+      "privatizacao",
+      "estatal",
+      "mercado"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "A capitalização da Eletrobras aconteceu. O efeito sobre a conta de luz é difícil de isolar: tarifa responde a bandeira tarifária, chuva, câmbio, encargos e subsídios ao mesmo tempo. Quem promete queda e quem garante alta estão ambos prometendo mais precisão do que o setor permite."
   },
   {
     "id": "lula-desemprego",
     "claim": "Desemprego na mínima histórica e salário mínimo subindo acima da inflação. Mas continua falando que a economia quebrou 👍",
-    "tags": ["economia", "emprego"],
-    "rebuts": ["economia", "inflacao", "gastanca"],
-    "register": "deboche"
+    "tags": [
+      "economia",
+      "emprego"
+    ],
+    "rebuts": [
+      "economia",
+      "inflacao",
+      "gastanca"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "A taxa de desocupação medida pelo IBGE atingiu mínimas da série histórica recente, e o salário mínimo teve ganho real. São dados oficiais. O que o número não mostra sozinho é a qualidade do vínculo: informalidade e renda média são a discussão honesta que sobra."
   },
   {
     "id": "lula-teto-gastos",
     "claim": "Congelaram saúde e educação por 20 anos e chamaram de responsabilidade fiscal. Responsabilidade com quem, exatamente?",
-    "tags": ["economia", "gastanca", "social"],
-    "rebuts": ["gastanca", "fiscal", "mercado"],
-    "register": "indignado"
+    "tags": [
+      "economia",
+      "gastanca",
+      "social"
+    ],
+    "rebuts": [
+      "gastanca",
+      "fiscal",
+      "mercado"
+    ],
+    "register": "indignado",
+    "verdict": "verdadeiro",
+    "explain": "A emenda do teto de gastos previa vigência de vinte anos com correção apenas pela inflação, o que na prática congelava o gasto real por habitante em saúde e educação conforme a população crescesse. Foi substituída em 2023. Se o congelamento era necessário diante da trajetória da dívida é debate econômico real, com economistas sérios dos dois lados."
   },
   {
     "id": "lula-amazonia",
     "claim": "Desmatamento despencou. Sem precisar de uma única motosserra a mais. Gestão é isso, não discurso.",
-    "tags": ["ambiente", "gestao"],
-    "rebuts": ["ambiente", "ong", "gestao"],
-    "register": "orgulhoso"
+    "tags": [
+      "ambiente",
+      "gestao"
+    ],
+    "rebuts": [
+      "ambiente",
+      "ong",
+      "gestao"
+    ],
+    "register": "orgulhoso",
+    "verdict": "verdadeiro",
+    "explain": "Os dados do INPE mostram queda expressiva do desmatamento a partir de 2023, depois de anos de alta. A série é pública e o método é o mesmo antes e depois, o que torna a comparação válida. Queda de desmatamento não é o mesmo que floresta recuperada — é menos destruição nova, não reversão."
   },
   {
     "id": "lula-clima",
     "claim": "O mundo inteiro quer comprar do Brasil energia limpa e voces querem vender minério pro gringo. Que visão estratégica hein.",
-    "tags": ["ambiente", "economia", "internacional"],
-    "rebuts": ["ambiente", "agro", "internacional"],
-    "register": "deboche"
+    "tags": [
+      "ambiente",
+      "economia",
+      "internacional"
+    ],
+    "rebuts": [
+      "ambiente",
+      "agro",
+      "internacional"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "A vantagem brasileira em matriz elétrica limpa é real e reconhecida internacionalmente. Transformá-la em indústria e emprego depende de investimento, rede de transmissão e regulação que ainda não estão dados. É uma aposta defensável, não um fato consumado."
   },
   {
     "id": "lula-milicia",
     "claim": "Fala em combater o crime e a milícia cresceu como nunca. Combater bandido só quando o bandido não é amigo, né?",
-    "tags": ["seguranca", "milicia", "crime"],
-    "rebuts": ["seguranca", "bandido", "crime"],
-    "register": "indignado"
+    "tags": [
+      "seguranca",
+      "milicia",
+      "crime"
+    ],
+    "rebuts": [
+      "seguranca",
+      "bandido",
+      "crime"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "O crescimento do controle territorial por milícias, sobretudo no Rio, é documentado por pesquisa acadêmica e pelo próprio poder público, e atravessa governos de todos os partidos. Atribuir a um mandato específico é conveniente para os dois lados e mal sustentado: é um fenômeno de décadas."
   },
   {
     "id": "lula-arma",
     "claim": "Armar a população pra reduzir violência é a mesma lógica de apagar incêndio com gasolina.",
-    "tags": ["seguranca", "armas"],
-    "rebuts": ["armas", "seguranca", "liberdade"],
-    "register": "deboche"
+    "tags": [
+      "seguranca",
+      "armas"
+    ],
+    "rebuts": [
+      "armas",
+      "seguranca",
+      "liberdade"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "A literatura brasileira predominante associa maior circulação de armas a mais mortes, não menos. Não é unanimidade mundial, e há desenho institucional em outros países que funciona de outro jeito. Mas quem afirma que armar reduz violência está do lado com menos evidência local, não do lado neutro."
   },
   {
     "id": "lula-rachadinha",
     "claim": "Antes de falar de corrupção alheia, explica o esquema de salário de assessor fantasma. Estou esperando.",
-    "tags": ["corrupcao", "familia"],
-    "rebuts": ["corrupcao", "ladrao", "mensalao", "petrolao"],
-    "register": "deboche"
+    "tags": [
+      "corrupcao",
+      "familia"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "ladrao",
+      "mensalao",
+      "petrolao"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "Houve investigação sobre desvio de salários de assessores, com decisões processuais que anularam provas e travaram o andamento. Não houve julgamento de mérito. 'Foi inocentado' e 'está provado' são ambos falsos — o caso não chegou a ser decidido."
   },
   {
     "id": "lula-orcamento-secreto",
     "claim": "Orçamento secreto bilionário sem ninguém saber pra onde foi. Mas o problema é a transparência do meu governo 🙄",
-    "tags": ["corrupcao", "transparencia"],
-    "rebuts": ["corrupcao", "ladrao", "petrolao"],
-    "register": "deboche"
+    "tags": [
+      "corrupcao",
+      "transparencia"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "ladrao",
+      "petrolao"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "O mecanismo de emendas de relator sem identificação do autor e do destino existiu e foi declarado inconstitucional pelo STF justamente por falta de transparência. É um dos poucos pontos aqui em que a descrição factual não está em disputa séria."
   },
   {
     "id": "lula-joias",
     "claim": "Presente de Estado é do Estado, não é souvenir de viagem. Isso se aprende na quarta série.",
-    "tags": ["corrupcao", "instituicoes"],
-    "rebuts": ["corrupcao", "ladrao", "honestidade"],
-    "register": "deboche"
+    "tags": [
+      "corrupcao",
+      "instituicoes"
+    ],
+    "rebuts": [
+      "corrupcao",
+      "ladrao",
+      "honestidade"
+    ],
+    "register": "deboche",
+    "verdict": "verdadeiro",
+    "explain": "Presentes recebidos por autoridade em função do cargo integram o acervo público, salvo exceções de valor simbólico — é regra escrita, não interpretação. O que a apuração discutiu foi a aplicação ao caso concreto, não o princípio."
   },
   {
     "id": "lula-comunismo",
     "claim": "Comunista com agro batendo recorde de safra e Bolsa em máxima histórica. Que comunismo ruim o meu, hein 😂",
-    "tags": ["economia", "comunismo"],
-    "rebuts": ["comunismo", "venezuela", "cuba", "urss"],
-    "register": "deboche"
+    "tags": [
+      "economia",
+      "comunismo"
+    ],
+    "rebuts": [
+      "comunismo",
+      "venezuela",
+      "cuba",
+      "urss"
+    ],
+    "register": "deboche",
+    "verdict": "falso",
+    "explain": "Nenhum dos governos do período nacionalizou meios de produção, aboliu propriedade privada ou suprimiu eleições — que é o que a palavra significa. O rótulo funciona como xingamento, não como descrição. Isso não blinda o governo de crítica econômica: gasto, dívida e estatal são debate legítimo com o nome certo."
   },
   {
     "id": "lula-venezuela",
     "claim": "Toda vez que acaba o argumento voces gritam Venezuela. É o Godwin tupiniquim.",
-    "tags": ["comunismo", "internacional"],
-    "rebuts": ["venezuela", "cuba", "comunismo"],
-    "register": "deboche"
+    "tags": [
+      "comunismo",
+      "internacional"
+    ],
+    "rebuts": [
+      "venezuela",
+      "cuba",
+      "comunismo"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "Como observação sobre o debate, é justa: a comparação aparece com frequência e costuma encerrar a conversa em vez de abri-la. Como resposta, também é evasiva — não responde ao que foi dito, só desqualifica o formato. Os dois lados fazem isso."
   },
   {
     "id": "lula-familia-tradicional",
     "claim": "Defender família é garantir creche, escola e comida na mesa. O resto é palanque com Bíblia na mão.",
-    "tags": ["familia", "religiao", "social"],
-    "rebuts": ["familia", "religiao", "costumes", "genero"],
-    "register": "indignado"
+    "tags": [
+      "familia",
+      "religiao",
+      "social"
+    ],
+    "rebuts": [
+      "familia",
+      "religiao",
+      "costumes",
+      "genero"
+    ],
+    "register": "indignado",
+    "verdict": "depende",
+    "explain": "Creche, escola e renda têm efeito mensurável sobre estabilidade familiar, e nesse ponto o argumento tem base. Mas ele redefine a palavra do oponente em vez de enfrentar o que ele quis dizer, que é sobre costumes. Trocar a definição do termo no meio da discussão é um movimento retórico, não uma refutação."
   },
   {
     "id": "lula-fake-news",
     "claim": "Voce acredita em áudio de tia no zap mas não acredita em dado do IBGE. Aí fica difícil.",
-    "tags": ["midia", "censura", "informacao"],
-    "rebuts": ["midia", "censura", "globo", "imprensa"],
-    "register": "deboche"
+    "tags": [
+      "midia",
+      "censura",
+      "informacao"
+    ],
+    "rebuts": [
+      "midia",
+      "censura",
+      "globo",
+      "imprensa"
+    ],
+    "register": "deboche",
+    "verdict": "depende",
+    "explain": "A assimetria de confiança entre boato de rede social e estatística oficial é real e medida. Mas o argumento ataca o interlocutor, não o conteúdo, e o mesmo padrão aparece nos dois lados quando o dado oficial é inconveniente."
   }
 ]

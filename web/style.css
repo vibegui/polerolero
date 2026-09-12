@@ -266,3 +266,130 @@ a { color: inherit; }
   font-weight: 650;
   text-decoration: none !important;
 }
+
+/* ---- message paragraphs + trace link -------------------------------------- */
+
+.bubble p { margin: 0; }
+.bubble p + p { margin-top: 0.65em; }
+
+/* Low-contrast on purpose: it is available on every message, so at full
+   strength forty of them would out-shout the conversation they annotate. */
+.trace-link {
+  display: block;
+  margin-top: 7px;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--on-side);
+  opacity: 0.6;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.trace-link:hover { opacity: 1; }
+
+/* ---- trace panel ---------------------------------------------------------- */
+
+/* Enters from the side that spoke. A dialog is display:none until open, so the
+   transition needs `allow-discrete` plus @starting-style to have a frame to
+   animate from — without them it simply appears. */
+.trace {
+  top: 0;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: min(28rem, 92vw);
+  max-width: 92vw;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+  display: flex;
+  flex-direction: column;
+  transition:
+    translate 340ms var(--ease-out-quart),
+    display 340ms allow-discrete,
+    overlay 340ms allow-discrete;
+}
+.trace.from-bolsonaro { margin: 0 0 0 auto; border-right: none; translate: 100% 0; }
+.trace.from-lula      { margin: 0 auto 0 0; border-left: none;  translate: -100% 0; }
+.trace[open] { translate: 0 0; }
+@starting-style {
+  .trace.from-bolsonaro[open] { translate: 100% 0; }
+  .trace.from-lula[open] { translate: -100% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trace { transition: none; }
+}
+
+.trace-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(16px, env(safe-area-inset-top)) 16px 12px 20px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.trace-head strong { display: block; font-size: 14.5px; }
+.trace-persona { display: block; font-size: 12.5px; color: var(--faint); margin-top: 2px; }
+.trace-head button {
+  background: none; border: none; cursor: pointer;
+  color: var(--faint); font-size: 16px; padding: 2px 4px;
+}
+
+.trace-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 20px max(24px, env(safe-area-inset-bottom));
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 15px;
+  margin-bottom: 14px;
+  background: var(--canvas);
+}
+.card-role {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--faint);
+  margin-bottom: 7px;
+}
+.card-claim { margin: 0 0 11px; font-size: 15px; line-height: 1.5; text-wrap: pretty; }
+.card-explain { margin: 11px 0 0; font-size: 13.5px; line-height: 1.62; color: var(--ink); opacity: 0.9; text-wrap: pretty; }
+
+/* The three verdicts are distinguished by more than hue — label text plus a
+   left rule — so they survive both colour blindness and a grayscale screenshot. */
+.verdict {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  border-left: 4px solid currentColor;
+  font-size: 12.5px;
+}
+.verdict strong { text-transform: uppercase; letter-spacing: 0.05em; font-size: 11.5px; }
+.verdict span { color: var(--ink); opacity: 0.75; }
+.verdict.verdadeiro { color: oklch(0.68 0.14 150); background: oklch(0.68 0.14 150 / 0.12); }
+.verdict.falso      { color: oklch(0.66 0.17 25);  background: oklch(0.66 0.17 25 / 0.12); }
+.verdict.depende    { color: oklch(0.74 0.13 75);  background: oklch(0.74 0.13 75 / 0.12); }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 11px; }
+.tag {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 11px;
+  color: var(--faint);
+}
+.card-source { display: inline-block; margin-top: 10px; font-size: 12.5px; }

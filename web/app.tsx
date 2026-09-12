@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { About, Landing } from "./panels.tsx";
+import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
+import lulaTree from "../arguments/lula.json" with { type: "json" };
+import { PERSONAS } from "../src/personas.ts";
+import { About, Landing, Trace } from "./panels.tsx";
 
 export type Side = "lula" | "bolsonaro";
 
@@ -9,6 +12,43 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
+  persona: string | null;
+}
+
+export interface ArgNode {
+  id: string;
+  claim: string;
+  tags: string[];
+  rebuts: string[];
+  register: string;
+  verdict: "verdadeiro" | "falso" | "depende";
+  explain: string;
+  source?: string;
+}
+
+/** The trees are static per deploy, so they ride in the bundle rather than
+ *  costing a request the moment someone taps "ver o argumento". */
+export const TREES: Record<Side, ArgNode[]> = {
+  lula: lulaTree as ArgNode[],
+  bolsonaro: bolsonaroTree as ArgNode[],
+};
+
+export const NODES = new Map(
+  [...TREES.lula, ...TREES.bolsonaro].map((n) => [n.id, n] as const),
+);
+
+export function personaLabel(side: Side, id: string | null): string | null {
+  return PERSONAS[side].find((p) => p.id === id)?.label ?? null;
+}
+
+/** What the trace panel shows: the opponent claim being deflated, and the one
+ *  fired back. Reconstructed on the client — both trees are already here, and
+ *  the previous message is already on screen. */
+export interface TraceData {
+  side: Side;
+  persona: string | null;
+  answering: ArgNode | null;
+  using: ArgNode | null;
 }
 
 const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bolsonaro" };
@@ -38,6 +78,7 @@ export function App() {
   const [typing, setTyping] = useState<Side | null>(null);
   const [unread, setUnread] = useState(false);
   const [ready, setReady] = useState(false);
+  const [trace, setTrace] = useState<TraceData | null>(null);
 
   const scroller = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
@@ -190,6 +231,21 @@ export function App() {
 
   const visible = messages.slice(0, shown);
 
+  const openTrace = useCallback(
+    (m: Message) => {
+      const i = messages.findIndex((x) => x.id === m.id);
+      // The message being answered is the previous one from the other side.
+      const prev = messages.slice(0, i).findLast((x) => x.side !== m.side);
+      setTrace({
+        side: m.side,
+        persona: m.persona,
+        answering: prev ? (NODES.get(prev.arg_id) ?? null) : null,
+        using: NODES.get(m.arg_id) ?? null,
+      });
+    },
+    [messages],
+  );
+
   return (
     <div className="app">
       <Header />
@@ -197,7 +253,7 @@ export function App() {
       <div className="feed" ref={scroller} onScroll={onScroll}>
         <div ref={sentinel} className="sentinel" />
         {visible.map((m) => (
-          <Bubble key={m.id} message={m} />
+          <Bubble key={m.id} message={m} onTrace={openTrace} />
         ))}
         {typing && (
           <div className={`row ${typing}`}>
@@ -231,6 +287,7 @@ export function App() {
       )}
 
       <Landing />
+      <Trace data={trace} onClose={() => setTrace(null)} />
     </div>
   );
 }
@@ -259,12 +316,25 @@ function Header() {
   );
 }
 
-function Bubble({ message }: { message: Message }) {
+function Bubble({
+  message,
+  onTrace,
+}: { message: Message; onTrace: (m: Message) => void }) {
+  // The model separates paragraphs with a blank line; anything else stays one
+  // block. Splitting here rather than using white-space:pre-wrap keeps the
+  // paragraph spacing under CSS control instead of at the mercy of stray \n.
+  const paras = message.body.split(/\n\s*\n/).filter(Boolean);
   return (
     <div className={`row ${message.side}`}>
       <div className="bubble">
         <span className="author">{NAME[message.side]}</span>
-        {message.body}
+        {paras.map((t, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: paragraphs of a frozen message
+          <p key={i}>{t}</p>
+        ))}
+        <button type="button" className="trace-link" onClick={() => onTrace(message)}>
+          ver o argumento
+        </button>
       </div>
     </div>
   );
