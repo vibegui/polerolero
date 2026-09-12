@@ -1,5 +1,6 @@
 import bancoMaster from "../topics/banco-master.json" with { type: "json" };
 import mendoncaMoraes from "../topics/mendonca-moraes.json" with { type: "json" };
+import taxaBlusinhas from "../topics/taxa-blusinhas.json" with { type: "json" };
 import type { ArgNode, Side } from "./env.ts";
 
 /**
@@ -25,7 +26,11 @@ export interface Topic {
   bolsonaro: ArgNode[];
 }
 
-export const TOPICS: Topic[] = [bancoMaster as Topic, mendoncaMoraes as Topic].filter(
+export const TOPICS: Topic[] = [
+  bancoMaster as Topic,
+  mendoncaMoraes as Topic,
+  taxaBlusinhas as Topic,
+].filter(
   (t) => t.active,
 );
 

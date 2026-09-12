@@ -217,11 +217,12 @@
     ],
     "register": "orgulhoso",
     "verdict": "depende",
-    "explain": "A saída em massa dos médicos cubanos, após declarações do governo eleito em 2018, deixou vagas abertas sobretudo em municípios pequenos e remotos — isso é documentado. O programa não foi extinto: foi reformulado e depois reexpandido. 'Acabaram com o programa' é atalho."
+    "explain": "A saída dos cerca de 8.300 médicos cubanos, em novembro de 2018, após declarações do governo eleito, deixou vagas abertas sobretudo em municípios pequenos e remotos — isso é documentado. O programa não foi extinto: foi reformulado e relançado em 2023, e hoje tem mais de 27 mil médicos em cerca de 4.500 municípios. Cerca de 2.600 cubanos seguem, mas contratados individualmente: não existe mais cooperação Brasil–Cuba–OPAS desde 2018. 'Acabaram com o programa' é atalho.",
+    "source": "https://www.gov.br/saude/pt-br/assuntos/noticias/2026/junho/mais-medicos-completa-13-anos-levando-assistencia-a-67-milhoes-de-brasileiros-e-fortalecendo-o-sus-em-todo-o-pais"
   },
   {
     "id": "lula-universidade",
-    "claim": "ProUni, cotas, 18 universidades federais. Filho de empregada virou doutor. É por isso que voces odeiam universidade.",
+    "claim": "ProUni, cotas e uma expansão federal que levou universidade pra cidade que nunca teve. Filho de empregada virou doutor. É por isso que voces odeiam universidade.",
     "tags": [
       "educacao",
       "social"
@@ -232,8 +233,9 @@
       "ideologia"
     ],
     "register": "orgulhoso",
-    "verdict": "verdadeiro",
-    "explain": "A expansão de vagas federais, o ProUni e as cotas são política pública documentada, e a mudança no perfil socioeconômico e racial do ensino superior aparece nos dados. O debate legítimo que sobra é sobre qualidade, evasão e custo por aluno — não sobre se a expansão existiu."
+    "verdict": "depende",
+    "explain": "A expansão é real e documentada: 14 novas universidades federais entre 2003 e 2010, mais de 120 campi novos, a rede federal de ensino técnico saindo de 140 para 354 unidades, além do ProUni e das cotas — e a mudança no perfil socioeconômico e racial do ensino superior aparece nos dados. Dois cuidados: o número de 18 universidades só fecha somando as quatro criadas em 2013, já no governo seguinte; e boa parte das 14 veio de desmembramento ou transformação de escolas federais que já existiam, não de construção do zero.",
+    "source": "https://apublica.org/checagem/2015/09/truco-prouni-e-novas-universidades-nao-e-bem-assim-marcon/"
   },
   {
     "id": "lula-doutrinacao",
@@ -287,7 +289,7 @@
   },
   {
     "id": "lula-desemprego",
-    "claim": "Desemprego na mínima histórica e salário mínimo subindo acima da inflação. Mas continua falando que a economia quebrou 👍",
+    "claim": "Desemprego perto da mínima da série histórica e salário mínimo subindo acima da inflação todo ano. Mas continua falando que a economia quebrou.",
     "tags": [
       "economia",
       "emprego"
@@ -298,8 +300,9 @@
       "gastanca"
     ],
     "register": "deboche",
-    "verdict": "verdadeiro",
-    "explain": "A taxa de desocupação medida pelo IBGE atingiu mínimas da série histórica recente, e o salário mínimo teve ganho real. São dados oficiais. O que o número não mostra sozinho é a qualidade do vínculo: informalidade e renda média são a discussão honesta que sobra."
+    "verdict": "depende",
+    "explain": "O recorde da série do IBGE foi 5,1% no trimestre encerrado em dezembro de 2025. Em 2026 a taxa subiu no primeiro trimestre, chegando a 6,1%, e voltou a cair: 5,3% no trimestre encerrado em julho de 2026, com população ocupada em máxima histórica. Ou seja, o quadro é bom mas não é mais 'a mínima histórica' no presente — quem repete essa frase hoje está citando um dado de dezembro passado. O ganho real do salário mínimo ocorreu todos os anos desde 2023, embora a parcela real esteja limitada a 2,5% ao ano desde a LC 211/2024.",
+    "source": "https://agenciagov.ebc.com.br/noticias/202608/ibge-desemprego-recua-para-5-3-no-trimestre-encerrado-em-julho"
   },
   {
     "id": "lula-teto-gastos",
@@ -382,7 +385,8 @@
     ],
     "register": "deboche",
     "verdict": "depende",
-    "explain": "A literatura brasileira predominante associa maior circulação de armas a mais mortes, não menos. Não é unanimidade mundial, e há desenho institucional em outros países que funciona de outro jeito. Mas quem afirma que armar reduz violência está do lado com menos evidência local, não do lado neutro."
+    "explain": "A literatura brasileira é majoritariamente favorável a este lado: elasticidade estimada de cerca de 1,1% de homicídio para cada 1% de difusão de armas, e quedas estimadas entre 9% e 12% atribuídas ao Estatuto do Desarmamento. O que o argumento simplifica é o resto: a queda recente de homicídios no país — 40.775 mortes violentas em 2025, taxa de 19,1 por 100 mil, a primeira abaixo de 20 na série — responde também a demografia, dinâmica das facções e política estadual de polícia, não só a política de armas.",
+    "source": "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.pdf"
   },
   {
     "id": "lula-rachadinha",
@@ -415,8 +419,8 @@
     ],
     "register": "deboche",
     "verdict": "verdadeiro",
-    "explain": "O mecanismo de emendas de relator sem identificação do autor e do destino existiu e foi declarado inconstitucional pelo STF justamente por falta de transparência. É um dos poucos pontos aqui em que a descrição factual não está em disputa séria.",
-    "source": "https://pt.wikipedia.org/wiki/Or%C3%A7amento_secreto"
+    "explain": "O STF declarou inconstitucional o mecanismo das emendas de relator (RP9) em dezembro de 2022, por 6 votos a 5, relatoria de Rosa Weber, justamente por violar transparência e impessoalidade. O tema não morreu: em 2024 a LC 210 criou regras de rastreabilidade e, ao longo de 2025 e 2026, o ministro Flávio Dino anulou indicações e exigiu identificador único para rastrear cada emenda. Ou seja, o problema é real, foi reconhecido pela Corte — e continua atravessando governos de lados diferentes.",
+    "source": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=499330&ori=1"
   },
   {
     "id": "lula-joias",

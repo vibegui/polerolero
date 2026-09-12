@@ -189,7 +189,8 @@
     ],
     "register": "indignado",
     "verdict": "verdadeiro",
-    "explain": "A retenção da maior parte do pagamento pelo Estado cubano, com repasse de fração ao profissional, é documentada e foi objeto de denúncia internacional em foros de direitos trabalhistas. É um dos pontos mais sólidos desta lista. O que não decorre disso é que o atendimento prestado no interior do Brasil não tenha existido — as duas coisas são verdadeiras ao mesmo tempo."
+    "explain": "O TCU apurou que o Estado cubano retinha cerca de 75% do valor que o Brasil pagava por médico, repassado via OPAS. Relatores especiais da ONU, em comunicação de novembro de 2019, afirmaram que as condições relatadas poderiam configurar trabalho forçado segundo indicadores da OIT — atenção: foi manifestação de relatores, não decisão da OIT nem do Conselho de Direitos Humanos. Ação do MPT no Brasil não prosperou, mas por incompetência da Justiça do Trabalho, não por mérito. E as duas coisas são verdadeiras ao mesmo tempo: a exploração existiu e o atendimento no interior também.",
+    "source": "https://portal.tcu.gov.br/imprensa/noticias/tcu-aponta-que-mais-medicos-e-eficaz-mas-precisa-corrigir-falhas-financeiras.htm"
   },
   {
     "id": "bolso-gastanca",
@@ -254,8 +255,9 @@
       "gastanca"
     ],
     "register": "indignado",
-    "verdict": "verdadeiro",
-    "explain": "A tributação de compras internacionais de baixo valor, antes isentas, passou a valer e encareceu a remessa pequena. O fato está certo. A justificativa — isonomia com o varejo nacional, que já pagava imposto — é debate legítimo que o argumento não menciona."
+    "verdict": "falso",
+    "explain": "A taxa das blusinhas não existe mais. O imposto de importação de 20% sobre remessas de até US$ 50, criado pela Lei 14.902/2024 e em vigor desde agosto de 2024, foi zerado em 12 de maio de 2026 e o fim virou definitivo com a Lei 15.502, sancionada em 10 de setembro de 2026. Hoje uma compra de US$ 20 em plataforma habilitada paga 0% de imposto federal — só o ICMS estadual, de 17% a 20%. Falar disso no presente é descrever uma regra revogada há dois dias.",
+    "source": "https://www12.senado.leg.br/noticias/materias/2026/09/03/senado-zera-taxa-das-blusinhas-nas-remessas-internacionais-de-ate-us-50"
   },
   {
     "id": "bolso-estatal",
@@ -306,7 +308,8 @@
     ],
     "register": "orgulhoso",
     "verdict": "falso",
-    "explain": "A pesquisa brasileira predominante — incluindo trabalhos do IPEA e de institutos de segurança pública — associa maior circulação de armas a mais homicídios e mais letalidade em conflitos domésticos, não a menos crime. A comparação com a Suíça ignora que lá o acesso é ligado a serviço militar obrigatório, registro rigoroso e controle de munição."
+    "explain": "A pesquisa quantitativa brasileira é consistente na direção oposta. Cerqueira, Lins, Kahn e Bueno (FBSP, 2022), com variáveis instrumentais, encontram que 1% a mais de difusão de armas eleva o homicídio em cerca de 1,1% — e nenhum efeito dissuasório sobre roubo. Avaliações independentes do Estatuto do Desarmamento estimam queda de 9% a 12% em homicídios. O Sou da Paz mostrou apreensão de pistolas 9mm subindo 119% entre 2018 e 2023, justamente o calibre liberado em 2019. A comparação com a Suíça ignora que lá o acesso é ligado a serviço militar, registro rigoroso e controle de munição. Há dissenso, mas ele é descritivo, não causal.",
+    "source": "https://forumseguranca.org.br/wp-content/uploads/2022/09/informe-armas-fogo-homicidios-no-brasil.pdf"
   },
   {
     "id": "bolso-bandido",

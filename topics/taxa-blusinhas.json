@@ -1,0 +1,51 @@
+{
+  "id": "taxa-blusinhas",
+  "title": "O fim da taxa das blusinhas",
+  "summary": "Criado em 2024, o imposto de 20% sobre compras internacionais de até US$ 50 foi zerado em maio de 2026 e extinto de vez pela Lei 15.502, sancionada em 10 de setembro de 2026 — em plena campanha. Restou só o ICMS estadual, de 17% a 20%.",
+  "active": true,
+  "source": "https://www12.senado.leg.br/noticias/materias/2026/09/03/senado-zera-taxa-das-blusinhas-nas-remessas-internacionais-de-ate-us-50",
+  "lula": [
+    {
+      "id": "blusinha-l-acabou",
+      "claim": "A taxa acabou. Sancionada, publicada, lei em vigor. Vocês vão continuar fazendo campanha contra um imposto que não existe mais?",
+      "tags": ["imposto", "economia", "informacao"],
+      "rebuts": ["imposto", "gastanca", "fiscal", "economia"],
+      "register": "deboche",
+      "verdict": "verdadeiro",
+      "explain": "A Lei 15.502 foi sancionada em 10 de setembro de 2026 e tornou permanente a alíquota zero de imposto de importação para remessas de até US$ 50 em plataformas habilitadas, consolidando a redução já feita por medida provisória em maio. Quem descreve a cobrança de 20% no presente está citando regra revogada. O ICMS estadual, de 17% a 20%, continua valendo — e essa parte não é federal.",
+      "source": "https://www.poder360.com.br/poder-governo/buscando-pautas-positivas-lula-sanciona-fim-da-taxa-das-blusinhas/"
+    },
+    {
+      "id": "blusinha-l-varejo",
+      "claim": "A taxa nasceu pra proteger a loja brasileira que paga imposto aqui e disputa com plataforma que não pagava nada. Isso tem nome: isonomia.",
+      "tags": ["imposto", "mercado", "economia"],
+      "rebuts": ["imposto", "mercado", "privatizacao"],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "A justificativa de isonomia é real e foi o argumento central do varejo nacional: a loja brasileira recolhe tributo sobre a mesma mercadoria que entrava sem imposto federal. Também é real que a cobrança recaía sobre compra de baixo valor feita majoritariamente por consumidor de baixa renda. Os dois efeitos existem ao mesmo tempo, e foi essa tensão que levou à criação em 2024 e à revogação em 2026.",
+      "source": "https://www2.camara.leg.br/legin/fed/lei/2024/lei-14902-27-junho-2024-795862-publicacaooriginal-172231-pl.html"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "blusinha-b-eleicao",
+      "claim": "Criaram a taxa em 2024, mantiveram dois anos, e revogaram justo agora em setembro de ano eleitoral. Que coincidência boa, hein.",
+      "tags": ["imposto", "eleicoes", "fiscal"],
+      "rebuts": ["imposto", "economia", "informacao"],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "A cronologia está correta: imposto criado em junho de 2024, zerado por medida provisória em maio de 2026 e extinto por lei em 10 de setembro de 2026, dentro do período eleitoral. Oportunismo é leitura plausível e comum nos dois lados. Mas a MP tinha prazo de caducidade em 8 de setembro, o que dava prazo próprio ao Congresso independentemente do calendário eleitoral — coincidência de datas não é prova de motivação.",
+      "source": "https://www12.senado.leg.br/noticias/materias/2026/09/03/senado-zera-taxa-das-blusinhas-nas-remessas-internacionais-de-ate-us-50"
+    },
+    {
+      "id": "blusinha-b-icms",
+      "claim": "Falam que acabou o imposto, mas o ICMS continua e em dez estados ele subiu. O pobre ainda paga, só mudou o nome de quem cobra.",
+      "tags": ["imposto", "fiscal", "economia"],
+      "rebuts": ["imposto", "economia", "social"],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "A alíquota zerada é a federal. O ICMS estadual sobre remessas internacionais continua e, desde 1º de abril de 2025, dez estados elevaram a alíquota de 17% para 20% sobre remessas de até US$ 3.000. Então a compra de US$ 20 ficou mais barata, mas não ficou isenta — e a parte que sobrou não depende do governo federal, o que o argumento omite.",
+      "source": "https://assertif.com.br/icms-sobre-compras-internacionais-sobe-para-20-em-10-estados/"
+    }
+  ]
+}
