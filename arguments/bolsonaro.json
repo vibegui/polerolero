@@ -375,7 +375,8 @@
     ],
     "register": "deboche",
     "verdict": "falso",
-    "explain": "As universidades federais respondem pela maior parte da produção científica brasileira indexada e por quase toda a pós-graduação do país. A premissa de que produzem pouca pesquisa é contrariada pelos próprios indicadores oficiais. Crítica a custo por aluno e a evasão é legítima — mas é outra crítica."
+    "explain": "As 15 universidades que mais publicam no Brasil são todas públicas e respondem por mais de 60% da produção científica indexada do país (Clarivate/CAPES, Web of Science 2013–2018) — a premissa de que produzem pouca pesquisa é contrariada pelos indicadores. Uma ressalva honesta: o número de '95% da ciência vem das públicas', muito repetido, é inferência de 2019 sobre dados de 2011–2016 e nenhuma fonte primária o calcula. Crítica a custo por aluno e evasão é legítima — mas é outra crítica.",
+    "source": "https://jornal.usp.br/universidade/politicas-cientificas/15-universidades-publicas-produzem-60-da-ciencia-brasileira/"
   },
   {
     "id": "bolso-familia",
