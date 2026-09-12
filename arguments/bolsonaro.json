@@ -1,0 +1,212 @@
+[
+  {
+    "id": "bolso-ladrao",
+    "claim": "ANULADO NÃO É ABSOLVIDO, meu amigo. Prescreveu no detalhe técnico e voces comemoram como se fosse inocência. ACORDA.",
+    "tags": ["corrupcao", "ladrao", "condenado", "justica"],
+    "rebuts": ["justica", "lawfare", "corrupcao"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-mensalao",
+    "claim": "Mensalão e Petrolão não foram invenção da Globo, foram JULGADOS. Ou o STF só presta quando te favorece?",
+    "tags": ["corrupcao", "petrolao", "mensalao"],
+    "rebuts": ["corrupcao", "transparencia", "justica", "stf"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-lavajato",
+    "claim": "Maior operação anticorrupção da história do país e voces DESTRUÍRAM ela. Quem destrói a investigação, cara pálida?",
+    "tags": ["lavajato", "corrupcao"],
+    "rebuts": ["lawfare", "justica", "transparencia"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-stf",
+    "claim": "Onze não eleitos mandando em 200 milhões de eleitos. Isso não é democracia, é TOGACRACIA.",
+    "tags": ["stf", "instituicoes", "censura"],
+    "rebuts": ["democracia", "instituicoes", "golpe", "justica"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-censura",
+    "claim": "Derrubaram perfil, tiraram do ar, quebraram sigilo sem processo. Chamam de combate à desinformação, eu chamo de CENSURA.",
+    "tags": ["censura", "stf", "midia"],
+    "rebuts": ["informacao", "midia", "democracia"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-inelegivel",
+    "claim": "Tiraram o adversário da urna pra ganhar. Isso é ganhar no voto ou ganhar no tapetão?",
+    "tags": ["eleicoes", "stf", "lawfare"],
+    "rebuts": ["democracia", "golpe", "eleicoes"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-urna",
+    "claim": "Código-fonte que ninguém do povo pode auditar de verdade. Só pedimos TRANSPARÊNCIA e viramos golpistas.",
+    "tags": ["eleicoes", "urna", "instituicoes"],
+    "rebuts": ["democracia", "golpe", "eleicoes", "instituicoes"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-8-janeiro",
+    "claim": "Velhinha com bíblia pegando 17 anos de cadeia. Proporcional, né? Vandalismo tem pena, mas isso ali foi RECADO.",
+    "tags": ["golpe", "justica", "presos"],
+    "rebuts": ["golpe", "democracia", "instituicoes"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-comunismo",
+    "claim": "Foro de São Paulo, Grupo de Puebla, amizade com ditador. Não é teoria, tá tudo em vídeo no YouTube.",
+    "tags": ["comunismo", "internacional"],
+    "rebuts": ["comunismo", "internacional", "soberania"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-venezuela",
+    "claim": "Abraça Maduro, abraça Ortega, abraça ditador de todo naipe. Depois vem falar de democracia pra mim 🤡",
+    "tags": ["venezuela", "internacional", "comunismo"],
+    "rebuts": ["democracia", "soberania", "internacional"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-cuba",
+    "claim": "Médico cubano que não podia ficar com o próprio salário. Isso pra voces é humanismo, pra mim é trabalho análogo à escravidão.",
+    "tags": ["cuba", "saude", "internacional"],
+    "rebuts": ["saude", "sus", "social"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-gastanca",
+    "claim": "Só sabe gastar dinheiro que não é seu. Quando acabar o dinheiro dos outros, o que voce vai distribuir?",
+    "tags": ["gastanca", "economia", "fiscal"],
+    "rebuts": ["economia", "social", "gastanca"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-esmola",
+    "claim": "Dá o peixe e nunca ensina a pescar, porque quem aprende a pescar não vota em voce. É projeto de poder, não de país.",
+    "tags": ["esmola", "social", "vagabundo"],
+    "rebuts": ["social", "fome", "esmola"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-inflacao",
+    "claim": "Vai no supermercado e me diz se o carrinho tá mais barato. Estatística não enche barriga de ninguém.",
+    "tags": ["economia", "inflacao"],
+    "rebuts": ["economia", "emprego"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-imposto",
+    "claim": "Criaram imposto até pra compra de 20 dólares na internet. Taxaram a blusinha do pobre e chamaram de justiça tributária.",
+    "tags": ["economia", "imposto", "fiscal"],
+    "rebuts": ["economia", "social", "gastanca"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-estatal",
+    "claim": "Estatal é cabide de emprego pra apadrinhado político. Sempre foi. Por isso voces defendem com unhas e dentes.",
+    "tags": ["estatal", "privatizacao", "corrupcao"],
+    "rebuts": ["petrobras", "privatizacao", "soberania"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-privatizacao",
+    "claim": "Empresa que dá prejuízo bilionário pago com o SEU imposto. Privatizar não é entregar, é parar de sangrar.",
+    "tags": ["privatizacao", "mercado", "economia"],
+    "rebuts": ["privatizacao", "estatal", "petrobras"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "bolso-armas",
+    "claim": "Cidadão de bem armado é bandido desarmado. Na Suíça funciona, aqui vira 'cultura da violência'.",
+    "tags": ["armas", "seguranca", "liberdade"],
+    "rebuts": ["armas", "seguranca", "crime"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "bolso-bandido",
+    "claim": "Direitos humanos pra direito humano. Bandido bom continua sendo assunto que voce não gosta de tocar.",
+    "tags": ["seguranca", "bandido", "crime"],
+    "rebuts": ["seguranca", "milicia", "crime"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-seguranca",
+    "claim": "Facção mandando em bairro inteiro e o governo discutindo linguagem neutra. Prioridade é tudo.",
+    "tags": ["seguranca", "crime"],
+    "rebuts": ["seguranca", "milicia", "genero", "cultura"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-doutrinacao",
+    "claim": "Professor fazendo comício em sala de aula com criança de 12 anos. Isso não é educar, é DOUTRINAR.",
+    "tags": ["doutrinacao", "educacao", "escola"],
+    "rebuts": ["educacao", "cultura"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-universidade",
+    "claim": "Universidade federal com festa e passeata todo dia e produtividade de pesquisa lá embaixo. Dinheiro do meu imposto, viu.",
+    "tags": ["universidade", "educacao", "ideologia"],
+    "rebuts": ["educacao", "social"],
+    "register": "deboche"
+  },
+  {
+    "id": "bolso-familia",
+    "claim": "Deus, Pátria, Família e Liberdade. Quatro palavras que fazem voce passar mal, e isso já diz tudo.",
+    "tags": ["familia", "religiao", "costumes"],
+    "rebuts": ["familia", "religiao", "social"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "bolso-genero",
+    "claim": "Querem ensinar ideologia de gênero pra criança e chamam quem discorda de retrógrado. Meu filho, minha regra.",
+    "tags": ["genero", "costumes", "escola"],
+    "rebuts": ["familia", "cultura", "educacao"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-globo",
+    "claim": "A mesma imprensa que te chamava de corrupto hoje te chama de vítima. Bilhão em publicidade oficial faz milagre, hein.",
+    "tags": ["midia", "globo", "imprensa"],
+    "rebuts": ["midia", "informacao", "censura"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-pandemia",
+    "claim": "Fechou tudo, quebrou o pequeno comércio, e no fim o vírus pegou todo mundo igual. Quem pagou a conta foi o autônomo.",
+    "tags": ["pandemia", "liberdade", "economia"],
+    "rebuts": ["pandemia", "saude", "ciencia"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-sus",
+    "claim": "Fila de cirurgia de anos no SUS enquanto manda dinheiro pra ditadura no exterior. Explica essa prioridade.",
+    "tags": ["sus", "saude", "internacional"],
+    "rebuts": ["saude", "sus", "social"],
+    "register": "indignado"
+  },
+  {
+    "id": "bolso-agro",
+    "claim": "O agro sustenta a balança comercial desse país e ainda apanha de ONG estrangeira. Agro é tech, agro é pop.",
+    "tags": ["agro", "economia", "ambiente"],
+    "rebuts": ["ambiente", "economia"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "bolso-ong",
+    "claim": "ONG gringa dando pitaco na Amazônia com dinheiro de fora. Isso sim é entregar soberania, e voce aplaude.",
+    "tags": ["ong", "ambiente", "soberania"],
+    "rebuts": ["ambiente", "soberania", "internacional"],
+    "register": "conspiratorio"
+  },
+  {
+    "id": "bolso-patriotismo",
+    "claim": "Verde e amarelo não é fantasia de eleição, é o ano inteiro. Voces só lembram da bandeira em outubro.",
+    "tags": ["patriotismo", "bandeira", "cultura"],
+    "rebuts": ["soberania", "patriotismo", "cultura"],
+    "register": "orgulhoso"
+  }
+]

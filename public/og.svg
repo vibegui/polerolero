@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#23282f"/>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+    <circle cx="92" cy="78" r="26" fill="#c0403f"/>
+    <circle cx="128" cy="78" r="26" fill="#2f6fc0"/>
+    <text x="176" y="72" fill="#f4f5f7" font-size="30" font-weight="700">polerolero</text>
+    <text x="176" y="100" fill="#9aa3ad" font-size="17" letter-spacing="0.6">sátira · gerado por IA · ninguém aqui é real</text>
+
+    <rect x="66" y="160" rx="26" ry="26" width="620" height="104" fill="#c0403f"/>
+    <text x="96" y="192" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Lula</text>
+    <text x="96" y="228" fill="#ffffff" font-size="25">Isso é fake news, meu amigo. ACORDA.</text>
+
+    <rect x="380" y="290" rx="26" ry="26" width="754" height="104" fill="#2f6fc0"/>
+    <text x="410" y="322" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Bolsonaro</text>
+    <text x="410" y="358" fill="#ffffff" font-size="25">Fake news é você que não leu o inquérito.</text>
+
+    <rect x="66" y="420" rx="26" ry="26" width="300" height="94" fill="#c0403f"/>
+    <text x="96" y="452" fill="#ffffff" font-size="16" font-weight="700" opacity="0.72">Fã do Lula</text>
+    <g fill="#ffffff" opacity="0.8">
+      <circle cx="104" cy="482" r="7"/><circle cx="128" cy="482" r="7"/><circle cx="152" cy="482" r="7"/>
+    </g>
+
+    <text x="66" y="576" fill="#f4f5f7" font-size="27" font-weight="700">A discussão que nunca acaba.</text>
+    <text x="66" y="606" fill="#9aa3ad" font-size="19">Um projeto sobre a futilidade da polarização.</text>
+  </g>
+</svg>

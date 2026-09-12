@@ -1,0 +1,212 @@
+[
+  {
+    "id": "lula-bolsa-familia",
+    "claim": "Esmola é o que voces chamam de esmola. Bolsa Família tirou o Brasil do Mapa da Fome, e isso te incomoda porque pobre comendo te incomoda.",
+    "tags": ["social", "economia", "fome"],
+    "rebuts": ["esmola", "gastanca", "vagabundo"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-mapa-da-fome",
+    "claim": "O Brasil saiu do Mapa da Fome e voltou. Duas vezes. Adivinha quem tava no poder em cada uma 🙃",
+    "tags": ["fome", "social"],
+    "rebuts": ["economia", "gestao"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-aeroporto",
+    "claim": "Nunca na história desse país filho de porteiro entrou em aeroporto pela porta da frente. É isso que voces não perdoam.",
+    "tags": ["social", "elite", "classe"],
+    "rebuts": ["elite", "arrogancia", "vagabundo"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "lula-anulado",
+    "claim": "ANULADO. Não foi absolvido por bondade, foi ANULADO porque o processo era juridicamente uma fraude. Leia a decisão antes de falar.",
+    "tags": ["justica", "lawfare", "corrupcao"],
+    "rebuts": ["corrupcao", "ladrao", "triplex", "condenado"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-vaza-jato",
+    "claim": "Juiz combinando com o promotor no Telegram. Isso tem nome e não é 'combate à corrupção', é PERSEGUIÇÃO.",
+    "tags": ["lawfare", "justica"],
+    "rebuts": ["corrupcao", "lavajato", "ladrao"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-moro-ministro",
+    "claim": "O juiz que te condenou virou MINISTRO de quem se beneficiou da condenação. E voce ainda chama isso de imparcialidade 😂",
+    "tags": ["lawfare", "justica"],
+    "rebuts": ["lavajato", "corrupcao", "isento"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-8-janeiro",
+    "claim": "Invadiram o Congresso, o Planalto e o STF. Quebraram o relógio de D. João VI. Mas o autoritário sou eu, né?",
+    "tags": ["democracia", "golpe", "instituicoes"],
+    "rebuts": ["ditadura", "stf", "censura", "autoritario"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-golpe",
+    "claim": "Teve minuta de golpe impressa. IMPRESSA. Não é teoria da conspiração quando tá no inquérito.",
+    "tags": ["golpe", "democracia"],
+    "rebuts": ["ditadura", "autoritario", "stf"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-tarifaco",
+    "claim": "Pedir tarifa do gringo contra o próprio país tem nome: traição. Não é patriotismo, é capacho de bandeira alheia.",
+    "tags": ["soberania", "internacional", "economia"],
+    "rebuts": ["patriotismo", "bandeira", "internacional", "comunismo"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-soberania",
+    "claim": "Verde e amarelo no peito e joelho no chão pro Tio Sam. Escolhe uma, campeão.",
+    "tags": ["soberania", "internacional"],
+    "rebuts": ["patriotismo", "bandeira", "internacional"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-pandemia",
+    "claim": "700 mil mortos. Fila de vacina que chegou atrasada porque zombaram do imunizante. Isso não foi opinião, foi conta que o povo pagou.",
+    "tags": ["saude", "pandemia", "gestao"],
+    "rebuts": ["gestao", "sus", "liberdade"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-vacina",
+    "claim": "Imitar jacaré em cadeia nacional sobre vacina foi o ápice da gestão técnica de voces 🐊",
+    "tags": ["pandemia", "saude"],
+    "rebuts": ["liberdade", "gestao", "ciencia"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-mais-medicos",
+    "claim": "Mais Médicos levou médico pro interior onde NENHUM dos seus ia. Voces acabaram e o povo ficou sem. Simples assim.",
+    "tags": ["saude", "sus", "social"],
+    "rebuts": ["sus", "gestao", "gastanca"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "lula-universidade",
+    "claim": "ProUni, cotas, 18 universidades federais. Filho de empregada virou doutor. É por isso que voces odeiam universidade.",
+    "tags": ["educacao", "social"],
+    "rebuts": ["doutrinacao", "universidade", "ideologia"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "lula-doutrinacao",
+    "claim": "Chamam de doutrinação qualquer coisa que exija ler mais de dois parágrafos.",
+    "tags": ["educacao", "cultura"],
+    "rebuts": ["doutrinacao", "ideologia", "escola"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-petrobras",
+    "claim": "Quase venderam a Petrobras a preço de banana e chamaram de eficiência. Pré-sal é do povo brasileiro, não de acionista em Nova York.",
+    "tags": ["petrobras", "soberania", "economia"],
+    "rebuts": ["estatal", "privatizacao", "gastanca", "petrobras"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-privataria",
+    "claim": "Privatizaram a Eletrobras e a conta de luz caiu, né? NÉ? Abre a fatura aí e me conta.",
+    "tags": ["economia", "privatizacao"],
+    "rebuts": ["privatizacao", "estatal", "mercado"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-desemprego",
+    "claim": "Desemprego na mínima histórica e salário mínimo subindo acima da inflação. Mas continua falando que a economia quebrou 👍",
+    "tags": ["economia", "emprego"],
+    "rebuts": ["economia", "inflacao", "gastanca"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-teto-gastos",
+    "claim": "Congelaram saúde e educação por 20 anos e chamaram de responsabilidade fiscal. Responsabilidade com quem, exatamente?",
+    "tags": ["economia", "gastanca", "social"],
+    "rebuts": ["gastanca", "fiscal", "mercado"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-amazonia",
+    "claim": "Desmatamento despencou. Sem precisar de uma única motosserra a mais. Gestão é isso, não discurso.",
+    "tags": ["ambiente", "gestao"],
+    "rebuts": ["ambiente", "ong", "gestao"],
+    "register": "orgulhoso"
+  },
+  {
+    "id": "lula-clima",
+    "claim": "O mundo inteiro quer comprar do Brasil energia limpa e voces querem vender minério pro gringo. Que visão estratégica hein.",
+    "tags": ["ambiente", "economia", "internacional"],
+    "rebuts": ["ambiente", "agro", "internacional"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-milicia",
+    "claim": "Fala em combater o crime e a milícia cresceu como nunca. Combater bandido só quando o bandido não é amigo, né?",
+    "tags": ["seguranca", "milicia", "crime"],
+    "rebuts": ["seguranca", "bandido", "crime"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-arma",
+    "claim": "Armar a população pra reduzir violência é a mesma lógica de apagar incêndio com gasolina.",
+    "tags": ["seguranca", "armas"],
+    "rebuts": ["armas", "seguranca", "liberdade"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-rachadinha",
+    "claim": "Antes de falar de corrupção alheia, explica o esquema de salário de assessor fantasma. Estou esperando.",
+    "tags": ["corrupcao", "familia"],
+    "rebuts": ["corrupcao", "ladrao", "mensalao", "petrolao"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-orcamento-secreto",
+    "claim": "Orçamento secreto bilionário sem ninguém saber pra onde foi. Mas o problema é a transparência do meu governo 🙄",
+    "tags": ["corrupcao", "transparencia"],
+    "rebuts": ["corrupcao", "ladrao", "petrolao"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-joias",
+    "claim": "Presente de Estado é do Estado, não é souvenir de viagem. Isso se aprende na quarta série.",
+    "tags": ["corrupcao", "instituicoes"],
+    "rebuts": ["corrupcao", "ladrao", "honestidade"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-comunismo",
+    "claim": "Comunista com agro batendo recorde de safra e Bolsa em máxima histórica. Que comunismo ruim o meu, hein 😂",
+    "tags": ["economia", "comunismo"],
+    "rebuts": ["comunismo", "venezuela", "cuba", "urss"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-venezuela",
+    "claim": "Toda vez que acaba o argumento voces gritam Venezuela. É o Godwin tupiniquim.",
+    "tags": ["comunismo", "internacional"],
+    "rebuts": ["venezuela", "cuba", "comunismo"],
+    "register": "deboche"
+  },
+  {
+    "id": "lula-familia-tradicional",
+    "claim": "Defender família é garantir creche, escola e comida na mesa. O resto é palanque com Bíblia na mão.",
+    "tags": ["familia", "religiao", "social"],
+    "rebuts": ["familia", "religiao", "costumes", "genero"],
+    "register": "indignado"
+  },
+  {
+    "id": "lula-fake-news",
+    "claim": "Voce acredita em áudio de tia no zap mas não acredita em dado do IBGE. Aí fica difícil.",
+    "tags": ["midia", "censura", "informacao"],
+    "rebuts": ["midia", "censura", "globo", "imprensa"],
+    "register": "deboche"
+  }
+]

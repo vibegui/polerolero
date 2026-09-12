@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "polerolero",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist/",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "polerolero",
+      "database_id": "ca7549b3-16f0-4381-b992-df9d716b208e",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": {
+    // Buffer top-up, not one-message-per-minute: a failed run retries in 5min
+    // with ~15min of runway still queued.
+    "crons": ["*/5 * * * *"]
+  },
+  "vars": {
+    "AI_GATEWAY_ACCOUNT_ID": "55dd6d847f366735ef6e0f860c7bdc51",
+    "AI_GATEWAY_NAME": "default",
+    // BYOK for openrouter is configured in the Gateway dashboard, so the Worker
+    // carries no provider key — only CF_AI_GATEWAY_TOKEN (secret).
+    "LLM_PROVIDER": "openrouter",
+    "LLM_MODEL": "z-ai/glm-5.3-flash",
+    "BUFFER_TARGET": "20",
+    "MAX_PER_RUN": "10",
+    "MAX_PER_DAY": "1600",
+    "MESSAGE_INTERVAL_SECONDS": "60"
+  },
+  "observability": { "enabled": true }
+}
