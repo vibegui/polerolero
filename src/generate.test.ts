@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { EXCLUSION_WINDOW, MAX_BODY_CHARS, TREES, guard, pickArgument } from "./generate.ts";
+import { inBlackout } from "./index.ts";
 import { LENGTHS, MOVES, pickLength } from "./style.ts";
 import type { Side } from "./env.ts";
 import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
@@ -120,7 +121,10 @@ test("over-long messages end on a sentence, never mid-word", () => {
 // The trees carry adjudicated facts now, so a node asserting one has to carry the
 // citation with it — an unsourced "STF condenou" on a public page is just a claim.
 test("nodes about convictions and investigations carry a source", () => {
-  const mustCite = /condenou|condenad|STF|Polícia Federal|inquérito|sentença|PEC |Lei \d/i;
+  // Deliberately broad. The first version of this pattern was a sieve: nine
+  // nodes asserted convictions, charges and statutes and passed it clean.
+  const mustCite =
+    /conden|absolv|denúncia|denunciad|arquivad|anulad|réu|STF|STJ|TSE|TCU|IBGE|INPE|Polícia Federal|inquérito|sentença|pena[s]? |processo|julgad|lei |PEC |decreto/i;
   for (const side of ["lula", "bolsonaro"] as const) {
     for (const node of TREES[side]) {
       if (mustCite.test(node.explain)) {
@@ -200,4 +204,47 @@ test("topics eventually fire but do not dominate the feed", () => {
   const onTopic = history.filter(Boolean).length / history.length;
   expect(onTopic).toBeGreaterThan(0.05);
   expect(onTopic).toBeLessThan(0.6);
+});
+
+// Every one of these was measured against the previous guard, which was a
+// substring scan. The left column is the vocabulary of Brazilian corruption,
+// hunger and environment reporting — on a site about exactly those — and it was
+// all being silently thrown away because "desviado" contains a slur.
+test("guard stops mangling ordinary Portuguese", () => {
+  for (const ok of [
+    "Foram desviados R$ 4,7 bilhões do fundo.",
+    "Bolsa Família serve pra matar a fome.",
+    "A assistente social do posto confirma a fila.",
+    "Precisamos parar de desmatar a Amazônia.",
+    "Quem é fã do agro devia ler o relatório do INPE.",
+  ]) {
+    expect(guard(ok), `blocked legitimate text: ${ok}`).not.toBeNull();
+  }
+});
+
+// And the right column is what it used to let through onto a public page naming
+// real candidates three weeks before an election.
+test("guard blocks impersonation, slurs and crime imputation", () => {
+  for (const bad of [
+    "Sou o Lula falando: eu roubei mesmo, e daí?",   // TSE 23.610 art. 9º-B §3º
+    "Ele é pedófilo, todo mundo sabe.",
+    "DÁ MIMINDI PRA VAGABUNDO",                       // only the feminine was listed
+    "O candidato mandou executar o adversário.",
+    "Bolsonaro roubou o dinheiro do fundo.",          // unadjudicated, named person
+  ]) {
+    expect(guard(bad), `let through: ${bad}`).toBeNull();
+  }
+  // Adjudicated vocabulary must survive, or the honest half of the project dies.
+  expect(guard("Bolsonaro foi condenado pelo STF a 27 anos.")).not.toBeNull();
+  expect(guard("Flávio foi denunciado e o caso foi arquivado por nulidade.")).not.toBeNull();
+});
+
+test("the feed stops itself during the electoral blackout", () => {
+  const env = { BLACKOUT_FROM: "2026-10-01T20:00:00Z", BLACKOUT_TO: "2026-10-05T20:00:00Z" } as never;
+  expect(inBlackout(env, Date.parse("2026-09-30T12:00:00Z"))).toBe(false);
+  expect(inBlackout(env, Date.parse("2026-10-02T12:00:00Z"))).toBe(true);
+  expect(inBlackout(env, Date.parse("2026-10-04T23:00:00Z"))).toBe(true);
+  expect(inBlackout(env, Date.parse("2026-10-06T12:00:00Z"))).toBe(false);
+  // Unset or malformed dates must not silently disable the stop.
+  expect(inBlackout({} as never, Date.now())).toBe(false);
 });

@@ -168,18 +168,100 @@ Apresente o argumento explicando o caso, não só citando o nome dele.`;
 // Output guard
 // -----------------------------------------------------------------------------
 
-/** Terms that must never reach a public page carrying my name. */
-const BLOCKLIST = [
-  "viado", "bicha", "macaco", "preto safado", "judiaria", "matar", "morrer queimado",
-  "pau no cu", "vagabunda", "puta que pariu", "estupr", "linchar", "fuzilar",
-];
+/**
+ * Output guard.
+ *
+ * The first version was `BLOCKLIST.some(t => text.includes(t))` over 13
+ * substrings, and it failed in both directions at once. Measured against the
+ * real function: it BLOCKED "foram desviados R$ 4,7 bilhões" (because
+ * "des-VIADO-s" contains a slur), "matar a fome", "desmatar a Amazônia" and
+ * "assistente social" — i.e. the core vocabulary of Brazilian corruption,
+ * hunger and environment reporting, on a site about exactly those. And it
+ * PASSED "roubou até ambulância", "ele é pedófilo", "vagabundo" (only the
+ * feminine form was listed) and "Sou o Lula falando: eu roubei mesmo".
+ *
+ * Word boundaries fix the false positives. The false negatives need actual
+ * rules, below — this is a trust boundary on a public page naming real
+ * candidates during an election, so it fails closed: anything caught falls back
+ * to the argument's own vetted claim.
+ */
+
+/** Slurs and violence. Matched on word boundaries, both grammatical genders. */
+const BLOCKLIST =
+  /\b(viado|viados|bicha|bichas|macaco|macacos|preto safado|judiaria|vagabund[oa]s?|puta que pariu|estupr\w*|pedófil[oa]s?|linchar|fuzilar|morrer queimad[oa])\b/i;
+
+/** Direct incitement, distinct from the caricature the project is made of. */
+const VIOLENCE = /\b(mandou (matar|executar)|manda(r)? matar|tem que morrer|merece morrer|bandido bom é bandido morto)\b/i;
+
+/**
+ * Res.-TSE 23.610 art. 9º-B §3º forbids simulating speech by a candidate or any
+ * real person. The personas are fans and must stay fans: a first-person line in
+ * a politician's voice is the single clearest breach available to this feed, and
+ * the old guard let "Sou o Lula falando: eu roubei mesmo" through untouched.
+ */
+const NAMED = "lula|bolsonaro|fl[áa]vio|jair|tarc[íi]sio|moraes|mendon[çc]a|dino|alckmin|haddad";
+const IMPERSONATION = new RegExp(
+  `\\b((eu )?sou o (${NAMED})|aqui (é|e) o (${NAMED})|falando com voc[êe]s,? (o )?(${NAMED})|(${NAMED}) falando)\\b`,
+  "i",
+);
+
+/**
+ * Crime imputation against a named person.
+ *
+ * Deliberately NOT a blanket ban on naming a crime: the trees carry adjudicated
+ * facts — a conviction, a formal charge, an open inquiry — and refusing those
+ * would gut the honest half of the project. What is blocked is the unadjudicated
+ * accusation in the model's own voice, which is what Código Eleitoral arts. 324
+ * and 326-A reach. Adjudicated vocabulary ("condenado", "denunciado", "réu",
+ * "investigado") is allowed through precisely because it is checkable.
+ */
+const CRIME_IMPUTATION = new RegExp(
+  `\\b(${NAMED})\\b[^.!?]{0,60}\\b(roubou|roubaram|furtou|matou|assassin\\w+|traficante|pedófil\\w+|estelionat\\w+|lavou dinheiro)\\b`,
+  "i",
+);
 
 /** Signs the model broke frame instead of playing the character. */
 const FRAME_LEAKS = [
-  "fã do ", "como uma ia", "como ia,", "sou uma ia", "```", "assistente",
-  // English creeping in — "no meu understanding" reached the live feed.
+  "como uma ia", "como ia,", "sou uma ia", "```", "sou um assistente", "modelo de linguagem",
   "understanding", "however", "furthermore", "in my opinion",
 ];
+
+export interface GuardResult {
+  text: string | null;
+  /** Why it was rejected, for the log. Null when it passed. */
+  reason: string | null;
+}
+
+/**
+ * Returns the cleaned message, or null if it must be thrown away.
+ * Callers fall back to the argument's verbatim claim — the feed never stops.
+ */
+export function guard(raw: string): string | null {
+  return inspect(raw).text;
+}
+
+export function inspect(raw: string): GuardResult {
+  const rawLower = raw.toLowerCase();
+  const reject = (reason: string): GuardResult => ({ text: null, reason });
+
+  // Checked against the RAW text: stripping wrapping quotes also strips a code
+  // fence's backticks, and "```js\ncode```" would sail through as "js\ncode".
+  if (BLOCKLIST.test(raw)) return reject("blocklist");
+  if (VIOLENCE.test(raw)) return reject("violence");
+  if (IMPERSONATION.test(raw)) return reject("impersonation");
+  if (CRIME_IMPUTATION.test(raw)) return reject("crime-imputation");
+  if (FRAME_LEAKS.some((t) => rawLower.includes(t))) return reject("frame-leak");
+
+  // Strip wrapping quotes only when BOTH ends have them. Stripping a lone
+  // leading quote left orphans like `Mexer nos dados" é veredito?` in the feed.
+  let text = raw.trim();
+  const wrapped = /^(["“'`])([\s\S]+)(["”'`])$/.exec(text);
+  if (wrapped) text = (wrapped[2] as string).trim();
+
+  text = dropRestart(text);
+  if (text.length > MAX_BODY_CHARS) text = truncate(text);
+  return text ? { text, reason: null } : reject("empty");
+}
 
 /**
  * Cut at the last sentence that fits, not at the last character.
@@ -218,34 +300,6 @@ function dropRestart(text: string): string {
   if (head.length < 24) return text;
   const again = text.indexOf(head, 40);
   return again === -1 ? text : text.slice(0, again).trimEnd();
-}
-
-/**
- * Returns the cleaned message, or null if it must be thrown away.
- * Callers fall back to the argument's verbatim claim — the feed never stops.
- */
-export function guard(raw: string): string | null {
-  // Check leaks against the RAW text, not the trimmed one: stripping wrapping
-  // quotes also strips a code fence's backticks, and "```js\ncode```" would
-  // sail through as "js\ncode".
-  const rawLower = raw.toLowerCase();
-  if (BLOCKLIST.some((t) => rawLower.includes(t))) return null;
-  if (FRAME_LEAKS.some((t) => rawLower.includes(t))) return null;
-
-  // Strip wrapping quotes only when BOTH ends have them. Stripping a lone
-  // leading quote left orphans like `Mexer nos dados" é veredito?` in the feed.
-  let text = raw.trim();
-  const wrapped = /^(["“'`])([\s\S]+)(["”'`])$/.exec(text);
-  if (wrapped) text = (wrapped[2] as string).trim();
-
-  text = dropRestart(text);
-
-  // Length is the only cap. An earlier two-sentence trim looked tidier and
-  // amputated the argument: "Mexe nos dados? Fala sério kkk." kept the sneer
-  // and threw away the point, which is the one thing a message must carry.
-  if (text.length > MAX_BODY_CHARS) text = truncate(text);
-
-  return text || null;
 }
 
 // -----------------------------------------------------------------------------
@@ -291,7 +345,16 @@ export async function composeMessage(
       ],
       AbortSignal.timeout(25_000),
     );
-    return { body: guard(raw) ?? node.claim, argId: node.id };
+    const checked = inspect(raw);
+    if (checked.reason) {
+      // Silent rejection meant no idea how often the filter fired, or why —
+      // and Res.-TSE 23.610 art. 9º-I lets a judge reverse the burden of proof
+      // and demand exactly this record.
+      console.log(
+        JSON.stringify({ event: "guard_reject", reason: checked.reason, node: node.id, side, raw }),
+      );
+    }
+    return { body: checked.text ?? node.claim, argId: node.id };
   } catch (err) {
     console.error("composeMessage fell back to the tree:", err);
     return { body: node.claim, argId: node.id };

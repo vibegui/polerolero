@@ -9,6 +9,9 @@ export interface Env {
   MAX_PER_RUN: string;
   MAX_PER_DAY: string;
   MESSAGE_INTERVAL_SECONDS: string;
+  /** ISO instants bounding the TSE electoral blackout. See inBlackout(). */
+  BLACKOUT_FROM?: string;
+  BLACKOUT_TO?: string;
 
   CF_AI_GATEWAY_TOKEN?: string;
   /** Only needed if BYOK is ever turned off in the Gateway dashboard. */

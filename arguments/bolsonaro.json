@@ -15,7 +15,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "A parte certa: anulação não é absolvição, e os fatos não foram rejulgados no mérito. A parte errada: não houve prescrição. As condenações caíram por incompetência do juízo e, depois, por suspeição do juiz. Quem diz 'prescreveu' está descrevendo um processo que não é este."
+    "explain": "A parte certa: anulação não é absolvição, e os fatos não foram rejulgados no mérito. A parte errada: não houve prescrição. As condenações caíram por incompetência do juízo e, depois, por suspeição do juiz. Quem diz 'prescreveu' está descrevendo um processo que não é este.",
+    "source": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Lava_Jato"
   },
   {
     "id": "bolso-mensalao",
@@ -104,7 +105,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "A inelegibilidade veio de decisão de tribunal eleitoral com base em lei aprovada pelo Congresso, em processo com direito a defesa e recurso — não de ato unilateral. Isso não significa que a decisão seja imune a crítica: a ideia de que o eleitorado deve decidir é posição política legítima, e a lei que restringe candidaturas por decisão judicial é objeto de disputa desde que existe."
+    "explain": "A inelegibilidade veio de decisão de tribunal eleitoral com base em lei aprovada pelo Congresso, em processo com direito a defesa e recurso — não de ato unilateral. Isso não significa que a decisão seja imune a crítica: a ideia de que o eleitorado deve decidir é posição política legítima, e a lei que restringe candidaturas por decisão judicial é objeto de disputa desde que existe.",
+    "source": "https://pt.wikipedia.org/wiki/Pris%C3%A3o_de_Jair_Bolsonaro"
   },
   {
     "id": "bolso-urna",
@@ -139,7 +141,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "As penas variaram bastante conforme a conduta: quem só esteve presente recebeu pena muito menor do que quem depredou ou organizou. Ainda assim, a proporcionalidade de algumas condenações foi criticada por juristas que não defendem os atos, e parte das penas foi revista depois. 'Velhinha com bíblia pegou 17 anos' descreve um caso extremo como se fosse a regra."
+    "explain": "As penas variaram muito conforme a conduta: quem apenas esteve presente recebeu pena muito menor do que quem depredou, organizou ou financiou. A proporcionalidade de parte delas é criticada por juristas que não defendem os atos — crítica legítima. Duas correções ao argumento: a lei de dosimetria aprovada em maio de 2026 está suspensa e nenhuma pena foi reduzida por ela até agora; e a 'velhinha com bíblia' do meme viral nunca foi presa nem condenada. Descrever o caso extremo como se fosse a regra é o que o argumento faz.",
+    "source": "https://noticias.stf.jus.br/postsnoticias/stf-fixa-penas-de-16-a-27-anos-para-condenados-por-tentativa-de-golpe-de-estado/"
   },
   {
     "id": "bolso-comunismo",
@@ -172,7 +175,8 @@
     ],
     "register": "deboche",
     "verdict": "depende",
-    "explain": "A proximidade diplomática com governos autoritários da região e a demora em condená-los são críticas com base factual. Também houve, em momentos específicos, cobrança pública por eleições transparentes na Venezuela. 'Abraça ditador de todo naipe' é caricatura de uma política externa que foi ambígua, não uniforme."
+    "explain": "A proximidade diplomática com governos autoritários da região e a demora em condená-los são críticas com base factual. Também houve, em momentos específicos, cobrança pública por eleições transparentes na Venezuela. 'Abraça ditador de todo naipe' é caricatura de uma política externa que foi ambígua, não uniforme.",
+    "source": "https://pt.wikipedia.org/wiki/Rela%C3%A7%C3%B5es_entre_Brasil_e_Venezuela"
   },
   {
     "id": "bolso-cuba",
@@ -274,7 +278,8 @@
     ],
     "register": "deboche",
     "verdict": "depende",
-    "explain": "Indicação política para cargos em estatais é problema documentado e transversal a governos de todos os partidos. Daí não decorre que estatal seja, por natureza, cabide de emprego: há estatais com governança e resultado, e a lei das estatais existe justamente para tratar disso."
+    "explain": "Indicação política para cargos em estatais é problema documentado e transversal a governos de todos os partidos. Daí não decorre que estatal seja, por natureza, cabide de emprego: há estatais com governança e resultado, e a lei das estatais existe justamente para tratar disso.",
+    "source": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13303.htm"
   },
   {
     "id": "bolso-privatizacao",
@@ -326,7 +331,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "A frustração com impunidade é real e tem base: taxa de esclarecimento de homicídios no Brasil é baixa. Mas o slogan propõe suspender garantia processual por categoria de pessoa, e garantia que vale só para quem merece deixa de ser garantia — inclusive para quem é acusado por engano, que não é caso raro."
+    "explain": "A frustração com impunidade é real e tem base: taxa de esclarecimento de homicídios no Brasil é baixa. Mas o slogan propõe suspender garantia processual por categoria de pessoa, e garantia que vale só para quem merece deixa de ser garantia — inclusive para quem é acusado por engano, que não é caso raro.",
+    "source": "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.pdf"
   },
   {
     "id": "bolso-seguranca",
@@ -359,7 +365,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "Existem casos individuais registrados de professor usando a aula como palanque, e são impróprios. O que não se sustenta é a generalização: projetos de 'escola sem partido' foram derrubados por inconstitucionalidade, e levantamentos não encontram doutrinação sistemática. Um caso é um caso; política pública precisa de padrão."
+    "explain": "Existem casos individuais registrados de professor usando a aula como palanque, e são impróprios. O que não se sustenta é a generalização: projetos de 'escola sem partido' foram derrubados por inconstitucionalidade, e levantamentos não encontram doutrinação sistemática. Um caso é um caso; política pública precisa de padrão.",
+    "source": "https://pt.wikipedia.org/wiki/Escola_Sem_Partido"
   },
   {
     "id": "bolso-universidade",
@@ -652,7 +659,7 @@
   },
   {
     "id": "bolso-flavio-arquivado",
-    "claim": "O caso do Flávio foi arquivado pela Justiça. Vocês repetem acusação encerrada porque não têm o que dizer do governo de vocês.",
+    "claim": "Vocês repetem uma acusação que a Justiça já encerrou, porque não têm o que dizer do governo de vocês.",
     "tags": [
       "justica",
       "corrupcao",
@@ -665,7 +672,7 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "O caso da chamada rachadinha no gabinete de Flávio Bolsonaro foi efetivamente encerrado na Justiça por vícios processuais, com anulação de provas obtidas sem autorização judicial adequada. Encerramento por nulidade não é absolvição no mérito: os fatos não chegaram a ser julgados. Tanto 'foi inocentado' quanto 'está provado' são afirmações que o processo não sustenta.",
+    "explain": "O caso da chamada rachadinha foi encerrado na Justiça por vícios processuais, com anulação de provas obtidas sem autorização adequada — não por exame do mérito. Não foi possível confirmar em fonte primária o estágio atual de eventuais recursos, então este verbete não afirma que o caso está definitivamente encerrado, apenas que não houve julgamento de mérito. 'Foi inocentado' e 'está provado' são ambos afirmações que o processo não sustenta.",
     "source": "https://www.gazetadopovo.com.br/eleicoes/2026/como-lula-e-flavio-bolsonaro-se-posicionam-em-6-temas-centrais-da-corrida-presidencial/"
   }
 ]

@@ -84,7 +84,12 @@ export function Landing() {
             repetirem, sem descanso, os mesmos argumentos que ocupam o país inteiro há anos.
           </p>
           <p className="fine">
-            Os personagens são <strong>fãs</strong>, não os políticos, e falam por si. Toque em{" "}
+            Os personagens são <strong>fãs</strong>, não os políticos, e falam por si.{" "}
+            <strong>
+              Nada no feed é notícia, declaração de pessoa real ou acusação
+            </strong>{" "}
+            — é caricatura gerada por máquina sobre a <em>forma</em> do argumento: o
+            whataboutismo, o ad hominem, a teoria da conspiração. Toque em{" "}
             <strong>“ver o argumento”</strong> em qualquer mensagem para ver de onde ela saiu e
             se aquilo é verdadeiro, falso ou mais complicado que isso.
           </p>
@@ -107,9 +112,11 @@ export function Landing() {
             próprio país. Isso não é “pior”. É de outra categoria.
           </p>
           <p className="fine">
-            Nada disso é opinião deste site: é sentença publicada, inquérito em curso e
-            cronologia pública, com as fontes no painel de cada argumento. Cada mensagem do
-            feed continua sendo caricatura — os fatos por trás dela, não.
+            Esta seção é a única no site que fala na voz de quem fez o projeto, e o que ela
+            afirma é registro público: sentença publicada, denúncia recebida, cronologia
+            verificável, com a fonte no painel de cada argumento. Onde não há decisão
+            judicial, o painel diz que não há. Cada mensagem do feed continua sendo
+            caricatura de fã, e nenhuma delas é declaração de pessoa real.
           </p>
 
           <h3>Onde a conversa recomeça</h3>
@@ -156,6 +163,24 @@ export function Landing() {
           <a className="cta ghost" href="https://github.com/vibegui/polerolero" target="_blank" rel="noreferrer">
             contribuir no GitHub →
           </a>
+
+          {/* Lei 9.504 art. 57-D veda o anonimato durante a campanha. Um projeto
+              político publicado sob dois nomes falsos precisa dizer quem o assina. */}
+          <h3>Quem faz isto</h3>
+          <p>
+            polerolero é um projeto pessoal de <strong>Guilherme Rodrigues</strong> —{" "}
+            <a href="https://vibegui.com" target="_blank" rel="noreferrer">vibegui.com</a>. Não
+            tem vínculo com partido, campanha, candidatura ou empresa, e não recebe nem
+            impulsiona conteúdo pago.
+          </p>
+          <p className="fine">
+            Erro factual, veredicto injusto ou pedido de retificação:{" "}
+            <a href="https://github.com/vibegui/polerolero/issues/new" target="_blank" rel="noreferrer">
+              abra uma issue
+            </a>{" "}
+            ou escreva para <a href="mailto:gui@vibegui.com">gui@vibegui.com</a>. Correção de
+            fato é feita na hora.
+          </p>
         </div>
       </dialog>
     </>

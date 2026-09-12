@@ -33,7 +33,12 @@
     "BUFFER_TARGET": "20",
     "MAX_PER_RUN": "10",
     "MAX_PER_DAY": "1600",
-    "MESSAGE_INTERVAL_SECONDS": "60"
+    "MESSAGE_INTERVAL_SECONDS": "60",
+    // 1º turno: 4 de outubro de 2026. Res.-TSE 23.610 art. 9º-B §3º-A veda
+    // publicar conteúdo sintético novo sobre candidato de 72h antes até 24h
+    // depois do pleito — o rótulo não supre. Horários em UTC (BRT = UTC-3).
+    "BLACKOUT_FROM": "2026-10-01T20:00:00Z",
+    "BLACKOUT_TO": "2026-10-05T20:00:00Z"
   },
   // Cloudflare builds from main on push, and a clean clone has no dist/ — this
   // makes `wrangler deploy` self-sufficient instead of depending on whatever

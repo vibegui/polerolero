@@ -18,7 +18,7 @@
   },
   {
     "id": "lula-mapa-da-fome",
-    "claim": "O Brasil saiu do Mapa da Fome e voltou. Duas vezes. Adivinha quem tava no poder em cada uma 🙃",
+    "claim": "O Brasil saiu do Mapa da Fome, voltou, e saiu de novo. Adivinha quem estava no poder em cada virada.",
     "tags": [
       "fome",
       "social"
@@ -28,8 +28,9 @@
       "gestao"
     ],
     "register": "deboche",
-    "verdict": "verdadeiro",
-    "explain": "O Brasil de fato saiu do Mapa da Fome da ONU, voltou anos depois e saiu novamente. A cronologia é verificável. O que não é simples é a atribuição: a subnutrição responde a emprego, renda, câmbio e preço de comida, e nenhum governo controla tudo isso sozinho. Os dois lados usam a mesma linha do tempo e param de contar onde convém."
+    "verdict": "depende",
+    "explain": "A cronologia existe mas é menos limpa do que a frase sugere: o Brasil saiu do relatório SOFI da FAO em 2014, voltou no triênio apurado entre 2018 e 2020 — atravessando dois governos — e saiu novamente em 2025. Não são 'duas idas e duas voltas'. E a subnutrição responde a emprego, renda, câmbio e preço de comida ao mesmo tempo: nenhum governo controla tudo isso sozinho. Os dois lados usam essa linha do tempo e param de contar onde convém.",
+    "source": "https://www.fao.org/publications/home/fao-flagship-publications/the-state-of-food-security-and-nutrition-in-the-world"
   },
   {
     "id": "lula-aeroporto",
@@ -117,7 +118,8 @@
     ],
     "register": "deboche",
     "verdict": "verdadeiro",
-    "explain": "A invasão e depredação das sedes dos três Poderes em 8 de janeiro de 2023 é fato registrado em vídeo, perícia e centenas de processos. A disputa real não é sobre ter acontecido, e sim sobre quem organizou, quem financiou e se a resposta penal foi proporcional."
+    "explain": "A invasão e depredação das sedes dos três Poderes em 8 de janeiro de 2023 é fato registrado em vídeo, perícia e centenas de processos. A disputa real não é sobre ter acontecido, e sim sobre quem organizou, quem financiou e se a resposta penal foi proporcional.",
+    "source": "https://noticias.stf.jus.br/postsnoticias/stf-fixa-penas-de-16-a-27-anos-para-condenados-por-tentativa-de-golpe-de-estado/"
   },
   {
     "id": "lula-golpe",
@@ -133,7 +135,8 @@
     ],
     "register": "indignado",
     "verdict": "verdadeiro",
-    "explain": "A existência de uma minuta de decreto para reverter o resultado eleitoral foi apurada e incorporada às investigações. Ter existido um documento não equivale a ter havido tentativa executada — e é precisamente isso que o processo discute. Chamar de 'teoria da conspiração' é ignorar os autos; chamar de golpe consumado é ignorar que não houve execução."
+    "explain": "Já não é uma discussão: em 11 de setembro de 2025 o STF condenou por tentativa de golpe de Estado e abolição violenta do Estado Democrático de Direito, com trânsito em julgado em novembro de 2025. A minuta de decreto apurada no inquérito integrou esse processo. O que segue legitimamente em disputa é a dosimetria das penas e o uso da delação — não se houve tentativa.",
+    "source": "https://noticias.stf.jus.br/postsnoticias/stf-fixa-penas-de-16-a-27-anos-para-condenados-por-tentativa-de-golpe-de-estado/"
   },
   {
     "id": "lula-tarifaco",
@@ -184,7 +187,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "O número de mortes está entre os maiores do mundo em termos absolutos e é dado oficial. A CPI concluiu que houve atraso e desestímulo à vacinação. Quanto desse total é atribuível à condução federal, e não a densidade urbana, desigualdade ou variantes, é objeto de estudo e não tem resposta fechada."
+    "explain": "O total oficial de mortes por covid no Brasil está em torno de 715 mil, e estimativas de excesso de mortalidade apontam número bem maior. A CPI concluiu que houve atraso e desestímulo à vacinação. Quanto desse total é atribuível à condução federal, e não a densidade urbana, desigualdade ou variantes, é objeto de estudo e não tem resposta fechada.",
+    "source": "https://pt.wikipedia.org/wiki/Pandemia_de_COVID-19_no_Brasil"
   },
   {
     "id": "lula-vacina",
@@ -200,7 +204,8 @@
     ],
     "register": "deboche",
     "verdict": "verdadeiro",
-    "explain": "A declaração sobre virar jacaré foi feita publicamente e está registrada em vídeo. É fato. O que se discute é o efeito: piada presidencial sobre vacina mede-se em hesitação vacinal, e essa medição existe mas não é consensual."
+    "explain": "A declaração sobre virar jacaré foi feita publicamente e está registrada em vídeo. É fato. O que se discute é o efeito: piada presidencial sobre vacina mede-se em hesitação vacinal, e essa medição existe mas não é consensual.",
+    "source": "https://pt.wikipedia.org/wiki/Pandemia_de_COVID-19_no_Brasil"
   },
   {
     "id": "lula-mais-medicos",
@@ -251,7 +256,8 @@
     ],
     "register": "deboche",
     "verdict": "depende",
-    "explain": "Deboche, não argumento. Serve como resposta ao ad hominem do outro lado e tem o mesmo defeito dele: desqualifica quem fala em vez de tratar do que foi dito. O mérito da acusação de doutrinação está avaliado na carta correspondente do outro lado."
+    "explain": "Deboche, não argumento. Serve como resposta ao ad hominem do outro lado e tem o mesmo defeito dele: desqualifica quem fala em vez de tratar do que foi dito. O mérito da acusação de doutrinação está avaliado na carta correspondente do outro lado.",
+    "source": "https://pt.wikipedia.org/wiki/Escola_Sem_Partido"
   },
   {
     "id": "lula-petrobras",
@@ -319,7 +325,8 @@
     ],
     "register": "indignado",
     "verdict": "depende",
-    "explain": "A emenda do teto de gastos previa vigência de vinte anos com correção apenas pela inflação, o que na prática congelava o gasto real por habitante em saúde e educação conforme a população crescesse. Foi substituída em 2023. Se o congelamento era necessário diante da trajetória da dívida é debate econômico real, com economistas sérios dos dois lados."
+    "explain": "A emenda do teto de gastos previa vigência de vinte anos com correção apenas pela inflação, o que na prática congelava o gasto real por habitante em saúde e educação conforme a população crescesse. Foi substituída em 2023. Se o congelamento era necessário diante da trajetória da dívida é debate econômico real, com economistas sérios dos dois lados.",
+    "source": "https://pt.wikipedia.org/wiki/Emenda_constitucional_do_teto_dos_gastos_p%C3%BAblicos"
   },
   {
     "id": "lula-amazonia",
@@ -335,7 +342,8 @@
     ],
     "register": "orgulhoso",
     "verdict": "verdadeiro",
-    "explain": "Os dados do INPE mostram queda expressiva do desmatamento a partir de 2023, depois de anos de alta. A série é pública e o método é o mesmo antes e depois, o que torna a comparação válida. Queda de desmatamento não é o mesmo que floresta recuperada — é menos destruição nova, não reversão."
+    "explain": "Os dados do INPE mostram queda expressiva do desmatamento a partir de 2023, depois de anos de alta. A série é pública e o método é o mesmo antes e depois, o que torna a comparação válida. Queda de desmatamento não é o mesmo que floresta recuperada — é menos destruição nova, não reversão.",
+    "source": "http://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/legal_amazon/rates"
   },
   {
     "id": "lula-clima",
@@ -391,7 +399,7 @@
   },
   {
     "id": "lula-rachadinha",
-    "claim": "Antes de falar de corrupção alheia, explica o esquema de salário de assessor fantasma. Estou esperando.",
+    "claim": "Antes de falar de corrupção alheia, explica o esquema de salário de assessor que apareceu no gabinete de vocês.",
     "tags": [
       "corrupcao",
       "familia"
@@ -404,7 +412,8 @@
     ],
     "register": "deboche",
     "verdict": "depende",
-    "explain": "Houve investigação sobre desvio de salários de assessores, com decisões processuais que anularam provas e travaram o andamento. Não houve julgamento de mérito. 'Foi inocentado' e 'está provado' são ambos falsos — o caso não chegou a ser decidido."
+    "explain": "Houve investigação e denúncia sobre desvio de salários de assessores em gabinete da família, mas o caso foi encerrado na Justiça por vícios processuais, com anulação de provas — sem julgamento de mérito. Encerramento por nulidade não é absolvição, e denúncia não é condenação: nem 'foi inocentado' nem 'está provado' descrevem o que o processo decidiu. Este projeto não afirma mais do que isso sobre um candidato registrado.",
+    "source": "https://pt.wikipedia.org/wiki/Caso_das_rachadinhas"
   },
   {
     "id": "lula-orcamento-secreto",
@@ -675,9 +684,9 @@
       "petrolao"
     ],
     "register": "indignado",
-    "verdict": "verdadeiro",
-    "explain": "A investigação da Polícia Federal aponta peculato: conjuntos de joias recebidos da Arábia Saudita e do Bahrein em viagens oficiais, entre eles um Rolex e um Patek Philippe, teriam sido apropriados e levados aos Estados Unidos para venda, com apoio de militares lotados no Planalto. Presente recebido em função do cargo integra o acervo público por regra escrita. O caso foi denunciado e segue em processamento judicial.",
-    "source": "https://pt.wikipedia.org/wiki/Caso_das_joias_envolvendo_Jair_Bolsonaro"
+    "verdict": "depende",
+    "explain": "A Polícia Federal apontou peculato e houve denúncia: conjuntos de joias recebidos da Arábia Saudita e do Bahrein em viagens oficiais, entre eles um Rolex e um Patek Philippe, teriam sido apropriados e levados aos Estados Unidos para venda. O princípio é regra escrita — presente recebido em função do cargo integra o acervo público. Mas é apuração com denúncia recebida, não condenação: 'teria' não é 'foi', e este projeto não vai carimbar de verdadeiro um fato que a Justiça ainda não estabeleceu.",
+    "source": "https://www.cartacapital.com.br/justica/como-bolsonaro-cometeu-3-crimes-no-caso-das-joias-segundo-a-pf/"
   },
   {
     "id": "lula-submissao-eua",

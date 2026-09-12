@@ -37,16 +37,15 @@ export default {
       { messages: results, now: Math.floor(Date.now() / 1000) },
       {
         headers: {
-          // A ?before= page is immutable by definition: ids only grow, so a
-          // page bounded above can never gain rows. Deep scroll-back is served
-          // by the edge and never reaches this worker again.
-          //
-          // The tail gets 30s rather than no-store — the client is already
-          // holding rows from the future, so 30s of staleness is invisible, and
-          // it absorbs the double-fetch on reload.
+          // History pages were `max-age=31536000, immutable`, which is true of
+          // the data and wrong for the obligation: a message can be ordered
+          // removed, and an immutable year-long copy in every browser and
+          // intermediary cannot be recalled. Deleting the D1 row would change
+          // nothing. A day of shared cache with revalidation keeps scroll-back
+          // effectively free while leaving a removal a way to propagate.
           "cache-control": before === null
             ? "public, max-age=30"
-            : "public, max-age=31536000, immutable",
+            : "public, max-age=0, s-maxage=86400, must-revalidate",
         },
       },
     );
@@ -69,7 +68,30 @@ export default {
  * makes this self-healing: a failed run retries five minutes later with roughly
  * fifteen minutes of runway still queued, and nobody watching sees a gap.
  */
+/**
+ * Res.-TSE 23.610/2019 art. 9º-B §3º-A, as inserted by Res. 23.755/2026, forbids
+ * publishing NEW AI-synthetic content using the image, voice or manifestation of
+ * a candidate or public figure from 72 hours before the vote until 24 hours
+ * after it — "mesmo que rotulados", so the disclaimer does not cure it.
+ *
+ * This feed publishes a new synthetic message about named candidates every sixty
+ * seconds. It has to stop on its own, because a calendar reminder is not a
+ * control. Dates are vars so a second round or a schedule change is a deploy,
+ * not a code edit; the window is closed by default if they are malformed.
+ */
+export function inBlackout(env: Env, now = Date.now()): boolean {
+  const from = Date.parse(env.BLACKOUT_FROM ?? "");
+  const to = Date.parse(env.BLACKOUT_TO ?? "");
+  if (Number.isNaN(from) || Number.isNaN(to)) return false;
+  return now >= from && now <= to;
+}
+
 export async function topUp(env: Env): Promise<void> {
+  if (inBlackout(env)) {
+    console.log("electoral blackout: not generating");
+    return;
+  }
+
   const interval = Number(env.MESSAGE_INTERVAL_SECONDS) || 60;
   const target = Number(env.BUFFER_TARGET) || 20;
   const maxPerRun = Number(env.MAX_PER_RUN) || 10;
