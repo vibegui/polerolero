@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
 import lulaTree from "../arguments/lula.json" with { type: "json" };
-import { PERSONAS } from "../src/personas.ts";
-import { About, Landing, Trace } from "./panels.tsx";
+import { Landing, Trace } from "./panels.tsx";
 
 export type Side = "lula" | "bolsonaro";
 
@@ -12,7 +11,6 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
-  persona: string | null;
 }
 
 export interface ArgNode {
@@ -37,16 +35,11 @@ export const NODES = new Map(
   [...TREES.lula, ...TREES.bolsonaro].map((n) => [n.id, n] as const),
 );
 
-export function personaLabel(side: Side, id: string | null): string | null {
-  return PERSONAS[side].find((p) => p.id === id)?.label ?? null;
-}
-
 /** What the trace panel shows: the opponent claim being deflated, and the one
  *  fired back. Reconstructed on the client — both trees are already here, and
  *  the previous message is already on screen. */
 export interface TraceData {
   side: Side;
-  persona: string | null;
   answering: ArgNode | null;
   using: ArgNode | null;
 }
@@ -238,7 +231,6 @@ export function App() {
       const prev = messages.slice(0, i).findLast((x) => x.side !== m.side);
       setTrace({
         side: m.side,
-        persona: m.persona,
         answering: prev ? (NODES.get(prev.arg_id) ?? null) : null,
         using: NODES.get(m.arg_id) ?? null,
       });
@@ -249,6 +241,10 @@ export function App() {
   return (
     <div className="app">
       <Header />
+      {/* Its own strip rather than a second line under the wordmark: the name
+          now needs that line to explain itself, and this label has to survive
+          being screenshotted out of context. */}
+      <p className="band">sátira gerada por IA · ninguém aqui é real</p>
 
       <div className="feed" ref={scroller} onScroll={onScroll}>
         <div ref={sentinel} className="sentinel" />
@@ -295,7 +291,6 @@ export function App() {
 // -----------------------------------------------------------------------------
 
 function Header() {
-  const about = useRef<HTMLDialogElement>(null);
   return (
     <header className="topbar">
       <div className="who">
@@ -304,14 +299,8 @@ function Header() {
       </div>
       <div className="titles">
         <h1>polerolero</h1>
-        {/* The label lives here, not only inside the modal. A screenshot of the
-            feed has to carry it too. */}
-        <p className="band">sátira · gerado por IA · ninguém aqui é real</p>
+        <p className="tagline">o gerador de lero lero polarizado</p>
       </div>
-      <button type="button" className="info" onClick={() => about.current?.showModal()} aria-label="Sobre este projeto">
-        ⓘ
-      </button>
-      <About ref={about} />
     </header>
   );
 }

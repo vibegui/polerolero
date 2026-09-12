@@ -1,5 +1,5 @@
 import { type Ref, useEffect, useRef, useState } from "react";
-import { type ArgNode, type TraceData, personaLabel } from "./app.tsx";
+import type { ArgNode, TraceData } from "./app.tsx";
 
 // Every panel here is a native <dialog>. showModal() gives Esc-to-close, a focus
 // trap, ::backdrop and inert on the rest of the page — every bit of the
@@ -21,35 +21,6 @@ function closeOnBackdrop(e: React.MouseEvent<HTMLDialogElement>) {
   if (outside) el.close();
 }
 
-export function About({ ref }: { ref: Ref<HTMLDialogElement> }) {
-  return (
-    <dialog ref={ref} className="sheet about" onClick={closeOnBackdrop}>
-      <h2>O que é isto?</h2>
-      <p>
-        Dois agentes de inteligência artificial discutindo política brasileira. Para sempre.
-        Nenhum dos dois existe. Nenhum dos dois vai ganhar. Nenhum dos dois vai parar.
-      </p>
-      <p>
-        Os argumentos vêm de duas listas abertas — as bobagens mais recicladas de cada lado — e
-        qualquer pessoa pode mandar um PR e adicionar mais.
-      </p>
-      <p className="fine">
-        Os personagens são <strong>fãs</strong>, não os políticos. Nada aqui é declaração de
-        pessoa real, nem notícia, nem acusação. É sátira gerada por máquina sobre a{" "}
-        <em>forma</em> do argumento — o whataboutismo, o ad hominem, a teoria da conspiração.
-      </p>
-      <p>
-        <a href="https://github.com/vibegui/polerolero" target="_blank" rel="noreferrer">
-          código e argumentos no GitHub →
-        </a>
-      </p>
-      <form method="dialog">
-        <button type="submit">fechar</button>
-      </form>
-    </dialog>
-  );
-}
-
 /** The twelve ideas, quoted from agendaimprescindivel.com.br. */
 const IDEIAS = [
   "O destino do Brasil é maior do que sua realidade.",
@@ -66,6 +37,15 @@ const IDEIAS = [
   "O Brasil deve ocupar posição compatível com seus ativos e responsabilidades.",
 ];
 
+/**
+ * One sheet, one way in.
+ *
+ * There was an ⓘ button in the header and a separate drawer handle at the
+ * bottom, opening two panels that explained overlapping halves of the same
+ * thing. Two affordances for one answer is one too many: the explanation and
+ * the reason it exists are the same story, so they are now the same sheet,
+ * reached from the one place a thumb already rests.
+ */
 export function Landing() {
   const ref = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
@@ -81,7 +61,7 @@ export function Landing() {
         }}
       >
         <span className="grab" aria-hidden="true" />
-        por que isto existe
+        o que é isto? · melhore os argumentos
       </button>
 
       <dialog
@@ -98,9 +78,17 @@ export function Landing() {
           <h2>A briga é de mentira. O custo é de verdade.</h2>
 
           <p>
-            Isto é um projeto de arte. Você acabou de assistir duas máquinas repetirem, sem
-            descanso, os mesmos argumentos que ocupam o país inteiro há anos. Elas nunca ouvem.
-            Nunca mudam de ideia. Nunca chegam a lugar nenhum.
+            Isto é um projeto de arte. Dois agentes de inteligência artificial discutindo
+            política brasileira, para sempre. Nenhum dos dois existe, nenhum dos dois vai
+            ganhar, nenhum dos dois vai parar. Você acabou de assistir duas máquinas
+            repetirem, sem descanso, os mesmos argumentos que ocupam o país inteiro há anos.
+          </p>
+          <p className="fine">
+            Os personagens são <strong>fãs</strong>, não os políticos. Nada aqui é notícia,
+            declaração de pessoa real ou acusação. É sátira gerada por máquina sobre a{" "}
+            <em>forma</em> do argumento — o whataboutismo, o ad hominem, a teoria da
+            conspiração. Toque em <strong>“ver o argumento”</strong> em qualquer mensagem para
+            ver de onde ela saiu e se aquilo é verdadeiro, falso ou mais complicado que isso.
           </p>
           <p>
             O desconforto de assistir não vem de elas serem artificiais. Vem de serem{" "}
@@ -150,14 +138,20 @@ export function Landing() {
             ler a agenda inteira →
           </a>
 
-          <p className="fine">
-            polerolero é sátira gerada por IA. Os personagens são fãs caricatos, não os políticos,
-            e nada aqui é notícia ou declaração de pessoa real. Os argumentos são abertos:{" "}
-            <a href="https://github.com/vibegui/polerolero" target="_blank" rel="noreferrer">
-              mande um PR
-            </a>
-            .
+          <h3>Melhore os argumentos</h3>
+          <p>
+            Tudo que os dois dizem sai de duas listas abertas, uma por lado, e os veredictos
+            são resumo editorial deste projeto — não checagem profissional. Então eles estão
+            errados em algum lugar, e provavelmente você sabe onde.
           </p>
+          <p>
+            Um argumento novo é <strong>um objeto num arquivo JSON</strong>. Um veredicto que
+            você acha injusto é uma linha trocada. A contribuição mais valiosa aqui é marcar
+            como falso um argumento do seu próprio lado.
+          </p>
+          <a className="cta ghost" href="https://github.com/vibegui/polerolero" target="_blank" rel="noreferrer">
+            contribuir no GitHub →
+          </a>
         </div>
       </dialog>
     </>
@@ -199,8 +193,6 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
     if (!data && el.open) el.close();
   }, [data]);
 
-  const persona = shown ? personaLabel(shown.side, shown.persona) : null;
-
   return (
     <dialog
       ref={ref}
@@ -209,10 +201,7 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
       onClose={onClose}
     >
       <div className="trace-head">
-        <div>
-          <strong>De onde saiu essa mensagem</strong>
-          {persona && <span className="trace-persona">no papel: {persona}</span>}
-        </div>
+        <strong>De onde saiu essa mensagem</strong>
         <form method="dialog">
           <button type="submit" aria-label="fechar">✕</button>
         </form>

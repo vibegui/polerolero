@@ -26,10 +26,10 @@ export default {
 
     const { results } = before === null
       ? await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, persona FROM messages ORDER BY id DESC LIMIT ?1",
+          "SELECT id, side, body, arg_id, due_at FROM messages ORDER BY id DESC LIMIT ?1",
         ).bind(PAGE).all<Message>()
       : await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, persona FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
+          "SELECT id, side, body, arg_id, due_at FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
         ).bind(before, PAGE).all<Message>();
 
     return Response.json(
@@ -78,7 +78,7 @@ export async function topUp(env: Env): Promise<void> {
   // Newest row first: it carries the last side, the last arg_id and MAX(due_at)
   // in one read, because due_at is monotonic with id.
   const { results: recentRows } = await env.DB.prepare(
-    "SELECT id, side, body, arg_id, due_at, persona FROM messages ORDER BY id DESC LIMIT ?1",
+    "SELECT id, side, body, arg_id, due_at FROM messages ORDER BY id DESC LIMIT ?1",
   ).bind(RECENT_WINDOW).all<Message>();
 
   const newest = recentRows[0];
@@ -100,18 +100,18 @@ export async function topUp(env: Env): Promise<void> {
   let dueAt = Math.max(newest?.due_at ?? now, now);
 
   const insert = env.DB.prepare(
-    "INSERT INTO messages (side, body, arg_id, due_at, persona, created_at) VALUES (?1, ?2, ?3, ?4, ?5, unixepoch())",
+    "INSERT INTO messages (side, body, arg_id, due_at, created_at) VALUES (?1, ?2, ?3, ?4, unixepoch())",
   );
 
   while (toGenerate-- > 0) {
     // One call per message, never one call writing both sides: a single
     // completion covering the whole exchange makes the two personas converge in
     // register, and the two voices being distinct is the entire joke.
-    const { body, argId, persona } = await composeMessage(env, side, transcript, recent, allowLlm);
+    const { body, argId } = await composeMessage(env, side, transcript, recent, allowLlm);
     dueAt += interval;
-    await insert.bind(side, body, argId, dueAt, persona).run();
+    await insert.bind(side, body, argId, dueAt).run();
 
-    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt, persona });
+    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt });
     recent.unshift(argId);
     side = OTHER[side];
   }

@@ -23,8 +23,6 @@ export interface Message {
   body: string;
   arg_id: string;
   due_at: number;
-  /** Which character in the side's cast spoke. Null on pre-cast rows. */
-  persona: string | null;
 }
 
 export interface ArgNode {

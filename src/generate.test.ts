@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
-import { TREES, guard, pickArgument } from "./generate.ts";
-import { LENGTHS, MOVES, PERSONAS, pickLength } from "./personas.ts";
+import { MAX_BODY_CHARS, TREES, guard, pickArgument } from "./generate.ts";
+import { LENGTHS, MOVES, pickLength } from "./style.ts";
 
 // Selection is the one piece of logic here that rots silently: it keeps
 // returning *something* while quietly repeating the same three arguments, and
@@ -34,7 +34,7 @@ test("prefers an argument that rebuts the opponent's topic", () => {
 });
 
 test("guard caps length and strips only balanced wrapping quotes", () => {
-  expect(guard("a".repeat(2000))!.length).toBeLessThanOrEqual(900);
+  expect(guard("a".repeat(4000))!.length).toBeLessThanOrEqual(MAX_BODY_CHARS);
   expect(guard('"Cercado dos dois lados"')).toBe("Cercado dos dois lados");
   // A lone leading quote must survive, or stripping it orphans the closing one.
   expect(guard('"Mexer nos dados" é veredito?')).toBe('"Mexer nos dados" é veredito?');
@@ -66,25 +66,18 @@ test("every argument carries a verdict and an explanation", () => {
   }
 });
 
-// A cast that has collapsed back to one voice is the exact failure this replaced
-// — a feed where every message had the same rhythm and the same clown emoji.
-test("each side has a cast of distinct personas", () => {
-  for (const side of ["lula", "bolsonaro"] as const) {
-    const cast = PERSONAS[side];
-    expect(cast.length).toBeGreaterThanOrEqual(5);
-    expect(new Set(cast.map((p) => p.id)).size).toBe(cast.length);
-    for (const p of cast) expect(p.voice.length).toBeGreaterThan(60);
-    // At least one character that never reaches for an emoji at all.
-    expect(cast.some((p) => p.emoji.length === 0)).toBe(true);
-  }
-});
-
 test("length sampler covers every bucket and stays in range", () => {
   expect(pickLength(0).spec).toBe(LENGTHS[0]!.spec);
   expect(pickLength(0.999).spec).toBe(LENGTHS.at(-1)!.spec);
   const seen = new Set(Array.from({ length: 400 }, () => pickLength().paragraphs));
   expect(seen.size).toBe(new Set(LENGTHS.map((l) => l.paragraphs)).size);
   expect(MOVES.length).toBeGreaterThanOrEqual(6);
+
+  // Explaining a case takes room, so most of the weight has to sit above one
+  // short paragraph — a feed of one-liners was the thing this replaced.
+  const multi = LENGTHS.filter((l) => l.paragraphs > 1).reduce((n, l) => n + l.weight, 0);
+  const total = LENGTHS.reduce((n, l) => n + l.weight, 0);
+  expect(multi / total).toBeGreaterThanOrEqual(0.4);
 });
 
 test("guard drops a restarted draft glued onto the first one", () => {
@@ -101,11 +94,11 @@ test("over-long messages end on a sentence, never mid-word", () => {
   // Non-repeating on purpose: repeated text would be eaten by the restart
   // detector before it ever reached the length cap.
   const sentences = Array.from(
-    { length: 40 },
+    { length: 60 },
     (_, i) => `Argumento inflamado numero ${i} que segue sem parar nenhuma vez.`,
   ).join(" ");
   const out = guard(`${sentences} Togacracia, cens`)!;
-  expect(out.length).toBeLessThanOrEqual(760);
+  expect(out.length).toBeLessThanOrEqual(MAX_BODY_CHARS);
   expect(out.endsWith(".")).toBe(true);
 
   // No sentence break at all -> fall back to a word boundary, never mid-word.

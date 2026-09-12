@@ -33,13 +33,21 @@ complicado*, com explicação dos dois lados.
 
 É a parte séria do projeto. A briga é a isca; o painel é o que sobra depois.
 
-## Os dois lados não têm uma voz só
+## Como as mensagens saem
 
-Cada lado é uma conta, mas um elenco: a tia aposentada, o sindicalista, o zoeiro
-de timeline, o tio do zap, o militar da reserva, a tia evangélica, o coach, o
-advogado. A cada mensagem sorteia-se personagem, movimento retórico e tamanho,
-então a mesma frase nunca sai igual duas vezes. Sem isso o modelo converge: toda
-mensagem com o mesmo comprimento, o mesmo ritmo e o mesmo emoji.
+Cada lado é uma voz comum, sem personagem: um teste anterior deu a cada lado um
+elenco de sete tipos (a tia aposentada, o militar da reserva, o coach) e o
+resultado foi fantasia — o modelo gastava a resposta imitando sotaque em vez de
+defender um ponto.
+
+O que varia por mensagem é o **tamanho** e o **movimento argumentativo**, e o
+tamanho é especificado em frases, não em caracteres: pedir "180 a 320
+caracteres" e ao mesmo tempo pedir que explique o caso faz o modelo ignorar o
+limite e escrever tudo no teto.
+
+A regra principal do prompt é que cada mensagem **explique o caso** — o que
+aconteceu, quando, e por que sustenta aquele lado — em vez de citar o apelido do
+assunto e seguir em frente como se todo mundo já soubesse.
 
 ## Como contribuir com um argumento
 

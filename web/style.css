@@ -39,6 +39,7 @@
  */
 :root {
   color-scheme: dark;
+  --page: oklch(0.12 0.012 250);
   --canvas: oklch(0.18 0.012 250);
   --surface: oklch(0.235 0.014 250);
   --line: oklch(0.32 0.016 250);
@@ -51,7 +52,8 @@
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;
-    --canvas: oklch(0.965 0.004 250);
+    --page: oklch(0.9 0.005 250);
+    --canvas: oklch(0.975 0.003 250);
     --surface: oklch(1 0 0);
     --line: oklch(0.89 0.006 250);
     --ink: oklch(0.22 0.015 250);
@@ -64,7 +66,7 @@
 html, body, #root { height: 100%; }
 body {
   margin: 0;
-  background: var(--canvas);
+  background: var(--page);
   color: var(--ink);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -88,10 +90,15 @@ a { color: inherit; }
   max-width: var(--col);
   margin: 0 auto;
   position: relative;
-  border-inline: 1px solid var(--line);
+  /* The column needs to be a visible surface, not just a max-width. Without it
+     the page behind is the same colour, so a panel docked to the column's inner
+     edge looks like it opened in the middle of the screen with nothing holding
+     it — which is exactly how it read. */
+  background: var(--canvas);
+  box-shadow: 0 0 0 1px var(--line), 0 20px 60px rgb(0 0 0 / 0.35);
 }
 @media (max-width: 46rem) {
-  .app { border-inline: none; }
+  .app { box-shadow: none; }
 }
 
 /* ---- top bar -------------------------------------------------------------- */
@@ -116,12 +123,27 @@ a { color: inherit; }
 .dot.bolsonaro { background: var(--bolsonaro); margin-left: -12px; }
 .titles { flex: 1; min-width: 0; }
 .titles h1 { margin: 0; font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
-.band { margin: 1px 0 0; font-size: 11.5px; color: var(--faint); letter-spacing: 0.02em; }
-.info {
-  background: none; border: none; cursor: pointer;
-  color: var(--faint); font-size: 21px; line-height: 1; padding: 4px 6px;
+.tagline {
+  margin: 1px 0 0;
+  font-size: 12px;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+.band {
+  margin: 0;
+  flex-shrink: 0;
+  padding: 5px 14px 6px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--faint);
+  background: var(--canvas);
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
 /* ---- feed ----------------------------------------------------------------- */
 
 .feed {
@@ -197,16 +219,21 @@ a { color: inherit; }
 
 /* ---- drawer handle -------------------------------------------------------- */
 
+/* The one way into the explanation, so it reads as a control rather than a
+   decorative lip: full width, its own label, and a hover state. */
 .handle {
   flex-shrink: 0;
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-  padding: 9px 0 max(11px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 10px 0 max(12px, env(safe-area-inset-bottom));
+  transition: color 160ms var(--ease-out-quart), background 160ms var(--ease-out-quart);
   background: var(--surface);
   border: none; border-top: 1px solid var(--line);
   color: var(--faint); font: inherit; font-size: 12.5px; font-weight: 600;
   letter-spacing: 0.01em; cursor: pointer;
 }
-.grab { width: 34px; height: 4px; border-radius: 999px; background: var(--line); }
+.grab { width: 34px; height: 4px; border-radius: 999px; background: var(--line); transition: background 160ms var(--ease-out-quart); }
+.handle:hover { color: var(--ink); background: var(--canvas); }
+.handle:hover .grab { background: var(--faint); }
 
 /* ---- sheets --------------------------------------------------------------- */
 
@@ -216,23 +243,7 @@ a { color: inherit; }
   border: 1px solid var(--line);
   padding: 0;
 }
-.sheet::backdrop { background: rgb(0 0 0 / 0.55); backdrop-filter: blur(2px); }
-
-.about {
-  max-width: 30rem;
-  border-radius: 16px;
-  padding: 22px 22px 18px;
-  margin: auto;
-}
-.about h2 { margin: 0 0 10px; font-size: 19px; }
-.about p { margin: 0 0 11px; font-size: 14.5px; line-height: 1.6; }
-.about a { text-decoration: underline; }
-.about button {
-  margin-top: 6px; padding: 8px 16px;
-  border: 1px solid var(--line); border-radius: 10px;
-  background: var(--canvas); color: var(--ink);
-  font: inherit; font-weight: 600; cursor: pointer;
-}
+.sheet::backdrop { background: rgb(0 0 0 / 0.42); backdrop-filter: blur(1.5px); }
 
 /* The drawer is the same <dialog>, pinned to the bottom edge and full-width.
    `max-height` + inner scroll, so the landing page scrolls inside the sheet
@@ -332,8 +343,8 @@ a { color: inherit; }
     display 340ms allow-discrete,
     overlay 340ms allow-discrete;
 }
-.trace.from-bolsonaro { margin: 0 var(--gutter) 0 auto; translate: 100% 0; }
-.trace.from-lula      { margin: 0 auto 0 var(--gutter); translate: -100% 0; }
+.trace.from-bolsonaro { margin: 0 var(--gutter) 0 auto; translate: 100% 0; box-shadow: -18px 0 40px rgb(0 0 0 / 0.35); }
+.trace.from-lula      { margin: 0 auto 0 var(--gutter); translate: -100% 0; box-shadow: 18px 0 40px rgb(0 0 0 / 0.35); }
 .trace[open] { display: flex; translate: 0 0; }
 @starting-style {
   .trace.from-bolsonaro[open] { translate: 100% 0; }
@@ -422,3 +433,12 @@ a { color: inherit; }
   color: var(--faint);
 }
 .card-source { display: inline-block; margin-top: 10px; font-size: 12.5px; }
+
+/* Second CTA, deliberately quieter than the agenda link: contributing is the
+   ask, but it is not the thing the drawer is arguing for. */
+.cta.ghost {
+  background: none;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.cta.ghost:hover { border-color: var(--faint); }
