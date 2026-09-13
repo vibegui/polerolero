@@ -551,3 +551,24 @@ a { color: inherit; }
 .react:active { transform: scale(0.94); }
 .react.on { border-color: var(--line); }
 .react.on span { color: var(--ink); }
+
+/* The sleep card: centred, quiet, and deliberately not a bubble — it is the one
+   row in the feed that nobody is shouting. */
+.pause {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(90%, 34ch);
+  margin: 10px 0;
+  padding: 9px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--faint);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: balance;
+}
+.pause span { font-size: 15px; }

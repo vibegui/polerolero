@@ -1,5 +1,6 @@
 import type { Env, Message, Side } from "./env.ts";
 import { OTHER, composeMessage } from "./generate.ts";
+import { isAsleep, sleepHours, wakeUpAfter } from "./sleep.ts";
 import { pickTopic } from "./topics.ts";
 
 export { LiveRoom } from "./live.ts";
@@ -49,10 +50,10 @@ export default {
 
     const { results } = before === null
       ? await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, topic FROM messages ORDER BY id DESC LIMIT ?1",
+          "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages ORDER BY id DESC LIMIT ?1",
         ).bind(PAGE).all<Message>()
       : await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, topic FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
+          "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
         ).bind(before, PAGE).all<Message>();
 
     return Response.json(
@@ -105,7 +106,7 @@ export async function topUp(env: Env): Promise<void> {
   // Newest row first: it carries the last side, the last arg_id and MAX(due_at)
   // in one read, because due_at is monotonic with id.
   const { results: recentRows } = await env.DB.prepare(
-    "SELECT id, side, body, arg_id, due_at, topic FROM messages ORDER BY id DESC LIMIT ?1",
+    "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages ORDER BY id DESC LIMIT ?1",
   ).bind(RECENT_WINDOW).all<Message>();
 
   const newest = recentRows[0];
@@ -128,20 +129,42 @@ export async function topUp(env: Env): Promise<void> {
   let side: Side = newest ? OTHER[newest.side] : "lula";
   let dueAt = Math.max(newest?.due_at ?? now, now);
 
+  const [sleepFrom, sleepTo] = sleepHours(env);
+  let sleptThisRun = false;
   const insert = env.DB.prepare(
-    "INSERT INTO messages (side, body, arg_id, due_at, topic, created_at) VALUES (?1, ?2, ?3, ?4, ?5, unixepoch())",
+    "INSERT INTO messages (side, body, arg_id, due_at, topic, kind, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, unixepoch())",
+  );
+
+  const pause = env.DB.prepare(
+    "INSERT INTO messages (side, body, arg_id, due_at, kind, created_at) VALUES (?1, ?2, '', ?3, 'pause', unixepoch())",
   );
 
   while (toGenerate-- > 0) {
+    // Skip the night. The buffer keeps filling past the window, so the first
+    // cron tick after midnight finds ~6h of runway already queued and makes no
+    // LLM calls at all until morning.
+    const candidate = new Date((dueAt + interval) * 1000);
+    if (isAsleep(candidate, sleepFrom, sleepTo)) {
+      const wake = Math.floor(wakeUpAfter(candidate, sleepTo).getTime() / 1000);
+      if (newest?.kind !== "pause" && !sleptThisRun) {
+        await pause
+          .bind(side, "Os dois foram dormir. A briga recomeça às 6h.", dueAt + interval)
+          .run();
+        sleptThisRun = true;
+      }
+      dueAt = wake - interval;
+      continue;
+    }
+
     // One call per message, never one call writing both sides: a single
     // completion covering the whole exchange makes the two personas converge in
     // register, and the two voices being distinct is the entire joke.
     const topic = pickTopic(topics);
     const { body, argId } = await composeMessage(env, side, transcript, recent, allowLlm, topic);
     dueAt += interval;
-    await insert.bind(side, body, argId, dueAt, topic).run();
+    await insert.bind(side, body, argId, dueAt, topic, "message").run();
 
-    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt, topic });
+    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt, topic, kind: "message" });
     recent.unshift(argId);
     topics.unshift(topic);
     side = OTHER[side];

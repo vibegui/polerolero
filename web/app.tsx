@@ -14,6 +14,7 @@ export interface Message {
   arg_id: string;
   due_at: number;
   topic: string | null;
+  kind: string;
 }
 
 export interface ArgNode {
@@ -149,7 +150,7 @@ export function App() {
         return;
       }
       const delay = Math.max(0, (next.due_at - serverNow()) * 1000);
-      const typingMs = Math.min(2500, 400 + next.body.length * 12);
+      const typingMs = next.kind === "pause" ? 0 : Math.min(2500, 400 + next.body.length * 12);
       if (delay > typingMs) {
         timers.push(setTimeout(() => setTyping(next.side), delay - typingMs));
       } else if (delay > 0) {
@@ -318,7 +319,10 @@ export function App() {
 
       <div className="feed" ref={scroller} onScroll={onScroll}>
         <div ref={sentinel} className="sentinel" />
-        {visible.map((m) => (
+        {visible.map((m) =>
+          m.kind === "pause" ? (
+            <Pause key={m.id} message={m} />
+          ) : (
           <Bubble
             key={m.id}
             message={m}
@@ -326,7 +330,8 @@ export function App() {
             reactions={live.reactions[m.id]}
             onReact={react}
           />
-        ))}
+          ),
+        )}
         {typing && (
           <div className={`row ${typing}`}>
             <div className="bubble typing" aria-label={`${NAME[typing]} está digitando`}>
@@ -390,6 +395,17 @@ function Header({ viewers }: { viewers: number }) {
         )}
       </div>
     </header>
+  );
+}
+
+/** The fans went to bed. Centred, no side, no argument behind it — the one row
+ *  in the feed that is not somebody shouting. */
+function Pause({ message }: { message: Message }) {
+  return (
+    <div className="pause">
+      <span aria-hidden="true">🌙</span>
+      {message.body}
+    </div>
   );
 }
 

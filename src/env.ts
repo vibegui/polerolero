@@ -13,6 +13,9 @@ export interface Env {
   /** ISO instants bounding the TSE electoral blackout. See inBlackout(). */
   BLACKOUT_FROM?: string;
   BLACKOUT_TO?: string;
+  /** São Paulo hours the feed sleeps between. Defaults to 0 and 6. */
+  SLEEP_FROM?: string;
+  SLEEP_TO?: string;
 
   CF_AI_GATEWAY_TOKEN?: string;
   /** Only needed if BYOK is ever turned off in the Gateway dashboard. */
@@ -29,6 +32,8 @@ export interface Message {
   due_at: number;
   /** Hot topic this message belongs to, or null for the standing trees. */
   topic: string | null;
+  /** 'message' | 'pause' — a pause is the sleep card, not an argument. */
+  kind: string;
 }
 
 export interface ArgNode {

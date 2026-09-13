@@ -8,6 +8,7 @@ import {
   pickArgument,
 } from "./generate.ts";
 import { inBlackout } from "./blackout.ts";
+import { isAsleep, wakeUpAfter } from "./sleep.ts";
 import { LENGTHS, MOVES, pickLength } from "./style.ts";
 import type { Side } from "./env.ts";
 import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
@@ -281,4 +282,24 @@ test("corrupted tokens fused into a word are thrown away", () => {
   expect(guard("deixou o Brasil de joelho pra o mundo inteiro ver")).not.toBeNull();
   expect(guard("Isso é ACORDA meu amigo, simples assim.")).not.toBeNull();
   expect(guard("O PT e o PL brigam, e o STF assiste.", "STF")).not.toBeNull();
+});
+
+// Midnight to 06:00 in Brasília. Computed in São Paulo local time rather than
+// assuming UTC-3: Brazil dropped DST in 2019, which is exactly the kind of
+// assumption that breaks silently if it ever returns.
+test("the fans sleep from midnight to six, Brasília time", () => {
+  const asleep = (iso: string) => isAsleep(new Date(iso));
+  expect(asleep("2026-09-13T02:00:00Z")).toBe(false); // 23:00 SP
+  expect(asleep("2026-09-13T02:59:00Z")).toBe(false); // 23:59 SP
+  expect(asleep("2026-09-13T03:00:00Z")).toBe(true); // 00:00 SP
+  expect(asleep("2026-09-13T08:59:00Z")).toBe(true); // 05:59 SP
+  expect(asleep("2026-09-13T09:00:00Z")).toBe(false); // 06:00 SP
+
+  // Wake is 06:00 local on the same local day, whatever the UTC date is doing.
+  expect(wakeUpAfter(new Date("2026-09-13T04:00:00Z")).toISOString()).toBe(
+    "2026-09-13T09:00:00.000Z",
+  );
+  expect(wakeUpAfter(new Date("2026-09-13T08:59:00Z")).toISOString()).toBe(
+    "2026-09-13T09:00:00.000Z",
+  );
 });
