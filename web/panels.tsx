@@ -178,7 +178,7 @@ export function Landing() {
             <a href="https://github.com/vibegui/polerolero/issues/new" target="_blank" rel="noreferrer">
               abra uma issue
             </a>{" "}
-            ou escreva para <a href="mailto:gui@vibegui.com">gui@vibegui.com</a>. Correção de
+            ou escreva para <a href="mailto:gui@deco.cx">gui@deco.cx</a>. Correção de
             fato é feita na hora.
           </p>
         </div>

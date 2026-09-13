@@ -132,18 +132,23 @@ a { color: inherit; }
   text-overflow: ellipsis;
 }
 
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  text-align: right;
+}
 .band {
   margin: 0;
-  flex-shrink: 0;
-  padding: 5px 14px 6px;
-  font-size: 11px;
-  letter-spacing: 0.05em;
+  font-size: 10px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--faint);
-  background: var(--canvas);
-  border-bottom: 1px solid var(--line);
-  text-align: center;
+  white-space: nowrap;
 }
+
 /* ---- feed ----------------------------------------------------------------- */
 
 .feed {
@@ -162,9 +167,9 @@ a { color: inherit; }
 .sentinel { height: 1px; flex-shrink: 0; margin-bottom: auto; }
 .hint { color: var(--faint); font-size: 13px; text-align: center; }
 
-.row { display: flex; }
-.row.lula { justify-content: flex-start; }
-.row.bolsonaro { justify-content: flex-end; }
+.row { display: flex; flex-direction: column; }
+.row.lula { align-items: flex-start; }
+.row.bolsonaro { align-items: flex-end; }
 
 .bubble {
   max-width: min(84%, 38ch);
@@ -332,7 +337,7 @@ a { color: inherit; }
   max-height: 100dvh;
   /* Never wider than the column it docks into, so it always reads as a drawer
      over the app rather than a second window beside it. */
-  width: min(27rem, var(--col) - 3rem, 92vw);
+  width: min(29rem, 92vw);
   max-width: 92vw;
   border-radius: 0;
   border-top: none;
@@ -343,8 +348,11 @@ a { color: inherit; }
     display 340ms allow-discrete,
     overlay 340ms allow-discrete;
 }
-.trace.from-bolsonaro { margin: 0 var(--gutter) 0 auto; translate: 100% 0; box-shadow: -18px 0 40px rgb(0 0 0 / 0.35); }
-.trace.from-lula      { margin: 0 auto 0 var(--gutter); translate: -100% 0; box-shadow: 18px 0 40px rgb(0 0 0 / 0.35); }
+/* Flush to the screen edge on the side that spoke, not to the column edge.
+   Docked to the column it read as a slab floating in the middle of a wide
+   screen, attached to nothing. A drawer belongs to the corner it came out of. */
+.trace.from-bolsonaro { margin: 0 0 0 auto; translate: 100% 0; box-shadow: -24px 0 60px rgb(0 0 0 / 0.5); }
+.trace.from-lula      { margin: 0 auto 0 0; translate: -100% 0; box-shadow: 24px 0 60px rgb(0 0 0 / 0.5); }
 .trace[open] { display: flex; translate: 0 0; }
 @starting-style {
   .trace.from-bolsonaro[open] { translate: 100% 0; }
@@ -463,3 +471,83 @@ a { color: inherit; }
 .topic strong { display: block; font-size: 15px; margin-bottom: 5px; }
 .topic p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--ink); opacity: 0.85; }
 .topic a { display: inline-block; margin-top: 8px; font-size: 12.5px; }
+
+/* ---- live: presence + reactions ------------------------------------------ */
+
+.viewers {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+/* "assistindo" is the first thing to go when the wordmark needs the room. */
+@media (max-width: 24rem) {
+  .viewers { font-size: 0; gap: 0; }
+  .viewers::after { content: attr(data-n); font-size: 11.5px; }
+}
+/* A dot that breathes. The number alone reads as a statistic; the pulse is what
+   says the thing is happening while you look at it. */
+.pulse {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: oklch(0.7 0.17 145);
+  box-shadow: 0 0 0 0 oklch(0.7 0.17 145 / 0.7);
+  animation: pulse 2.4s var(--ease-out-quart) infinite;
+}
+@keyframes pulse {
+  70% { box-shadow: 0 0 0 7px oklch(0.7 0.17 145 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.7 0.17 145 / 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}
+
+/* Reactions sit outside the bubble, aligned to its side, so a long thread of
+   them never pushes the message itself around. */
+.reactions {
+  display: flex;
+  gap: 3px;
+  margin-top: 3px;
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out-quart);
+}
+.row:hover .reactions,
+.reactions:focus-within,
+.reactions:has(.on) {
+  opacity: 1;
+}
+/* Touch has no hover, so there is nothing to reveal — always show. */
+@media (hover: none) {
+  .reactions { opacity: 1; }
+}
+
+.react {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: transform 140ms var(--ease-out-quart), border-color 140ms var(--ease-out-quart);
+}
+.react span {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+.react:hover { transform: translateY(-1px) scale(1.08); }
+.react:active { transform: scale(0.94); }
+.react.on { border-color: var(--line); }
+.react.on span { color: var(--ink); }

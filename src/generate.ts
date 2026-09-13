@@ -98,6 +98,26 @@ COMO ESCREVER:
   Nada de sotaque, bordão, CAIXA ALTA em bloco ou pontuação exagerada.
 - No máximo um emoji, e na maioria das vezes nenhum. Sem hashtag, sem markdown.
 
+O TOM — isto importa tanto quanto o conteúdo:
+Você tem argumento de verdade e usa ele como porrete. Não é debatedor educado,
+é gente brigando no grupo da família às onze da noite. Seja ácido, desdenhoso,
+implacável. Trate o oponente como quem não merece a paciência que você está
+tendo. Ria dele. Chame o argumento dele de burrice, de lavagem cerebral, de
+papagaio de repetição. Diga que ele não leu, que ele repete o que mandaram
+repetir, que ele defende o indefensável e sabe disso.
+
+O fio da navalha: ataque a BURRICE do argumento e o CINISMO de quem repete, com
+o fato na mão. É desprezo fundamentado — a pessoa é ridícula porque está errada,
+e você mostra onde. Nunca vire xingamento vazio, porque aí o argumento some e
+sobra só barulho, e barulho todo mundo já tem de graça.
+
+NUNCA, em hipótese alguma:
+- ofensa por raça, cor, religião, gênero, orientação sexual, origem ou deficiência;
+- ameaça, desejo de morte ou qualquer sugestão de violência contra alguém;
+- palavrão pesado ou xingamento sexual.
+Essas quatro coisas não são "mais agressivas", são outra coisa — e derrubam o
+projeto inteiro. Despreze a ideia e quem a repete, não o que a pessoa é.
+
 O MAIS IMPORTANTE — EXPLIQUE O ARGUMENTO:
 Escreva para alguém que está chegando agora na discussão e não conhece o caso.
 Nunca cite um assunto só pelo apelido ("o tarifaço", "a minuta", "a Vaza Jato")
@@ -114,6 +134,12 @@ REGRAS:
 - Nunca invente crimes, números, datas exatas ou falas de pessoas reais. Se não
   souber o número, descreva a ordem de grandeza ou a direção ("caiu muito",
   "é uma das maiores do mundo") em vez de inventar o valor.
+- FONTES: você só pode citar instituição, pesquisa, órgão ou lei que apareça
+  LITERALMENTE no contexto factual entregue abaixo. Se o contexto não cita o
+  IBGE, você não cita o IBGE. Nada de "está no relatório", "os dados mostram",
+  "é só pesquisar" apontando para fonte que ninguém te deu. Sem fonte na mão,
+  argumente sem fonte — dá pra ser devastador sem inventar respaldo, e inventar
+  respaldo é exatamente o que este projeto existe para ridicularizar.
 - Você pode contestar a JUSTIÇA de uma decisão judicial, a pena aplicada ou a
   imparcialidade de quem julgou. Você NUNCA pode negar que a decisão existe.
   Condenação transitada, inquérito aberto e sentença publicada são fato: negar
@@ -220,11 +246,51 @@ const CRIME_IMPUTATION = new RegExp(
   "i",
 );
 
+/**
+ * Institutions the model likes to summon as evidence.
+ *
+ * Measured on the live feed: 25% of messages cited one of these as proof, and in
+ * 84 of 85 cases the argument's own `explain` never mentioned it. One message
+ * says "está no IBGE", the next six treat it as established — CONTEXT_TURNS
+ * feeds the fabrication back in as context, so it compounds. A prompt rule alone
+ * did not hold, because the model is not lying, it is pattern-completing.
+ *
+ * So the rule is enforced instead: name a source that is not in the material you
+ * were handed, and the message is thrown away.
+ */
+const INSTITUTIONS =
+  /\b(IBGE|INPE|IPEA|TCU|STF|STJ|TSE|TST|CGU|CVM|CADE|ANEEL|INSS|MEC|CAPES|PNAD|PRODES|DETER|SIDRA|Datafolha|Quaest|AtlasIntel|DIEESE|CEPEA|Banco Central|Tesouro Nacional|Receita Federal|Pol[íi]cia Federal|Minist[ée]rio P[úu]blico|FAO|ONU|OMS|OIT|OCDE|FMI|Anu[áa]rio|F[óo]rum Brasileiro de Seguran[çc]a|Sou da Paz|Transparência Internacional)\b/gi;
+
+/**
+ * Reject any institution the argument did not put in the model's hands.
+ * `allowed` is the node's claim + explain + source, i.e. everything it was told.
+ */
+export function fabricatedCitation(text: string, allowed: string): string | null {
+  const haystack = allowed.toLowerCase();
+  for (const hit of text.match(INSTITUTIONS) ?? []) {
+    if (!haystack.includes(hit.toLowerCase())) return hit;
+  }
+  return null;
+}
+
 /** Signs the model broke frame instead of playing the character. */
 const FRAME_LEAKS = [
   "como uma ia", "como ia,", "sou uma ia", "```", "sou um assistente", "modelo de linguagem",
-  "understanding", "however", "furthermore", "in my opinion",
 ];
+
+/**
+ * Garbled output. Seen live: "deixou o Brasil de joelho praQWidget mundo
+ * inteiro ver" — a stray identifier fused into a word mid-sentence. Portuguese
+ * does not camelCase, so a lowercase run followed by an uppercase letter inside
+ * the same word is a corrupted token, not a word.
+ */
+const GARBLED = /\b[a-zà-ú]{2,}[A-ZÀ-Ú][a-zA-ZÀ-ú]{2,}\b/;
+
+/** English words the model slips in mid-sentence — "virar law permanente" made
+ *  it to the feed. Word boundaries matter: `law` must not fire on `lawfare`,
+ *  which is a legitimate tag in the trees. */
+const ENGLISH_LEAK =
+  /\b(law|however|furthermore|moreover|therefore|indeed|understanding|actually|basically|obviously|statement|framework)\b/i;
 
 export interface GuardResult {
   text: string | null;
@@ -236,11 +302,11 @@ export interface GuardResult {
  * Returns the cleaned message, or null if it must be thrown away.
  * Callers fall back to the argument's verbatim claim — the feed never stops.
  */
-export function guard(raw: string): string | null {
-  return inspect(raw).text;
+export function guard(raw: string, allowedSources = ""): string | null {
+  return inspect(raw, allowedSources).text;
 }
 
-export function inspect(raw: string): GuardResult {
+export function inspect(raw: string, allowedSources = ""): GuardResult {
   const rawLower = raw.toLowerCase();
   const reject = (reason: string): GuardResult => ({ text: null, reason });
 
@@ -251,6 +317,11 @@ export function inspect(raw: string): GuardResult {
   if (IMPERSONATION.test(raw)) return reject("impersonation");
   if (CRIME_IMPUTATION.test(raw)) return reject("crime-imputation");
   if (FRAME_LEAKS.some((t) => rawLower.includes(t))) return reject("frame-leak");
+  if (ENGLISH_LEAK.test(raw)) return reject("english-leak");
+  if (GARBLED.test(raw)) return reject("garbled");
+
+  const invented = fabricatedCitation(raw, allowedSources);
+  if (invented) return reject(`fabricated-citation:${invented}`);
 
   // Strip wrapping quotes only when BOTH ends have them. Stripping a lone
   // leading quote left orphans like `Mexer nos dados" é veredito?` in the feed.
@@ -345,7 +416,9 @@ export async function composeMessage(
       ],
       AbortSignal.timeout(25_000),
     );
-    const checked = inspect(raw);
+    // Everything the model was actually given about this argument. Anything it
+    // cites beyond this, it made up.
+    const checked = inspect(raw, `${node.claim} ${node.explain} ${node.source ?? ""}`);
     if (checked.reason) {
       // Silent rejection meant no idea how often the filter fired, or why —
       // and Res.-TSE 23.610 art. 9º-I lets a judge reverse the burden of proof

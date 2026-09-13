@@ -2,6 +2,10 @@ import type { Env, Message, Side } from "./env.ts";
 import { OTHER, composeMessage } from "./generate.ts";
 import { pickTopic } from "./topics.ts";
 
+export { LiveRoom } from "./live.ts";
+import { inBlackout } from "./blackout.ts";
+export { inBlackout };
+
 const PAGE = 40;
 /** How far back to look for already-used arguments, and for the transcript. */
 const RECENT_WINDOW = 200;
@@ -13,6 +17,24 @@ const RECENT_WINDOW = 200;
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+
+    if (url.pathname === "/api/live" && request.method === "POST") {
+      const body = (await request.json().catch(() => null)) as {
+        session?: string;
+        ids?: number[];
+        react?: { id: number; emoji: string };
+      } | null;
+      if (!body?.session) return new Response("bad session", { status: 400 });
+      // One global room: there is one fight and one audience.
+      const room = env.LIVE.get(env.LIVE.idFromName("global"));
+      const state = await room.sync(
+        String(body.session).slice(0, 64),
+        (body.ids ?? []).filter(Number.isSafeInteger).slice(0, 60),
+        body.react,
+      );
+      return Response.json(state, { headers: { "cache-control": "no-store" } });
+    }
+
     if (url.pathname !== "/api/messages") {
       // Only /api/* reaches the worker at all (run_worker_first in
       // wrangler.jsonc); anything else here is a stray /api path.
@@ -68,24 +90,6 @@ export default {
  * makes this self-healing: a failed run retries five minutes later with roughly
  * fifteen minutes of runway still queued, and nobody watching sees a gap.
  */
-/**
- * Res.-TSE 23.610/2019 art. 9º-B §3º-A, as inserted by Res. 23.755/2026, forbids
- * publishing NEW AI-synthetic content using the image, voice or manifestation of
- * a candidate or public figure from 72 hours before the vote until 24 hours
- * after it — "mesmo que rotulados", so the disclaimer does not cure it.
- *
- * This feed publishes a new synthetic message about named candidates every sixty
- * seconds. It has to stop on its own, because a calendar reminder is not a
- * control. Dates are vars so a second round or a schedule change is a deploy,
- * not a code edit; the window is closed by default if they are malformed.
- */
-export function inBlackout(env: Env, now = Date.now()): boolean {
-  const from = Date.parse(env.BLACKOUT_FROM ?? "");
-  const to = Date.parse(env.BLACKOUT_TO ?? "");
-  if (Number.isNaN(from) || Number.isNaN(to)) return false;
-  return now >= from && now <= to;
-}
-
 export async function topUp(env: Env): Promise<void> {
   if (inBlackout(env)) {
     console.log("electoral blackout: not generating");

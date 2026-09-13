@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
 import lulaTree from "../arguments/lula.json" with { type: "json" };
+import { EMOJI, type Emoji, type LiveState } from "../src/live-shared.ts";
 import { TOPICS, TOPIC_BY_ID } from "../src/topics.ts";
 import { Landing, Trace } from "./panels.tsx";
 
@@ -61,6 +62,31 @@ const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bol
 let clockSkew = 0;
 const serverNow = () => Date.now() / 1000 + clockSkew;
 
+/** Stable per-tab id. sessionStorage, not localStorage: two tabs are two
+ *  viewers, and a reaction belongs to the tab that gave it. */
+const SESSION = (() => {
+  const key = "polerolero-session";
+  let v = sessionStorage.getItem(key);
+  if (!v) {
+    v = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem(key, v);
+  }
+  return v;
+})();
+
+export async function syncLive(
+  ids: number[],
+  react?: { id: number; emoji: Emoji },
+): Promise<LiveState> {
+  const res = await fetch("/api/live", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ session: SESSION, ids, react }),
+  });
+  if (!res.ok) throw new Error(`live: ${res.status}`);
+  return (await res.json()) as LiveState;
+}
+
 async function load(before?: number): Promise<Message[]> {
   const url = before === undefined ? "/api/messages" : `/api/messages?before=${before}`;
   const res = await fetch(url);
@@ -81,6 +107,7 @@ export function App() {
   const [unread, setUnread] = useState(false);
   const [ready, setReady] = useState(false);
   const [trace, setTrace] = useState<TraceData | null>(null);
+  const [live, setLive] = useState<LiveState>({ viewers: 0, reactions: {} });
 
   const scroller = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
@@ -233,6 +260,42 @@ export function App() {
 
   const visible = messages.slice(0, shown);
 
+  // Presence heartbeat doubles as the reaction poll — the room has to hear from
+  // you to count you, so it may as well answer with what everyone else did.
+  const visibleIds = visible.slice(-40).map((m) => m.id);
+  const idsKey = visibleIds.join(",");
+  useEffect(() => {
+    if (!ready) return;
+    let alive = true;
+    const beat = () => {
+      syncLive(idsKey ? idsKey.split(",").map(Number) : [])
+        .then((s) => alive && setLive(s))
+        .catch(() => {});
+    };
+    beat();
+    const t = setInterval(beat, 20_000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [ready, idsKey]);
+
+  const react = useCallback(
+    (id: number, emoji: Emoji) => {
+      // Optimistic: a tap has to feel instant even though the room is the
+      // authority. The next heartbeat overwrites this with the real count.
+      setLive((prev) => {
+        const cur = { ...(prev.reactions[id] ?? {}) };
+        cur[emoji] = (cur[emoji] ?? 0) + 1;
+        return { ...prev, reactions: { ...prev.reactions, [id]: cur } };
+      });
+      syncLive(visibleIds, { id, emoji })
+        .then(setLive)
+        .catch(() => {});
+    },
+    [visibleIds],
+  );
+
   const openTrace = useCallback(
     (m: Message) => {
       const i = messages.findIndex((x) => x.id === m.id);
@@ -251,16 +314,18 @@ export function App() {
 
   return (
     <div className="app">
-      <Header />
-      {/* Its own strip rather than a second line under the wordmark: the name
-          now needs that line to explain itself, and this label has to survive
-          being screenshotted out of context. */}
-      <p className="band">sátira gerada por IA · ninguém aqui é real</p>
+      <Header viewers={live.viewers} />
 
       <div className="feed" ref={scroller} onScroll={onScroll}>
         <div ref={sentinel} className="sentinel" />
         {visible.map((m) => (
-          <Bubble key={m.id} message={m} onTrace={openTrace} />
+          <Bubble
+            key={m.id}
+            message={m}
+            onTrace={openTrace}
+            reactions={live.reactions[m.id]}
+            onReact={react}
+          />
         ))}
         {typing && (
           <div className={`row ${typing}`}>
@@ -301,7 +366,7 @@ export function App() {
 
 // -----------------------------------------------------------------------------
 
-function Header() {
+function Header({ viewers }: { viewers: number }) {
   return (
     <header className="topbar">
       <div className="who">
@@ -312,6 +377,18 @@ function Header() {
         <h1>polerolero</h1>
         <p className="tagline">o gerador de lero lero polarizado</p>
       </div>
+      {/* The label belongs up here with the wordmark, not on a band of its own:
+          a whole row of chrome to carry six words was the most expensive thing
+          on a screen whose entire job is the conversation. */}
+      <div className="meta">
+        <span className="band">sátira gerada por IA</span>
+        {viewers > 0 && (
+          <span className="viewers" title={`${viewers} assistindo agora`}>
+            <span className="pulse" aria-hidden="true" />
+            {viewers} assistindo
+          </span>
+        )}
+      </div>
     </header>
   );
 }
@@ -319,7 +396,14 @@ function Header() {
 function Bubble({
   message,
   onTrace,
-}: { message: Message; onTrace: (m: Message) => void }) {
+  reactions,
+  onReact,
+}: {
+  message: Message;
+  onTrace: (m: Message) => void;
+  reactions?: Partial<Record<Emoji, number>>;
+  onReact: (id: number, emoji: Emoji) => void;
+}) {
   // The model separates paragraphs with a blank line; anything else stays one
   // block. Splitting here rather than using white-space:pre-wrap keeps the
   // paragraph spacing under CSS control instead of at the mercy of stray \n.
@@ -335,6 +419,23 @@ function Bubble({
         <button type="button" className="trace-link" onClick={() => onTrace(message)}>
           ver o argumento
         </button>
+      </div>
+      <div className="reactions">
+        {EMOJI.map((e) => {
+          const n = reactions?.[e] ?? 0;
+          return (
+            <button
+              key={e}
+              type="button"
+              className={`react ${n > 0 ? "on" : ""}`}
+              onClick={() => onReact(message.id, e)}
+              aria-label={`reagir com ${e}`}
+            >
+              {e}
+              {n > 0 && <span>{n}</span>}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

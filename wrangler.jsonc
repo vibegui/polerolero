@@ -18,6 +18,12 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Presence and reactions are the one thing here that needs coordination.
+  // The feed deliberately does not — see due_at scheduling in src/index.ts.
+  "durable_objects": {
+    "bindings": [{ "name": "LIVE", "class_name": "LiveRoom" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LiveRoom"] }],
   "triggers": {
     // Buffer top-up, not one-message-per-minute: a failed run retries in 5min
     // with ~15min of runway still queued.

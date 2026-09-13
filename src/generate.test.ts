@@ -1,6 +1,13 @@
 import { expect, test } from "bun:test";
-import { EXCLUSION_WINDOW, MAX_BODY_CHARS, TREES, guard, pickArgument } from "./generate.ts";
-import { inBlackout } from "./index.ts";
+import {
+  EXCLUSION_WINDOW,
+  MAX_BODY_CHARS,
+  TREES,
+  fabricatedCitation,
+  guard,
+  pickArgument,
+} from "./generate.ts";
+import { inBlackout } from "./blackout.ts";
 import { LENGTHS, MOVES, pickLength } from "./style.ts";
 import type { Side } from "./env.ts";
 import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
@@ -91,7 +98,7 @@ test("length sampler covers every bucket and stays in range", () => {
 });
 
 test("guard drops a restarted draft glued onto the first one", () => {
-  const draft = "O senhor pergunta quem controla o INPE. Eu pergunto quem controla o bairro.";
+  const draft = "O senhor pergunta quem controla o órgão. Eu pergunto quem controla o bairro.";
   // Exactly the failure seen in the feed: model wrote it, stopped, wrote it again.
   const out = guard(`${draft} Ordem invertida.${draft} Prioridade invertida.`)!;
   expect(out).toBe(`${draft} Ordem invertida.`);
@@ -216,7 +223,7 @@ test("guard stops mangling ordinary Portuguese", () => {
     "Bolsa Família serve pra matar a fome.",
     "A assistente social do posto confirma a fila.",
     "Precisamos parar de desmatar a Amazônia.",
-    "Quem é fã do agro devia ler o relatório do INPE.",
+    "Quem é fã do agro devia ler o relatório inteiro antes de falar.",
   ]) {
     expect(guard(ok), `blocked legitimate text: ${ok}`).not.toBeNull();
   }
@@ -235,7 +242,7 @@ test("guard blocks impersonation, slurs and crime imputation", () => {
     expect(guard(bad), `let through: ${bad}`).toBeNull();
   }
   // Adjudicated vocabulary must survive, or the honest half of the project dies.
-  expect(guard("Bolsonaro foi condenado pelo STF a 27 anos.")).not.toBeNull();
+  expect(guard("Bolsonaro foi condenado pelo STF a 27 anos.", "o STF condenou")).not.toBeNull();
   expect(guard("Flávio foi denunciado e o caso foi arquivado por nulidade.")).not.toBeNull();
 });
 
@@ -247,4 +254,31 @@ test("the feed stops itself during the electoral blackout", () => {
   expect(inBlackout(env, Date.parse("2026-10-06T12:00:00Z"))).toBe(false);
   // Unset or malformed dates must not silently disable the stop.
   expect(inBlackout({} as never, Date.now())).toBe(false);
+});
+
+// 25% of live messages cited an institution as proof that the argument's own
+// explain never mentioned — "está no IBGE" about a node with no IBGE in it.
+test("citing a source the argument never had is rejected", () => {
+  const allowed = "Os dados do PRODES/INPE mostram quatro quedas anuais seguidas.";
+  expect(fabricatedCitation("O INPE mostra que caiu.", allowed)).toBeNull();
+  expect(fabricatedCitation("O IBGE mostra que caiu.", allowed)).toBe("IBGE");
+  expect(guard("Segundo o IBGE, caiu muito.", allowed)).toBeNull();
+  expect(guard("Segundo o INPE, caiu muito.", allowed)).not.toBeNull();
+  // Arguing without naming a source must always be allowed.
+  expect(guard("Caiu muito, e você sabe disso.", allowed)).not.toBeNull();
+});
+
+test("english slipping mid-sentence is caught, but lawfare survives", () => {
+  expect(guard("A Lei 15.502 vai virar law permanente.")).toBeNull();
+  expect(guard("Isso é lawfare puro, e você sabe.")).not.toBeNull();
+  expect(guard("O advogado falou de lawfare e de perseguição.")).not.toBeNull();
+});
+
+test("corrupted tokens fused into a word are thrown away", () => {
+  // Straight from the live feed.
+  expect(guard("deixou o Brasil de joelho praQWidget mundo inteiro ver")).toBeNull();
+  // Ordinary Portuguese, including caps for emphasis, must survive.
+  expect(guard("deixou o Brasil de joelho pra o mundo inteiro ver")).not.toBeNull();
+  expect(guard("Isso é ACORDA meu amigo, simples assim.")).not.toBeNull();
+  expect(guard("O PT e o PL brigam, e o STF assiste.", "STF")).not.toBeNull();
 });

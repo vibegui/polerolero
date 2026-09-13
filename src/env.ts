@@ -1,6 +1,7 @@
 export interface Env {
   DB: D1Database;
   ASSETS: Fetcher;
+  LIVE: DurableObjectNamespace<import('./live.ts').LiveRoom>;
 
   AI_GATEWAY_ACCOUNT_ID: string;
   AI_GATEWAY_NAME: string;
