@@ -1,4 +1,8 @@
+import aborto from "../topics/aborto.json" with { type: "json" };
+import armas from "../topics/armas.json" with { type: "json" };
 import bancoMaster from "../topics/banco-master.json" with { type: "json" };
+import desmatamento from "../topics/desmatamento.json" with { type: "json" };
+import drogas from "../topics/drogas.json" with { type: "json" };
 import darkHorse from "../topics/dark-horse.json" with { type: "json" };
 import educacao2026 from "../topics/educacao-2026.json" with { type: "json" };
 import inssFraude from "../topics/inss-fraude.json" with { type: "json" };
@@ -38,7 +42,11 @@ export interface Topic {
 }
 
 export const TOPICS: Topic[] = [
+  aborto as Topic,
+  armas as Topic,
   bancoMaster as Topic,
+  desmatamento as Topic,
+  drogas as Topic,
   darkHorse as Topic,
   educacao2026 as Topic,
   inssFraude as Topic,

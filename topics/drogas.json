@@ -1,0 +1,95 @@
+{
+  "id": "drogas",
+  "title": "Drogas: usuário ou traficante",
+  "summary": "O STF concluiu, por unanimidade no plenário virtual, a decisão que descriminalizou o porte de maconha para uso pessoal e fixou 40 gramas ou seis plantas fêmeas como referência para presumir usuário. O porte deixou de ser infração penal e passou a ilícito administrativo: a polícia apreende e notifica, vedada a prisão em flagrante. A decisão não legaliza a maconha nem alcança outras drogas. Flávio Bolsonaro declarou que indicaria ao STF ministros contrários às drogas.",
+  "active": true,
+  "source": "https://www.migalhas.com.br/quentes/416151/publicado-acordao-do-stf-que-descriminaliza-uso-de-ate-40g-de-maconha",
+  "lula": [
+    {
+      "id": "dro-l-quem-e-preso",
+      "claim": "A lei de 2006 não disse quanto é usuário e quanto é traficante, e adivinha quem virava traficante e quem virava usuário com a mesma quantidade no bolso. O critério objetivo é o fim dessa loteria.",
+      "tags": [
+        "drogas",
+        "justica",
+        "crime",
+        "classe",
+        "presos"
+      ],
+      "rebuts": [
+        "drogas",
+        "crime",
+        "presos",
+        "costumes",
+        "seguranca"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A Lei 11.343/2006 não fixou quantidade e deixou a distinção entre usuário e traficante ao critério da autoridade, e há ampla literatura mostrando que esse critério aberto produziu resultados desiguais por cor e classe — foi um dos fundamentos do julgamento no STF. A fixação de 40 gramas como referência reduz esse arbítrio. O que o argumento omite: a referência é presunção relativa, pode ser afastada no caso concreto, e a desigualdade na aplicação da lei penal não se resolve só com um número.",
+      "source": "https://noticias.stf.jus.br/postsnoticias/stf-forma-maioria-para-descriminalizar-porte-de-maconha-para-consumo-pessoal/"
+    },
+    {
+      "id": "dro-l-guerra-perdida",
+      "claim": "Vocês prendem moleque com um pacotinho há vinte anos e a facção só cresceu — de dentro do presídio, que é onde ela recruta. Isso não é combate ao tráfico, é linha de montagem.",
+      "tags": [
+        "drogas",
+        "presos",
+        "crime",
+        "seguranca",
+        "classe"
+      ],
+      "rebuts": [
+        "drogas",
+        "crime",
+        "seguranca",
+        "presos",
+        "costumes"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Crimes relacionados a drogas respondem por uma das maiores fatias da população prisional brasileira, boa parte por pequena quantidade e sem violência, e o papel do presídio na formação e expansão de facções é documentado desde os anos 1990 — argumentos usados no julgamento do STF sobre o porte para consumo pessoal. A ressalva: descriminalizar o porte não desmonta a facção, que vive do comércio e não do consumo, e o argumento sugere uma relação causal mais direta do que a evidência sustenta.",
+      "source": "https://noticias.stf.jus.br/postsnoticias/stf-forma-maioria-para-descriminalizar-porte-de-maconha-para-consumo-pessoal/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "dro-b-quem-legisla",
+      "claim": "Fixar quantidade em grama é escrever lei. Quem escreve lei é deputado eleito, não ministro indicado. Se 40 gramas é o número certo, que o Congresso vote 40 gramas.",
+      "tags": [
+        "drogas",
+        "stf",
+        "instituicoes",
+        "democracia"
+      ],
+      "rebuts": [
+        "drogas",
+        "justica",
+        "classe",
+        "crime"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A objeção de competência é a crítica mais consistente ao julgamento e foi levantada dentro do próprio tribunal: fixar parâmetro numérico se aproxima de função legislativa. Do outro lado, o STF decidiu que a criminalização do porte para consumo próprio é inconstitucional e precisava dar critério operacional, sob pena de deixar o vácuo que existia. A decisão é unânime quanto a manter a íntegra do julgado, o que enfraquece a tese de decisão isolada.",
+      "source": "https://www.migalhas.com.br/quentes/416151/publicado-acordao-do-stf-que-descriminaliza-uso-de-ate-40g-de-maconha"
+    },
+    {
+      "id": "dro-b-nao-e-so-maconha",
+      "claim": "Começou com quarenta gramas de maconha e já tem ministro dizendo que a mesma lógica vale pras outras. Você jura que para aqui?",
+      "tags": [
+        "drogas",
+        "stf",
+        "costumes",
+        "seguranca"
+      ],
+      "rebuts": [
+        "drogas",
+        "justica",
+        "crime",
+        "presos"
+      ],
+      "register": "conspiratorio",
+      "verdict": "depende",
+      "explain": "A decisão do STF alcança apenas a cannabis sativa e não legaliza nem descriminaliza outras drogas — nesse ponto a frase sugere mais do que existe. Por outro lado, ela não inventa: Gilmar Mendes afirmou publicamente que a lógica da descriminalização pode alcançar outras substâncias, o que dá base real à preocupação. É previsão política com fundamento numa fala existente, não um fato consumado.",
+      "source": "https://www.migalhas.com.br/quentes/416151/publicado-acordao-do-stf-que-descriminaliza-uso-de-ate-40g-de-maconha"
+    }
+  ]
+}

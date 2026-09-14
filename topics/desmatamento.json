@@ -1,0 +1,90 @@
+{
+  "id": "desmatamento",
+  "title": "Desmatamento e o que fazer com a floresta",
+  "summary": "Os alertas de desmatamento na Amazônia caíram 36,87% entre agosto de 2025 e julho de 2026, somando 2.874,38 km² — o menor valor desde 2016, quando a série do DETER começou. Nos quatro anos de 2023 a 2026 a área sob alerta somou 19.642 km², 41% abaixo dos 33,4 mil km² do período 2019-2022. O plano de Flávio Bolsonaro registrado no TSE propõe desmatamento ilegal zero até 2029, monitoramento por satélite e inteligência artificial, mercado de carbono e pagamento por serviços ambientais.",
+  "active": true,
+  "source": "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-08/desmatamento-na-amazonia-cai-3687-no-ultimo-ano",
+  "lula": [
+    {
+      "id": "des-l-numeros",
+      "claim": "Alerta de desmatamento na Amazônia caiu quase 37% no último ciclo e é o menor desde que a série existe. Não foi discurso, foi fiscalização — a mesma que vocês desmontaram e chamaram de indústria da multa.",
+      "tags": [
+        "ambiente",
+        "agro",
+        "gestao",
+        "internacional"
+      ],
+      "rebuts": [
+        "ambiente",
+        "agro",
+        "ong",
+        "soberania",
+        "gestao"
+      ],
+      "register": "orgulhoso",
+      "verdict": "verdadeiro",
+      "explain": "Os números conferem: queda de 36,87% nos alertas do DETER entre agosto de 2025 e julho de 2026, totalizando 2.874,38 km², o menor valor desde o início da série em 2016, e 19.642 km² acumulados em 2023-2026 contra 33,4 mil km² em 2019-2022. A atribuição à retomada da fiscalização é a explicação predominante entre especialistas, embora preço de commodity e clima também influenciem. A afirmação central se sustenta.",
+      "source": "https://oc.eco.br/alertas-de-desmatamento-em-2026-sao-os-menores-da-historia/"
+    },
+    {
+      "id": "des-l-reversivel",
+      "claim": "Esse número cai quando tem fiscal em campo e sobe no ano seguinte em que você tira. Já vimos esse filme. Prometer zero em 2029 sem dizer com que estrutura é promessa de folheto.",
+      "tags": [
+        "ambiente",
+        "gestao",
+        "agro"
+      ],
+      "rebuts": [
+        "ambiente",
+        "gestao",
+        "agro",
+        "soberania"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "A reversibilidade é real: o desmatamento brasileiro caiu forte nos anos 2000, voltou a subir a partir de 2013 e disparou entre 2019 e 2022, acompanhando a capacidade de fiscalização. Isso dá base à desconfiança. Por outro lado, a meta de desmatamento ilegal zero até 2029 do plano adversário é mais ambiciosa em prazo que a meta de 2030 do próprio governo, e monitoramento por satélite com IA é ferramenta que os dois lados propõem.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "des-b-meta-2029",
+      "claim": "Meu plano põe desmatamento ilegal zero em 2029, um ano antes da meta de vocês, com satélite e inteligência artificial em vez de multa que nunca é paga. Ambição é isso, não press release em conferência.",
+      "tags": [
+        "ambiente",
+        "agro",
+        "gestao",
+        "internacional"
+      ],
+      "rebuts": [
+        "ambiente",
+        "gestao",
+        "agro"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "O plano registrado no TSE traz mesmo desmatamento ilegal zero até 2029, monitoramento por satélite e IA, mercado de carbono e pagamento por serviços ambientais — e o prazo é de fato anterior ao de 2030. A ressalva é grande: a gestão anterior, à qual o candidato é politicamente ligado, registrou o maior desmatamento acumulado recente, e o plano não detalha efetivo de fiscalização, que é a variável que historicamente move o número.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "des-b-agro",
+      "claim": "O produtor que planta dentro da lei é tratado como criminoso por ONG financiada lá fora, enquanto o agro sustenta a balança comercial. Fiscaliza quem desmata ilegal e para de criminalizar quem produz.",
+      "tags": [
+        "ambiente",
+        "agro",
+        "soberania",
+        "ong"
+      ],
+      "rebuts": [
+        "ambiente",
+        "agro",
+        "gestao",
+        "internacional"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "É verdade que a maior parte da produção agropecuária brasileira ocorre em área já aberta e dentro da lei, e que o setor pesa muito na balança comercial — tratar o agro como sinônimo de desmatamento é impreciso. A ressalva: parte relevante do desmatamento ilegal converte-se depois em pasto e lavoura, então a separação entre produtor legal e ilegal não é tão limpa quanto a frase sugere, e financiamento estrangeiro a ONG não é ilegal nem prova de má-fé.",
+      "source": "https://agenciabrasil.ebc.com.br/meio-ambiente/noticia/2026-08/desmatamento-na-amazonia-cai-3687-no-ultimo-ano"
+    }
+  ]
+}

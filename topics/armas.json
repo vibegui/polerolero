@@ -1,0 +1,90 @@
+{
+  "id": "armas",
+  "title": "Armas: revogar ou manter o Estatuto",
+  "summary": "A equipe de Flávio Bolsonaro trabalha num plano para revogar o Estatuto do Desarmamento (Lei 10.826/2003) e substituí-lo por uma legislação nova, detalhada pelo deputado Marcos Pollon, que facilite o acesso do civil à arma e reduza a burocracia do CAC. O primeiro passo previsto é revogar os decretos do governo Lula sobre armas e voltar às regras da gestão anterior, que haviam flexibilizado posse e porte. Lula defende manter a restrição.",
+  "active": true,
+  "source": "https://www.gazetadopovo.com.br/eleicoes/2026/flavio-planeja-nova-legislacao-sobre-armas-com-fim-do-estatuto-do-desarmamento/",
+  "lula": [
+    {
+      "id": "arm-l-cac",
+      "claim": "Vocês encheram o país de CAC que nunca atirou em competição nenhuma, e parte dessas armas foi parar na mão do crime. Isso não é clube de tiro, é atacado.",
+      "tags": [
+        "armas",
+        "seguranca",
+        "crime",
+        "milicia"
+      ],
+      "rebuts": [
+        "armas",
+        "seguranca",
+        "liberdade",
+        "crime"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "O número de registros de CAC cresceu muito durante a gestão anterior, após decretos que flexibilizaram posse e porte, e há casos documentados de desvio de armas de acervo legal para o crime — foi parte do motivo alegado para os decretos restritivos do governo Lula. Daí não decorre que a maioria dos CACs desvie arma: são casos, não a regra, e o argumento generaliza. O crescimento e os desvios são fato; a proporção, não.",
+      "source": "https://www.gazetadopovo.com.br/republica/oposicao-quer-derrubar-efeitos-do-decreto-desarmamentista-de-lula/"
+    },
+    {
+      "id": "arm-l-mais-arma-mais-morte",
+      "claim": "Mais arma circulando não é mais segurança, é mais chance de a discussão de bar e a briga em casa terminarem com alguém morto. Quem mais morre de arma em casa é mulher.",
+      "tags": [
+        "armas",
+        "seguranca",
+        "crime",
+        "genero"
+      ],
+      "rebuts": [
+        "armas",
+        "liberdade",
+        "seguranca"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A direção da evidência internacional associa maior disponibilidade de arma de fogo em domicílio a mais mortes por arma, incluindo feminicídio e suicídio, e é esse corpo de estudos que sustenta a política restritiva. A literatura não é unânime e há trabalhos que não encontram efeito sobre crime patrimonial, que é a preocupação de quem quer se armar. A frase acerta a direção do achado e apresenta como mais fechado do que é.",
+      "source": "https://www.gazetadopovo.com.br/eleicoes/2026/flavio-planeja-nova-legislacao-sobre-armas-com-fim-do-estatuto-do-desarmamento/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "arm-b-estatuto",
+      "claim": "O Estatuto do Desarmamento está de pé há mais de vinte anos e o bandido nunca teve tanta arma. Desarmaram quem obedece a lei. Vamos revogar e escrever uma lei nova, que é o que está no plano.",
+      "tags": [
+        "armas",
+        "seguranca",
+        "liberdade",
+        "crime"
+      ],
+      "rebuts": [
+        "armas",
+        "seguranca",
+        "crime",
+        "genero"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "É fato que a equipe de campanha trabalha em revogar o Estatuto do Desarmamento e substituí-lo por legislação nova, começando pela revogação dos decretos do atual governo. A crítica de que a restrição recai sobre quem se registra, e não sobre o mercado ilegal, é real e reconhecida. O que a frase omite: o Estatuto foi seguido de queda nas mortes por arma de fogo nos anos imediatamente posteriores a 2003, e a arma do crime frequentemente tem origem em desvio do mercado legal.",
+      "source": "https://www.gazetadopovo.com.br/eleicoes/2026/flavio-planeja-nova-legislacao-sobre-armas-com-fim-do-estatuto-do-desarmamento/"
+    },
+    {
+      "id": "arm-b-legitima-defesa",
+      "claim": "Mulher ameaçada que pede medida protetiva e continua sozinha em casa esperando. Você quer explicar pra ela por que ela não pode ter como se defender enquanto o Estado não chega?",
+      "tags": [
+        "armas",
+        "liberdade",
+        "seguranca",
+        "genero"
+      ],
+      "rebuts": [
+        "armas",
+        "seguranca",
+        "genero",
+        "crime"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "O caso da mulher sob ameaça é usado pelos dois lados e entrou nas propostas de 2026 de esquerda e direita. O ponto real: a proteção do Estado frequentemente falha e a espera é perigosa. O contraponto, também real, é que a presença de arma em domicílio com histórico de violência está associada a maior letalidade da própria vítima, e que a arma pode ser tomada pelo agressor. É um dos poucos pontos da pauta em que a evidência desagrada aos dois lados.",
+      "source": "https://www.gazetadopovo.com.br/republica/oposicao-quer-derrubar-efeitos-do-decreto-desarmamentista-de-lula/"
+    }
+  ]
+}

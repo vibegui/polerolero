@@ -1,0 +1,91 @@
+{
+  "id": "aborto",
+  "title": "Aborto e quem decide",
+  "summary": "O aborto segue crime no Brasil fora das três hipóteses legais — risco de vida, gravidez de estupro e feto anencéfalo. A ADPF 442, apresentada em 2017 pelo PSOL e pelo Instituto Anis, pede a descriminalização até a 12ª semana; Rosa Weber votou pela inconstitucionalidade dos artigos 124 e 126 do Código Penal em 2023 e Barroso depositou voto no mesmo sentido, mas Flávio Dino, relator, retirou o caso de pauta e Gilmar Mendes pediu destaque. Não há data para conclusão. Flávio Bolsonaro declarou que indicaria ao STF ministros contra o aborto.",
+  "active": true,
+  "source": "https://www.gazetadopovo.com.br/vida-e-cidadania/aborto-adpf-442-entenda-a-acao-barroso-descriminalizacao-stf/",
+  "lula": [
+    {
+      "id": "ab-l-classe",
+      "claim": "Aborto no Brasil não é sobre ser proibido, é sobre quem morre quando dá errado. Rica vai pra clínica, pobre vai pra emergência — ou pro cemitério. Você chama isso de defesa da vida?",
+      "tags": [
+        "costumes",
+        "saude",
+        "classe",
+        "genero",
+        "social"
+      ],
+      "rebuts": [
+        "costumes",
+        "religiao",
+        "familia",
+        "genero"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A afirmação central — que a criminalização recai de forma desigual sobre mulheres pobres e negras, que têm menos acesso a procedimento seguro — é sustentada pela literatura de saúde pública e pelos registros de internação por complicação de aborto no SUS. O que o argumento não demonstra é a magnitude: estimativas de aborto clandestino no Brasil variam muito porque a prática é ilegal e subnotificada. A desigualdade de risco é consenso; o número exato não é.",
+      "source": "https://www.gazetadopovo.com.br/vida-e-cidadania/aborto-adpf-442-entenda-a-acao-barroso-descriminalizacao-stf/"
+    },
+    {
+      "id": "ab-l-congresso-nao-vota",
+      "claim": "Vocês dizem que é o Congresso que tem que decidir, e o Congresso não pauta isso há décadas justamente porque ninguém quer pagar o preço. Empurrar pro Congresso é o jeito educado de dizer que nunca.",
+      "tags": [
+        "costumes",
+        "instituicoes",
+        "genero"
+      ],
+      "rebuts": [
+        "costumes",
+        "stf",
+        "instituicoes",
+        "religiao"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "É verdade que o Congresso brasileiro não delibera sobre descriminalização há décadas e que o tema é eleitoralmente custoso para parlamentares dos dois campos. Isso não responde ao argumento institucional do outro lado: inércia legislativa não transfere automaticamente a competência ao STF, e essa é exatamente a controvérsia da ADPF 442. O argumento acerta o diagnóstico político e passa por cima da questão de competência.",
+      "source": "https://ibdfam.org.br/noticias/13343/STF+volta+a+julgar+descriminaliza%C3%A7%C3%A3o+do+aborto+nas+primeiras+12+semanas+de+gesta%C3%A7%C3%A3o"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "ab-b-quem-legisla",
+      "claim": "Onze pessoas de toga não foram eleitas por ninguém pra reescrever o Código Penal. Isso se chama Congresso. Se a sua tese é boa, ganha o voto — ou só é boa quando não precisa de voto?",
+      "tags": [
+        "costumes",
+        "stf",
+        "instituicoes",
+        "democracia"
+      ],
+      "rebuts": [
+        "costumes",
+        "instituicoes",
+        "genero",
+        "classe"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "O argumento de competência é sério e tem defensores dos dois lados do espectro: descriminalizar por decisão judicial contorna o Legislativo, e a ADPF 442 é contestada exatamente aí. A ressalva é que controle de constitucionalidade de norma penal é função ordinária do STF e já foi exercida antes, inclusive na hipótese de anencefalia, em 2012. Chamar de usurpação pressupõe resolvida uma questão que o próprio tribunal ainda não julgou.",
+      "source": "https://www.gazetadopovo.com.br/vida-e-cidadania/aborto-adpf-442-entenda-a-acao-barroso-descriminalizacao-stf/"
+    },
+    {
+      "id": "ab-b-indicacao-stf",
+      "claim": "Vou indicar ministro contra o aborto, e falei isso na cara do povo antes da eleição. Você prefere qual: quem diz o que vai fazer, ou quem faz por decisão de tribunal sem nunca ter posto no programa?",
+      "tags": [
+        "costumes",
+        "stf",
+        "religiao",
+        "democracia"
+      ],
+      "rebuts": [
+        "costumes",
+        "stf",
+        "instituicoes",
+        "genero"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "Flávio Bolsonaro declarou publicamente que indicaria ao STF ministros contrários ao aborto e às drogas, e o vencedor de 2026 deve indicar quatro ministros no mandato. Anunciar critério de indicação antes da eleição é legítimo e transparente. A ressalva é que indicação por posição em tema específico é o que a crítica ao ativismo judicial costuma condenar quando vem do outro lado — seleciona-se o resultado, não a qualificação.",
+      "source": "https://www.terra.com.br/noticias/eleicoes/na-record-flavio-bolsonaro-fala-em-nomear-ministros-contra-o-aborto-ao-stf-diz-que-bolsonaro-sera-conselheiro-e-nao-se-compromete-sobre-escala-6-x-1,14bf918208013265a391045da14b4839w71x7g0b.html"
+    }
+  ]
+}
