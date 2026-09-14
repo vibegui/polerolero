@@ -14,15 +14,11 @@ import { isAsleep, wakeUpAfter } from "./sleep.ts";
 import { LENGTHS, MOVES, gapFor, pickLength } from "./style.ts";
 import type { Message, Side } from "./env.ts";
 import {
-  type Goal,
   SUBJECTS,
   THEME_MAX,
   THEME_MIN,
-  assignGoals,
-  goalHint,
-  goalLabel,
+  losingSide,
   pickSubject,
-  resolveGoal,
   subjectNodes,
   themeLength,
 } from "./themes.ts";
@@ -422,68 +418,11 @@ test("the subject rotation does not repeat itself", () => {
   for (let i = 0; i < 50; i++) expect(recent).not.toContain(pickSubject(recent, Math.random()).id);
 });
 
-test("arrastar counts only your own landings", () => {
-  const target = TREES.lula[0]!.tags[0]!;
-  const mine = TREES.lula.filter((n) => n.tags.includes(target)).slice(0, 3);
-  const goal: Goal = { id: "arrastar", target };
-  const msgs = mine.map((n) => tmsg("lula", n.id));
-  expect(resolveGoal(goal, "lula", msgs, "lula").done).toBe(true);
-  // The opponent landing the tag does nothing for you.
-  expect(resolveGoal(goal, "bolsonaro", msgs, "lula").done).toBe(false);
-});
 
-test("evitar fails the moment the other side lands the tag", () => {
-  const target = TREES.lula[0]!.tags[0]!;
-  const leak = TREES.lula.find((n) => n.tags.includes(target))!;
-  const goal: Goal = { id: "evitar", target };
-  expect(resolveGoal(goal, "bolsonaro", [tmsg("lula", leak.id)], "lula").done).toBe(false);
-  expect(resolveGoal(goal, "bolsonaro", [tmsg("bolsonaro", leak.id)], "lula").done).toBe(true);
-});
 
-test("insistir needs the same argument three times", () => {
-  const id = TREES.lula[0]!.id;
-  const goal: Goal = { id: "insistir", target: null };
-  expect(resolveGoal(goal, "lula", [tmsg("lula", id), tmsg("lula", id)], "lula").done).toBe(false);
-  expect(
-    resolveGoal(goal, "lula", [tmsg("lula", id), tmsg("lula", id), tmsg("lula", id)], "lula").done,
-  ).toBe(true);
-});
 
-test("blindar is not awarded to someone nobody asked anything", () => {
-  const goal: Goal = { id: "blindar", target: null };
-  // Never answering because you were never engaged is not stonewalling.
-  expect(resolveGoal(goal, "lula", [tmsg("lula", TREES.lula[0]!.id)], "lula").done).toBe(false);
 
-  // Three unanswered exchanges: bolsonaro plays arguments that rebut nothing
-  // lula just said. Built from the real trees so it stays honest.
-  const lulaNode = TREES.lula[0]!;
-  const dodge = TREES.bolsonaro.find((n) => !n.rebuts.some((t) => lulaNode.tags.includes(t)))!;
-  const seq: Message[] = [];
-  for (let i = 0; i < 3; i++) {
-    seq.push(tmsg("lula", lulaNode.id), tmsg("bolsonaro", dodge.id));
-  }
-  expect(resolveGoal(goal, "bolsonaro", seq, "lula").done).toBe(true);
-});
 
-test("encerrar goes to whoever walked away", () => {
-  const goal: Goal = { id: "encerrar", target: null };
-  expect(resolveGoal(goal, "lula", [], "lula").done).toBe(true);
-  expect(resolveGoal(goal, "lula", [], "bolsonaro").done).toBe(false);
-});
-
-test("goals are always describable, in the prompt and on the closing card", () => {
-  for (let i = 0; i < 200; i++) {
-    const subject = SUBJECTS[i % SUBJECTS.length]!;
-    const goals = assignGoals(subject);
-    for (const side of ["lula", "bolsonaro"] as Side[]) {
-      const g = goals[side];
-      expect(goalHint(g).length).toBeGreaterThan(20);
-      expect(goalLabel(g).length).toBeGreaterThan(10);
-      // A targeted goal without a target renders as "para null" on a public page.
-      if (g.id === "arrastar" || g.id === "evitar") expect(g.target).toBeTruthy();
-    }
-  }
-});
 
 test("pace weights keep the daily volume, and therefore the bill, unchanged", () => {
   const mean = LENGTHS.reduce((s, l) => s + l.weight * l.pace, 0) / 100;
@@ -540,20 +479,6 @@ test("a small argument pool still excludes something", () => {
   }
 });
 
-test("insistir is never handed out where repeating is unavoidable", () => {
-  // A three-argument theme forces repeats, so awarding "martelou o mesmo
-  // argumento" there congratulates both sides for arithmetic.
-  for (const s of SUBJECTS) {
-    for (let i = 0; i < 60; i++) {
-      const goals = assignGoals(s);
-      for (const side of ["lula", "bolsonaro"] as Side[]) {
-        if (goals[side].id !== "insistir") continue;
-        expect(subjectNodes(s, side).length, `${s.id}/${side} got insistir on a thin pool`)
-          .toBeGreaterThanOrEqual(6);
-      }
-    }
-  }
-});
 
 test("the personas never address a crowd", () => {
   // There is no room and no audience; it is one to one. The model opened a
@@ -593,4 +518,24 @@ test("the two of them do not trade repetition accusations", () => {
   ]) {
     expect(pickCallback(pool, "bolsonaro", node, NOW, 0, said), said).toBeNull();
   }
+});
+
+test("the side that has been answering more is the one losing", () => {
+  // Answering is being led: the side that keeps replying to the other's points
+  // is on the back foot, and is therefore the one who wants out of the subject.
+  const lulaNode = TREES.lula[0]!;
+  const replies = TREES.bolsonaro.find((n) => n.rebuts.some((t) => lulaNode.tags.includes(t)))!;
+  const ignores = TREES.bolsonaro.find((n) => !n.rebuts.some((t) => lulaNode.tags.includes(t)))!;
+
+  const chasing: Message[] = [];
+  for (let i = 0; i < 3; i++) chasing.push(tmsg("lula", lulaNode.id), tmsg("bolsonaro", replies.id));
+  expect(losingSide(chasing)).toBe("bolsonaro");
+
+  const stonewalling: Message[] = [];
+  for (let i = 0; i < 3; i++) {
+    stonewalling.push(tmsg("lula", lulaNode.id), tmsg("bolsonaro", ignores.id));
+  }
+  // Nobody answered anyone: falls back to whoever spoke last.
+  expect(losingSide(stonewalling)).toBe("bolsonaro");
+  expect(losingSide([])).toBe("lula");
 });

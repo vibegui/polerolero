@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import { expect, test } from "bun:test";
 import { readdirSync, readFileSync } from "node:fs";
-import type { Env, Message, ThemeRow } from "./env.ts";
+import type { Env, Message, Side, ThemeRow } from "./env.ts";
 import { callbackPool, topUp } from "./topup.ts";
 import { THEME_MAX, THEME_MIN } from "./themes.ts";
 import { TREES } from "./trees.ts";
@@ -72,17 +72,8 @@ test("a run opens a theme, fills it, closes it once, and never rewinds the clock
   for (const t of themes) {
     expect(t.ends_after).toBeGreaterThanOrEqual(THEME_MIN);
     expect(t.ends_after).toBeLessThanOrEqual(THEME_MAX);
-    const closes = msgs.filter((m) => m.theme_id === t.id && m.kind === "fecho");
-    expect(closes.length, `theme ${t.id} closed ${closes.length}x`).toBe(t.outcome ? 1 : 0);
-    // A closed theme's card must carry a decided verdict for BOTH sides, or the
-    // reveal renders half-empty on a public page.
-    if (t.outcome) {
-      const o = JSON.parse(t.outcome);
-      for (const side of ["lula", "bolsonaro"]) {
-        expect(typeof o[side].done).toBe("boolean");
-        expect(o[side].detail.length).toBeGreaterThan(3);
-      }
-    }
+    // No cards at all any more: a theme opens and closes by being talked about.
+    expect(msgs.filter((m) => m.theme_id === t.id && m.kind === "fecho").length).toBe(0);
   }
 
   // Every argument belongs to a theme, and the feed is strictly ordered.
@@ -99,7 +90,7 @@ test("a run opens a theme, fills it, closes it once, and never rewinds the clock
   // And it is said by whoever was losing — the side that walked away from the
   // theme that just closed opens the next one. That is the whole tell.
   for (const t of themes.filter((x) => x.outcome)) {
-    const closedBy = JSON.parse(t.outcome!).closedBy as string;
+    const closedBy = JSON.parse(t.outcome!).closedBy as Side;
     const next = themes.find((x) => x.id === t.id + 1);
     if (!next) continue;
     const first = msgs.find((m) => m.theme_id === next.id && m.kind === "message");

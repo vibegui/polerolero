@@ -34,25 +34,7 @@ export interface Theme {
   outcome: string | null;
 }
 
-export interface Outcome {
-  closedBy: Side;
-  messages: number;
-  lula: { goal: { id: string; target: string | null }; done: boolean; detail: string };
-  bolsonaro: { goal: { id: string; target: string | null }; done: boolean; detail: string };
-}
 
-/** Mirrors goalLabel() in src/themes.ts — the reveal has to read the same way
- *  on the card as it does in the log. */
-export function goalText(goal: { id: string; target: string | null }): string {
-  switch (goal.id) {
-    case "arrastar": return `arrastar a conversa para ${goal.target}`;
-    case "evitar": return `impedir que se falasse de ${goal.target}`;
-    case "insistir": return "martelar o mesmo argumento até colar";
-    case "blindar": return "nunca responder o que foi perguntado";
-    case "encerrar": return "ser quem encerra o assunto";
-    default: return goal.id;
-  }
-}
 
 export interface ArgNode {
   id: string;
@@ -382,10 +364,13 @@ export function App() {
         {visible.map((m) =>
           m.kind === "pause" ? (
             <Pause key={m.id} message={m} />
-          ) : m.kind === "tema" ? (
-            <ThemeCard key={m.id} message={m} theme={m.theme_id ? themes[m.theme_id] : undefined} />
-          ) : m.kind === "fecho" ? (
-            <Reveal key={m.id} theme={m.theme_id ? themes[m.theme_id] : undefined} />
+          ) : m.kind !== "message" ? (
+            // 'tema' and 'fecho' rows are history: subject changes used to be a
+            // card and themes used to close with a reveal of the secret
+            // objectives. Both are gone — the change is said by whoever is
+            // losing, as a message — so the old rows render as nothing rather
+            // than falling through and being spoken by a side.
+            null
           ) : (
           <Bubble
             key={m.id}
@@ -473,59 +458,7 @@ function Pause({ message }: { message: Message }) {
   );
 }
 
-/**
- * Legacy only. Subject changes used to be a card announcing themselves; they
- * are now an ordinary message from the side that is losing, which is the whole
- * tell. Rows written before that change are still in the feed's history.
- */
-function ThemeCard({ message, theme }: { message: Message; theme?: Theme }) {
-  return (
-    <div className={`theme-card ${message.side}`}>
-      <div className="theme-who">{NAME[message.side]} mudou o assunto</div>
-      <div className="theme-title">{theme?.title ?? message.body}</div>
-      <div className="theme-line">{message.body}</div>
-    </div>
-  );
-}
 
-/**
- * The payoff. For twenty-odd messages each side was chasing something that was
- * never the argument on screen; this is where the feed says what it was.
- *
- * Renders nothing without its theme row rather than guessing: a half-revealed
- * card that says "objetivo: undefined" is worse than no card.
- */
-function Reveal({ theme }: { theme?: Theme }) {
-  if (!theme?.outcome) return null;
-  let out: Outcome;
-  try {
-    out = JSON.parse(theme.outcome) as Outcome;
-  } catch {
-    return null;
-  }
-  return (
-    <div className="reveal">
-      <div className="reveal-head">
-        Fim do assunto — {theme.title}
-        <span className="reveal-count">{out.messages} mensagens</span>
-      </div>
-      {(["lula", "bolsonaro"] as Side[]).map((side) => {
-        const r = out[side];
-        return (
-          <div key={side} className={`reveal-side ${side}`}>
-            <div className="reveal-name">{NAME[side]}</div>
-            <div className="reveal-goal">
-              objetivo secreto: <strong>{goalText(r.goal)}</strong>
-            </div>
-            <div className={`reveal-verdict ${r.done ? "won" : "lost"}`}>
-              {r.done ? "conseguiu" : "não conseguiu"} — {r.detail}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 function Bubble({
   message,

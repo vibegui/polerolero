@@ -3,7 +3,7 @@ import { chat } from "./gateway.ts";
 import { MOVES, gapFor, pickLength } from "./style.ts";
 import { TOPIC_BY_ID, topicNodes } from "./topics.ts";
 import { NODE_BY_ID, OTHER, TREES } from "./trees.ts";
-import { type Goal, type Subject, goalHint, subjectNodes } from "./themes.ts";
+import { type Subject, subjectNodes } from "./themes.ts";
 
 export { NODE_BY_ID, OTHER, TREES };
 
@@ -169,15 +169,22 @@ export function pickCallback(
 // Prompt
 // -----------------------------------------------------------------------------
 
-function systemPrompt(side: Side, length: string, goal: Goal | null): string {
+function systemPrompt(side: Side, length: string): string {
   return `Você é ${NAME[side]}. Você está numa conversa PRIVADA de WhatsApp, só
 vocês dois, trocando mensagem direto com ${NAME[OTHER[side]]}.
 Você defende esse lado com convicção e nunca admite estar errado.
 
 NÃO EXISTE PLATEIA. Isto é 1 para 1:
-- Fale COM ele, sempre em segunda pessoa: "você", "seu", "te". Nunca "ele",
-  nunca "esse cara aí", nunca falar dele em terceira pessoa como se contasse a
+- Fale COM ele, em segunda pessoa: "você", "seu", "te". Nunca "ele", nunca
+  "esse cara aí", nunca falar dele em terceira pessoa como se contasse a
   história pra outra pessoa.
+- Isso é sobre COM QUEM você fala, não sobre a primeira palavra da mensagem.
+  NÃO COMECE A MENSAGEM COM "Você". Quase metade das suas mensagens estava
+  abrindo assim e ficou com cara de robô. Abra de outro jeito — pelo fato
+  ("Doze milhões saíram daqui pra um fundo no Texas..."), pela réplica seca
+  ("Mentira. O acordo é de 2020."), citando o que ele disse ("'Detalhe
+  técnico', você falou. Detalhe técnico é..."), por uma pergunta, por um
+  deboche, pelo assunto. O "você" entra naturalmente depois.
 - Nunca se dirija a um grupo. Nada de "gente", "pessoal", "galera", "alguém
   aqui", "vocês viram". Não tem mais ninguém lendo.
 - Nunca narre a discussão de fora ("ele já trouxe esse ponto", "aí ele voltou
@@ -243,12 +250,7 @@ REGRAS:
 - Nunca saia do papel. Nunca explique que é uma IA.
 - Responda APENAS com a mensagem, sem aspas e sem prefixo de nome.
 
-${goal ? `${goalHint(goal)}
-Esse objetivo é SEU e é secreto. Nunca diga que tem um objetivo, nunca descreva
-sua própria estratégia, nunca use as palavras "meu objetivo". Ele muda o que
-você escolhe dizer, não vira assunto da mensagem.
-
-` : ""}FORMATO OBRIGATÓRIO DESTA MENSAGEM:
+FORMATO OBRIGATÓRIO DESTA MENSAGEM:
 ${length}
 Conte as frases. Esse formato não é sugestão — é o tamanho desta mensagem.
 
@@ -267,6 +269,8 @@ function userPrompt(
   topicSummary?: string,
   callback?: Callback | null,
   opensTheme = false,
+  /** How this side opened its last few messages, so it stops repeating itself. */
+  myOpenings: string[] = [],
 ): string {
   // Only arguments. A 'fecho' or 'pause' card carries no voice, and handing one
   // over as `Fã do Lula: Fim do assunto. 27 mensagens.` taught the model that
@@ -323,6 +327,10 @@ em uma frase por que ELE é que importa. Só então apresente o argumento.
 
 Comece pela virada, numa frase, falando direto com ele. Não anuncie que mudou
 de assunto com essas palavras, e nunca diga que está perdendo.
+
+` : ""}${myOpenings.length > 0 ? `VOCÊ JÁ ABRIU SUAS ÚLTIMAS MENSAGENS ASSIM — não repita nenhuma destas
+aberturas, nem nada parecido:
+${myOpenings.map((o) => `  · "${o}..."`).join("\n")}
 
 ` : ""}COMO RESPONDER — ${move}
 
@@ -546,8 +554,6 @@ export async function composeMessage(
   allowLlm: boolean,
   /** The theme in play. Restricts which arguments are even on the table. */
   subject: Subject | null,
-  /** This side's secret objective for the theme. */
-  goal: Goal | null,
   /** Messages from days ago, to catch the opponent repeating themselves. */
   older: Message[] = [],
   /** When this message airs — a callback's age is measured against that. */
@@ -582,6 +588,14 @@ export async function composeMessage(
   // Nothing to call back to in a two-sentence jab, and the short bucket exists
   // precisely to be a jab — asking for both gets neither.
   const lastOpponent = transcript.findLast((m) => m.side !== side)?.body ?? "";
+  // Feed this side its own recent openings back. A prompt rule alone fixes the
+  // tic that exists today; this keeps fixing whatever tic replaces it, because
+  // it is measured from the output rather than guessed in advance.
+  const myOpenings = transcript
+    .filter((m) => m.side === side && m.kind === "message")
+    .slice(-5)
+    .map((m) => m.body.trim().split(/\s+/).slice(0, 4).join(" "))
+    .filter((o) => o.length > 6);
   const callback = length.paragraphs > 1
     ? pickCallback(older, side, node, airsAt, Math.random(), lastOpponent)
     : null;
@@ -616,11 +630,12 @@ export async function composeMessage(
       const raw = await chat(
         env,
         [
-          { role: "system", content: systemPrompt(side, length.spec, goal) },
+          { role: "system", content: systemPrompt(side, length.spec) },
           {
             role: "user",
             content: userPrompt(
-              transcript.slice(-CONTEXT_TURNS), node, move, topic?.summary, callback, opensTheme,
+              transcript.slice(-CONTEXT_TURNS), node, move, topic?.summary, callback,
+              opensTheme, myOpenings,
             ) + (attempt === 0 ? "" : RETRY_NUDGE),
           },
         ],

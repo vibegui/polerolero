@@ -71,16 +71,12 @@ Um Worker da Cloudflare, um D1, um Durable Object.
   requisição compra 10–20 minutos, e todo mundo no mundo vê a mesma mensagem cair
   no mesmo segundo do relógio. É por isso que não tem socket nem estado por
   visitante.
-- **Um assunto por vez, e alguém decide mudar.** Sempre existe um tema em
-  curso. Ele dura de 10 a 30 mensagens — proporcional ao material que existe
-  sobre ele — e quando acaba, um dos dois vira a conversa e o feed mostra quem
-  virou.
-- **Tem um jogo embaixo.** Durante o tema, cada lado carrega um objetivo
-  secreto que não é ganhar a discussão: arrastar o assunto pro seu terreno,
-  impedir que se fale de alguma coisa, martelar um ponto até colar, nunca
-  responder o que foi perguntado, ser quem encerra. No fim do tema um card
-  revela os dois e diz quem conseguiu. O veredito é calculado do que foi
-  publicado, não opinado por um modelo.
+- **Um assunto por vez, e quem está perdendo é quem muda.** Sempre existe um
+  tema em curso, de 10 a 30 mensagens, proporcional ao material que existe
+  sobre ele. Quando acaba, quem vira a conversa é o lado que vinha mais
+  respondendo que perguntando — porque quem responde é quem está sendo levado.
+  Não tem card anunciando: a virada é dita por ele mesmo.
+
 - **A cadência varia.** Resposta seca volta rápido, parede de texto ganha
   tempo de leitura. O volume diário é o mesmo.
 - **Os dois se lembram.** De vez em quando um deles desenterra algo que o outro

@@ -59,16 +59,21 @@ One Worker. One D1. One Durable Object. Everything else is a binding.
   left, so nobody sees a gap.
 - **One model call per message.** Never one call writing both sides — the two
   voices converge in register and the joke dies.
-- **Themes, and the game under them.** There is always exactly one theme
-  running (`src/themes.ts`, `themes` table). It is either a tag from the
-  standing trees or a hot topic, it lasts `themeLength(pool)` arguments — three
-  per available argument, clamped 10-30 — and a side visibly decides to change
-  it (`kind='tema'`). While it runs each side carries a secret rhetorical
-  objective: drag the subject onto a tag, keep the other side off one, hammer a
-  point, never answer, be the one who walks away. The closing card
-  (`kind='fecho'`) reveals both. **Every objective is a predicate over stored
-  rows** — side, arg_id, theme_id — scored with the trees and no model call.
-  Keep it that way: a judge call would be a second fabrication surface.
+- **Themes.** There is always exactly one theme running (`src/themes.ts`,
+  `themes` table). It is either a tag from the standing trees or a hot topic,
+  it lasts `themeLength(pool)` arguments — three per available argument,
+  clamped 10-30 — and the side that is LOSING changes it, as an ordinary
+  message, which is the whole tell. `losingSide()` measures that by who has
+  been answering more: answering is being led, and the side setting the agenda
+  is winning.
+
+  There used to be a secret rhetorical objective per side, revealed on a card
+  when the theme closed. It was cut: it read as a game layer bolted onto a
+  conversation, and the conversation is the piece worth having. `kind='tema'`
+  and `kind='fecho'` rows survive only in history and render as nothing. The
+  goal columns are still on the table, written empty.
+
+
 - **Cadence is not a metronome.** Gaps come from `gapFor(length.pace, ...)`, so
   a two-sentence jab is fired back at fast and a three-paragraph wall gets time
   to be read. The `pace` weights are set so the weighted mean is within 2% of
@@ -155,11 +160,16 @@ the point.
 to be a `kind='tema'` card announcing itself, written by a separate LLM call
 that never passed through `inspect()` — which is how "Gente, alguém aqui já
 passou por fila no SUS?" reached the feed after the audience guard shipped. Now
-the change is an ordinary message from `losingSide()`: the side whose secret
-objective is failing, tie-broken by who has been answering more. It goes through
-the same guard as everything else, it carries an `arg_id` so "ver o argumento"
-works on it, and changing the subject because you are losing is the tell the
-whole mechanic exists to show. `kind='tema'` rows survive only in history.
+the change is an ordinary message from `losingSide()`. It goes through the same
+guard as everything else and carries an `arg_id` so "ver o argumento" works on
+it.
+
+**Second person is about who you address, not the first word.** Telling the
+model "sempre em segunda pessoa" made it open 47% of messages with "Você",
+against 5% for the next opener. The prompt now forbids that opening and the
+user prompt feeds the side its own last five openings back with an instruction
+not to repeat them — measured from the output, so it keeps working on whatever
+tic replaces this one.
 
 **Cards are not utterances.** `userPrompt` fed every transcript row to the model
 as `Fã do Lula: <body>`, including the `fecho` reveal and the sleep card, which

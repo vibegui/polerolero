@@ -2,15 +2,7 @@ import type { Env, Message, Side, ThemeRow } from "./env.ts";
 import { composeMessage } from "./generate.ts";
 import { isAsleep, sleepHours, wakeUpAfter } from "./sleep.ts";
 import { gapFor } from "./style.ts";
-import {
-  type Goal,
-  assignGoals,
-  losingSide,
-  pickSubject,
-  resolveGoal,
-  subjectNodes,
-  themeLength,
-} from "./themes.ts";
+import { losingSide, pickSubject, subjectNodes, themeLength } from "./themes.ts";
 import { NODE_BY_ID, OTHER } from "./trees.ts";
 import { inBlackout } from "./blackout.ts";
 
@@ -212,39 +204,27 @@ async function generate(env: Env): Promise<void> {
           "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages WHERE theme_id = ?1 AND kind = 'message' ORDER BY id",
         ).bind(theme.id).all<Message>();
         // Whoever is losing is the one who wants out, so they are the one who
-        // changes the subject — and that is also who `encerrar` is scored
-        // against. It used to be "whoever's turn it is", which made both the
-        // change and the objective a coin toss.
-        const goals = { lula: themeGoal(theme, "lula"), bolsonaro: themeGoal(theme, "bolsonaro") };
-        side = losingSide(goals, themeMsgs);
-        const verdicts = {
-          lula: resolveGoal(goals.lula, "lula", themeMsgs, side),
-          bolsonaro: resolveGoal(goals.bolsonaro, "bolsonaro", themeMsgs, side),
-        };
-        dueAt += gapFor(1.6, interval);
-        await insert
-          .bind(side, closingLine(theme, themeMsgs.length), "", dueAt, null, "fecho", theme.id)
-          .run();
+        // changes the subject. It used to be "whoever's turn it is".
+        side = losingSide(themeMsgs);
+        // `outcome` is also the closed flag: the live theme is the row where it
+        // is still null. No card is written — the change says itself.
         await env.DB.prepare("UPDATE themes SET outcome = ?1 WHERE id = ?2")
-          .bind(JSON.stringify({ closedBy: side, messages: themeMsgs.length, ...verdicts }), theme.id)
+          .bind(JSON.stringify({ closedBy: side, messages: themeMsgs.length }), theme.id)
           .run();
       }
 
       const subject = pickSubject(recentSubjects);
-      const goals = assignGoals(subject);
       const endsAfter = themeLength(
         Math.min(subjectNodes(subject, "lula").length, subjectNodes(subject, "bolsonaro").length),
       );
       const opened = await env.DB.prepare(
         `INSERT INTO themes
-           (subject, kind, title, opened_by, lula_goal, lula_target,
-            bolsonaro_goal, bolsonaro_target, started_at, ends_after)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) RETURNING *`,
+           (subject, kind, title, opened_by, lula_goal, bolsonaro_goal,
+            started_at, ends_after)
+         VALUES (?1, ?2, ?3, ?4, '', '', ?5, ?6) RETURNING *`,
       )
         .bind(
           subject.id, subject.kind, subject.title, side,
-          goals.lula.id, goals.lula.target,
-          goals.bolsonaro.id, goals.bolsonaro.target,
           dueAt + interval, endsAfter,
         )
         .first<ThemeRow>();
@@ -269,7 +249,7 @@ async function generate(env: Env): Promise<void> {
       : null;
 
     const { body, argId, gap } = await composeMessage(
-      env, side, transcript, recent, allowLlm, subject, themeGoal(theme, side),
+      env, side, transcript, recent, allowLlm, subject,
       olderRows, dueAt + interval, press, inTheme === 0,
     );
     dueAt += gap;
@@ -286,19 +266,5 @@ async function generate(env: Env): Promise<void> {
   }
 }
 
-/** The objective this theme handed to one side. */
-function themeGoal(theme: ThemeRow, side: Side): Goal {
-  return side === "lula"
-    ? { id: theme.lula_goal as Goal["id"], target: theme.lula_target }
-    : { id: theme.bolsonaro_goal as Goal["id"], target: theme.bolsonaro_target };
-}
 
-/**
- * The closing card. Deliberately flat — a referee reading a card, not a third
- * persona. The reveal is the payoff of the whole mechanic, so the drama has to
- * come from what the two of them were caught doing, not from the narration.
- */
-function closingLine(theme: ThemeRow, count: number): string {
-  return `Fim do assunto: ${theme.title}. ${count} mensagens.`;
-}
 
