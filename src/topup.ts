@@ -38,6 +38,14 @@ const PRESS_CHANCE = 0.18;
 const DOUBLE_CHANCE = 0.1;
 /** Themes kept out of the rotation, newest first. */
 const SUBJECT_MEMORY = 8;
+/**
+ * How long one run may hold the generation lease.
+ *
+ * Shorter than the five-minute cron interval, so a run that dies mid-flight
+ * costs at most one skipped tick instead of stalling the feed until someone
+ * notices. Long enough to cover MAX_PER_RUN model calls at the 25s timeout.
+ */
+const LOCK_SECONDS = 240;
 
 // -----------------------------------------------------------------------------
 // Buffer top-up
@@ -57,6 +65,27 @@ export async function topUp(env: Env): Promise<void> {
     return;
   }
 
+  // Take the lease before anything else reads the buffer. Cron delivery is
+  // at-least-once and a duplicate run is not harmless: both copies read the
+  // same newest row, both append from it, and the feed ends up with two
+  // messages a second apart carrying the same argument — at twice the spend.
+  const lease = await env.DB.prepare(
+    "UPDATE locks SET until = unixepoch() + ?1 WHERE name = 'topup' AND until < unixepoch()",
+  ).bind(LOCK_SECONDS).run();
+  if (!lease.meta?.changes) {
+    console.log(JSON.stringify({ event: "topup_skipped", reason: "another run holds the lease" }));
+    return;
+  }
+
+  try {
+    await generate(env);
+  } finally {
+    // Release early so the next tick is not forced to wait out the deadline.
+    await env.DB.prepare("UPDATE locks SET until = 0 WHERE name = 'topup'").run();
+  }
+}
+
+async function generate(env: Env): Promise<void> {
   const interval = setting(env.MESSAGE_INTERVAL_SECONDS, 60);
   const target = setting(env.BUFFER_TARGET, 20);
   const maxPerRun = setting(env.MAX_PER_RUN, 10);

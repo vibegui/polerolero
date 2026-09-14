@@ -132,6 +132,14 @@ Related: `themeLength` scales the session to the material, and `insistir` is
 never assigned to a side with fewer than six arguments, because there repeating
 is arithmetic rather than strategy.
 
+**Cron delivery is at-least-once, and topUp is not idempotent.** Two
+overlapping runs both read the same newest row and both append from it —
+production shipped two lula messages one second apart carrying the same
+`arg_id`, at twice the model spend. `topUp` now takes a lease from the
+`locks` table before reading anything, and releases it in a `finally`. It is a
+deadline, not a mutex: a run that dies costs one skipped tick, not a stalled
+feed. Do not add a second writer to `messages` without taking the same lease.
+
 **A deliberate zero is not a missing value.** Settings are read through
 `setting()` in `topup.ts`, not `Number(x) || fallback` — that idiom turned
 `MAX_PER_DAY=0`, the spend kill switch, into 1600.

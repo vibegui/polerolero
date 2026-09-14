@@ -38,7 +38,7 @@ function testEnv(): { env: Env; db: Database } {
       bind: (...a: unknown[]) => { args = a; return api; },
       all: async <T,>() => ({ results: q.all(...(args as never[])) as T[] }),
       first: async <T,>() => (q.get(...(args as never[])) ?? null) as T | null,
-      run: async () => { q.run(...(args as never[])); },
+      run: async () => ({ meta: { changes: q.run(...(args as never[])).changes } }),
     };
     return api;
   };
@@ -112,4 +112,30 @@ test("a theme closes only after its full run, and the next one is a new subject"
   }
   const subjects = themes.map((t) => t.subject);
   expect(new Set(subjects).size, "the rotation repeated a subject back to back").toBe(subjects.length);
+});
+
+
+test("a second run cannot append while the first holds the lease", async () => {
+  const { env, db } = testEnv();
+  // Cron delivery is at-least-once. Two overlapping runs both read the same
+  // newest row and both append from it: production got two lula messages one
+  // second apart carrying the SAME arg_id, at twice the model spend.
+  db.run("UPDATE locks SET until = unixepoch() + 240 WHERE name = 'topup'");
+  await topUp(env);
+  expect((db.query("SELECT COUNT(*) AS n FROM messages").get() as { n: number }).n).toBe(0);
+
+  // An expired lease is not a wedged one: the next tick simply takes it.
+  db.run("UPDATE locks SET until = unixepoch() - 1 WHERE name = 'topup'");
+  await topUp(env);
+  expect((db.query("SELECT COUNT(*) AS n FROM messages").get() as { n: number }).n)
+    .toBeGreaterThan(0);
+});
+
+test("the lease is released even when a run throws", async () => {
+  const { env, db } = testEnv();
+  // A run that dies holding the lease would stall the feed until the deadline.
+  db.run("DROP TABLE themes");
+  await topUp(env).catch(() => {});
+  expect((db.query("SELECT until FROM locks WHERE name = 'topup'").get() as { until: number }).until)
+    .toBe(0);
 });
