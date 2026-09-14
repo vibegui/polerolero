@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 import { expect, test } from "bun:test";
 import { readdirSync, readFileSync } from "node:fs";
 import type { Env, Message, ThemeRow } from "./env.ts";
-import { topUp } from "./topup.ts";
+import { callbackPool, topUp } from "./topup.ts";
 import { THEME_MAX, THEME_MIN } from "./themes.ts";
 
 /**
@@ -138,4 +138,27 @@ test("the lease is released even when a run throws", async () => {
   await topUp(env).catch(() => {});
   expect((db.query("SELECT until FROM locks WHERE name = 'topup'").get() as { until: number }).until)
     .toBe(0);
+});
+
+test("the callback pool query actually returns the messages it should", async () => {
+  const { env, db } = testEnv();
+  const now = Math.floor(Date.now() / 1000);
+  const add = (daysAgo: number, kind = "message") =>
+    db.run(
+      "INSERT INTO messages (side, body, arg_id, due_at, kind, created_at) VALUES ('lula', 'b', 'lula-comunismo', ?, ?, ?)",
+      [now - Math.round(daysAgo * 86400), kind, now],
+    );
+
+  add(3); add(7); add(13.5); // inside the window
+  add(0.5); // too recent — still in the transcript
+  add(30); // too old to be recognised
+  add(3, "pause"); // a card, not an argument
+
+  const pool = await callbackPool(env);
+  expect(pool.length, "the 1-14 day window did not select what it should").toBe(3);
+  for (const m of pool) {
+    expect(m.kind).toBe("message");
+    expect(now - m.due_at).toBeGreaterThan(86_400);
+    expect(now - m.due_at).toBeLessThan(1_209_600);
+  }
 });

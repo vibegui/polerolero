@@ -22,6 +22,30 @@ import { inBlackout } from "./blackout.ts";
  * falsy branch, and came back 1600. The one setting whose whole purpose is to
  * cap spend could not be set to its most important value.
  */
+/**
+ * Older messages the two of them can be caught repeating, 1-14 days back.
+ *
+ * Exported so the SQL itself is testable. The picker had unit tests and the
+ * filter was verified against a real production pool, but nothing covered this
+ * query — the one link that decides whether the picker is ever handed anything
+ * at all. Three attempts to confirm it from `wrangler tail` produced "zero
+ * callbacks" and were worthless: the tail captured no worker events at all.
+ *
+ * ponytail: ORDER BY RANDOM() sorts the whole window (~13k rows at steady
+ * state) once per tick. Fine at this size and indexed on due_at; if the table
+ * ever makes this hurt, sample a random id range instead.
+ */
+export async function callbackPool(env: Env): Promise<Message[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages
+       WHERE kind = 'message'
+         AND due_at < unixepoch() - 86400
+         AND due_at > unixepoch() - 1209600
+       ORDER BY RANDOM() LIMIT ?1`,
+  ).bind(CALLBACK_POOL).all<Message>();
+  return results;
+}
+
 export function setting(raw: string | undefined, fallback: number): number {
   if (raw === undefined || raw.trim() === "") return fallback;
   const n = Number(raw);
@@ -105,13 +129,7 @@ async function generate(env: Env): Promise<void> {
   // ponytail: ORDER BY RANDOM() sorts the whole 1–14 day window (~13k rows at
   // steady state) 288 times a day. Fine at this size and indexed on due_at;
   // if the table ever makes this hurt, sample a random id range instead.
-  const { results: olderRows } = await env.DB.prepare(
-    `SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages
-       WHERE kind = 'message'
-         AND due_at < unixepoch() - 86400
-         AND due_at > unixepoch() - 1209600
-       ORDER BY RANDOM() LIMIT ?1`,
-  ).bind(CALLBACK_POOL).all<Message>();
+  const olderRows = await callbackPool(env);
 
   const newest = recentRows[0];
   const pending = newest ? Math.max(0, Math.ceil((newest.due_at - now) / interval)) : 0;
