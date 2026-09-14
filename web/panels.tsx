@@ -241,7 +241,7 @@ export function Trace({ data, onClose }: { data: TraceData | null; onClose: () =
           <aside className="topic">
             <span className="topic-kicker">assunto do momento</span>
             <strong>{shown.topic.title}</strong>
-            <p>{shown.topic.summary}</p>
+            {shown.topic.summary && <p>{shown.topic.summary}</p>}
             {shown.topic.source && (
               <a href={shown.topic.source} target="_blank" rel="noreferrer">sobre o caso →</a>
             )}

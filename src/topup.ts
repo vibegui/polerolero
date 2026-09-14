@@ -1,11 +1,11 @@
 import type { Env, Message, Side, ThemeRow } from "./env.ts";
 import { composeMessage } from "./generate.ts";
-import { chat } from "./gateway.ts";
 import { isAsleep, sleepHours, wakeUpAfter } from "./sleep.ts";
 import { gapFor } from "./style.ts";
 import {
   type Goal,
   assignGoals,
+  losingSide,
   pickSubject,
   resolveGoal,
   subjectNodes,
@@ -211,11 +211,15 @@ async function generate(env: Env): Promise<void> {
         const { results: themeMsgs } = await env.DB.prepare(
           "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages WHERE theme_id = ?1 AND kind = 'message' ORDER BY id",
         ).bind(theme.id).all<Message>();
-        // `side` is whoever's turn it is, so they are the one walking away —
-        // which is exactly what the `encerrar` objective is scored against.
+        // Whoever is losing is the one who wants out, so they are the one who
+        // changes the subject — and that is also who `encerrar` is scored
+        // against. It used to be "whoever's turn it is", which made both the
+        // change and the objective a coin toss.
+        const goals = { lula: themeGoal(theme, "lula"), bolsonaro: themeGoal(theme, "bolsonaro") };
+        side = losingSide(goals, themeMsgs);
         const verdicts = {
-          lula: resolveGoal(themeGoal(theme, "lula"), "lula", themeMsgs, side),
-          bolsonaro: resolveGoal(themeGoal(theme, "bolsonaro"), "bolsonaro", themeMsgs, side),
+          lula: resolveGoal(goals.lula, "lula", themeMsgs, side),
+          bolsonaro: resolveGoal(goals.bolsonaro, "bolsonaro", themeMsgs, side),
         };
         dueAt += gapFor(1.6, interval);
         await insert
@@ -231,7 +235,6 @@ async function generate(env: Env): Promise<void> {
       const endsAfter = themeLength(
         Math.min(subjectNodes(subject, "lula").length, subjectNodes(subject, "bolsonaro").length),
       );
-      dueAt += gapFor(1.2, interval);
       const opened = await env.DB.prepare(
         `INSERT INTO themes
            (subject, kind, title, opened_by, lula_goal, lula_target,
@@ -242,22 +245,16 @@ async function generate(env: Env): Promise<void> {
           subject.id, subject.kind, subject.title, side,
           goals.lula.id, goals.lula.target,
           goals.bolsonaro.id, goals.bolsonaro.target,
-          dueAt, endsAfter,
+          dueAt + interval, endsAfter,
         )
         .first<ThemeRow>();
       if (!opened) throw new Error("could not open a theme");
 
-      await insert
-        .bind(
-          side,
-          await switchLine(env, side, theme?.title ?? null, subject.title, allowLlm),
-          "", dueAt, subject.kind === "topic" ? subject.id : null, "tema", opened.id,
-        )
-        .run();
       recentSubjects.unshift(subject.id);
       theme = opened;
       inTheme = 0;
-      continue;
+      // No `continue`: the very next thing written IS the subject change, said
+      // by the losing side, as an ordinary message. There is no card.
     }
 
     // ---- an ordinary argument, inside the theme ----
@@ -305,48 +302,3 @@ function closingLine(theme: ThemeRow, count: number): string {
   return `Fim do assunto: ${theme.title}. ${count} mensagens.`;
 }
 
-/**
- * The line a side says when it drags the conversation somewhere else.
- *
- * One small model call per theme — about one per 25 messages, so it barely
- * registers on the bill. Falls back to a canned line for the same reason
- * everything else here does: the feed never stops.
- */
-async function switchLine(
-  env: Env,
-  side: Side,
-  from: string | null,
-  to: string,
-  allowLlm: boolean,
-): Promise<string> {
-  const canned = `Chega desse assunto. Vamos falar de ${to.toLowerCase()}.`;
-  if (!allowLlm) return canned;
-  try {
-    const raw = await chat(
-      env,
-      [
-        {
-          role: "system",
-          content:
-            "Você discute política brasileira numa conversa PRIVADA de WhatsApp, " +
-            "só você e mais uma pessoa, e quer MUDAR DE ASSUNTO. " +
-            "Escreva UMA frase curta, no máximo 20 palavras, falando DIRETO com ela: " +
-            "\"você\", \"seu\", \"te\". Não existe plateia: nunca escreva \"gente\", " +
-            "\"pessoal\", \"galera\" nem \"alguém\". " +
-            "Diga que quer falar do assunto novo, e por que ele interessa mais. " +
-            "Sem emoji, sem markdown, sem aspas, sem nome de político. Responda só a frase.",
-        },
-        {
-          role: "user",
-          content: `${from ? `Assunto atual: ${from}.` : "A conversa está dispersa."} ` +
-            `Você quer que o assunto passe a ser: ${to}.`,
-        },
-      ],
-      AbortSignal.timeout(15_000),
-    );
-    const line = raw.trim().replace(/^["“']|["”']$/g, "").split("\n")[0]?.trim();
-    return line && line.length > 8 && line.length <= 160 ? line : canned;
-  } catch {
-    return canned;
-  }
-}

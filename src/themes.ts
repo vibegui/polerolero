@@ -270,3 +270,42 @@ export function resolveGoal(
       return v(closedBy === side, closedBy === side ? "encerrou o assunto" : "não conseguiu encerrar");
   }
 }
+
+/**
+ * Who is on the back foot, and therefore who wants out of this subject.
+ *
+ * A side changes the subject when it is losing — that is the whole tell, and it
+ * used to be "whoever's turn it is", which made the change arbitrary and made
+ * the `encerrar` objective a coin toss scored against a coin toss.
+ *
+ * Two signals, both computed from what was published:
+ *  - its secret objective is failing (`encerrar` is excluded: it is decided BY
+ *    this function, so it cannot also be an input to it);
+ *  - it has been answering more than it has been answered, which is what being
+ *    led by the other side looks like in the tag graph.
+ */
+export function losingSide(
+  goals: Record<Side, Goal>,
+  msgs: Message[],
+): Side {
+  const answered = (side: Side): number => {
+    let n = 0;
+    for (let i = 1; i < msgs.length; i++) {
+      const m = msgs[i]!, prev = msgs[i - 1]!;
+      if (m.side !== side || prev.side === side) continue;
+      const rebuts = NODE_BY_ID.get(m.arg_id)?.rebuts ?? [];
+      if (rebuts.some((t) => (NODE_BY_ID.get(prev.arg_id)?.tags ?? []).includes(t))) n++;
+    }
+    return n;
+  };
+  const score = (side: Side): number => {
+    const goal = goals[side];
+    const onTrack = goal.id === "encerrar" ? 0 : resolveGoal(goal, side, msgs, side).done ? 1 : -1;
+    // Scaled well under 1 so a met objective always outweighs the tiebreak.
+    return onTrack - answered(side) / Math.max(1, msgs.length);
+  };
+  const l = score("lula"), b = score("bolsonaro");
+  if (l !== b) return l < b ? "lula" : "bolsonaro";
+  // Dead heat: whoever spoke last is the one who has run out of things to add.
+  return msgs[msgs.length - 1]?.side ?? "lula";
+}

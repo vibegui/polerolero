@@ -151,6 +151,26 @@ a worst case of MAX_PER_RUN * 2 * 25s, which is twice `LOCK_SECONDS`. The loop
 stops at `RUN_BUDGET_MS`; stopping early costs nothing because the buffer is
 the point.
 
+**A subject change is a MESSAGE, not a card, and the loser makes it.** It used
+to be a `kind='tema'` card announcing itself, written by a separate LLM call
+that never passed through `inspect()` — which is how "Gente, alguém aqui já
+passou por fila no SUS?" reached the feed after the audience guard shipped. Now
+the change is an ordinary message from `losingSide()`: the side whose secret
+objective is failing, tie-broken by who has been answering more. It goes through
+the same guard as everything else, it carries an `arg_id` so "ver o argumento"
+works on it, and changing the subject because you are losing is the tell the
+whole mechanic exists to show. `kind='tema'` rows survive only in history.
+
+**Cards are not utterances.** `userPrompt` fed every transcript row to the model
+as `Fã do Lula: <body>`, including the `fecho` reveal and the sleep card, which
+taught it that the referee was a participant. The transcript is filtered to
+`kind='message'`.
+
+**The trace panel must not cross a theme boundary.** It reconstructed "answering"
+as the previous message from the other side, full stop, so the first message of
+a new subject was shown answering a claim from the abandoned one. Same
+`theme_id`, `kind='message'`, or nothing.
+
 **A callback is a jab, not a subject.** At CALLBACK_CHANCE 0.25 the live feed
 turned into two people arguing about arguing: one side gets a callback and
 accuses the other of repeating, the next turn gets one and accuses back, and

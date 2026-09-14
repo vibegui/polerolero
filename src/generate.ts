@@ -268,8 +268,13 @@ function userPrompt(
   callback?: Callback | null,
   opensTheme = false,
 ): string {
-  const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
-  const last = transcript.findLast((m) => m.body);
+  // Only arguments. A 'fecho' or 'pause' card carries no voice, and handing one
+  // over as `Fã do Lula: Fim do assunto. 27 mensagens.` taught the model that
+  // the referee was a participant.
+  const lines = transcript
+    .filter((m) => m.kind === "message")
+    .map((m) => `${NAME[m.side]}: ${m.body}`)
+    .join("\n");
   const topic = topicSummary
     ? `\nASSUNTO DO MOMENTO — a discussão agora é sobre isto:\n${topicSummary}\n`
     : "";
@@ -310,10 +315,14 @@ argumento: use só a parte factual, e NÃO repita as ressalvas, NÃO admita o ou
 lado, NÃO conclua que é complicado. Você está convencido do seu lado:
 ${node.explain}
 
-${opensTheme ? `ESTA É A PRIMEIRA MENSAGEM DO ASSUNTO NOVO. Você acabou de virar a
-conversa para cá. Não entre no meio: abra o assunto, diga em uma frase por que
-ele importa mais do que o que vocês estavam discutindo, e SÓ ENTÃO apresente o
-argumento. Ligue ao que ele acabou de dizer, não ignore.
+${opensTheme ? `VOCÊ ESTÁ MUDANDO DE ASSUNTO AGORA, e é você quem está mudando.
+O assunto anterior não estava indo bem pra você — mas você JAMAIS admite isso.
+Descarte o assunto antigo como já resolvido, chato ou irrelevante ("isso aí já
+morreu", "enquanto você fica nesse detalhe"), vire para o assunto novo e diga
+em uma frase por que ELE é que importa. Só então apresente o argumento.
+
+Comece pela virada, numa frase, falando direto com ele. Não anuncie que mudou
+de assunto com essas palavras, e nunca diga que está perdendo.
 
 ` : ""}COMO RESPONDER — ${move}
 
@@ -548,7 +557,12 @@ export async function composeMessage(
   /** True when this is the first argument of a brand-new theme. */
   opensTheme = false,
 ): Promise<{ body: string; argId: string; gap: number }> {
-  const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
+  // At a theme boundary the last opponent argument belongs to the subject being
+  // abandoned, so letting it steer selection picks an argument that answers the
+  // old conversation inside the new one.
+  const oppArgId = opensTheme
+    ? null
+    : (transcript.findLast((m) => m.side !== side && m.kind === "message")?.arg_id ?? null);
   const topic = subject?.kind === "topic" ? TOPIC_BY_ID.get(subject.id) : undefined;
   const node = press ?? (
     topic

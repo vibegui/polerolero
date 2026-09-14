@@ -72,9 +72,7 @@ test("a run opens a theme, fills it, closes it once, and never rewinds the clock
   for (const t of themes) {
     expect(t.ends_after).toBeGreaterThanOrEqual(THEME_MIN);
     expect(t.ends_after).toBeLessThanOrEqual(THEME_MAX);
-    const opens = msgs.filter((m) => m.theme_id === t.id && m.kind === "tema");
     const closes = msgs.filter((m) => m.theme_id === t.id && m.kind === "fecho");
-    expect(opens.length, `theme ${t.id} opened ${opens.length}x`).toBe(1);
     expect(closes.length, `theme ${t.id} closed ${closes.length}x`).toBe(t.outcome ? 1 : 0);
     // A closed theme's card must carry a decided verdict for BOTH sides, or the
     // reveal renders half-empty on a public page.
@@ -93,6 +91,20 @@ test("a run opens a theme, fills it, closes it once, and never rewinds the clock
   }
   for (let i = 1; i < msgs.length; i++) {
     expect(msgs[i]!.due_at, `row ${msgs[i]!.id} rewinds`).toBeGreaterThan(msgs[i - 1]!.due_at);
+  }
+
+  // A subject change announces itself by being said, not by a card.
+  expect(msgs.filter((m) => m.kind === "tema").length).toBe(0);
+
+  // And it is said by whoever was losing — the side that walked away from the
+  // theme that just closed opens the next one. That is the whole tell.
+  for (const t of themes.filter((x) => x.outcome)) {
+    const closedBy = JSON.parse(t.outcome!).closedBy as string;
+    const next = themes.find((x) => x.id === t.id + 1);
+    if (!next) continue;
+    const first = msgs.find((m) => m.theme_id === next.id && m.kind === "message");
+    expect(first?.side, `theme ${next.id} was not opened by the side that lost ${t.id}`)
+      .toBe(closedBy);
   }
 
   // The metronome is gone: gaps have to actually vary.

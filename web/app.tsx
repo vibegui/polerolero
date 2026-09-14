@@ -347,17 +347,30 @@ export function App() {
   const openTrace = useCallback(
     (m: Message) => {
       const i = messages.findIndex((x) => x.id === m.id);
-      // The message being answered is the previous one from the other side.
-      const prev = messages.slice(0, i).findLast((x) => x.side !== m.side);
+      // The message being answered is the previous argument from the other side
+      // IN THE SAME THEME. Reaching past the boundary showed the first message
+      // of "Saúde: fila do SUS" answering a claim about American tariffs — the
+      // two had nothing to do with each other, because a subject change answers
+      // nothing. Cards are skipped too: they are not arguments.
+      const prev = messages
+        .slice(0, i)
+        .findLast((x) => x.side !== m.side && x.kind === "message" && x.theme_id === m.theme_id);
+      // Prefer the theme row: a tag theme has no `topic`, so the older lookup
+      // left the subject header blank for most of the feed.
+      const th = m.theme_id ? themes[m.theme_id] : undefined;
       const t = m.topic ? TOPIC_BY_ID.get(m.topic) : undefined;
       setTrace({
         side: m.side,
-        topic: t ? { title: t.title, summary: t.summary, source: t.source } : null,
+        topic: t
+          ? { title: t.title, summary: t.summary, source: t.source }
+          : th
+            ? { title: th.title, summary: "" }
+            : null,
         answering: prev ? (NODES.get(prev.arg_id) ?? null) : null,
         using: NODES.get(m.arg_id) ?? null,
       });
     },
-    [messages],
+    [messages, themes],
   );
 
   return (
@@ -460,7 +473,11 @@ function Pause({ message }: { message: Message }) {
   );
 }
 
-/** A side just dragged the conversation somewhere else, and says so. */
+/**
+ * Legacy only. Subject changes used to be a card announcing themselves; they
+ * are now an ordinary message from the side that is losing, which is the whole
+ * tell. Rows written before that change are still in the feed's history.
+ */
 function ThemeCard({ message, theme }: { message: Message; theme?: Theme }) {
   return (
     <div className={`theme-card ${message.side}`}>
