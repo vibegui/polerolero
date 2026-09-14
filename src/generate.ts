@@ -504,6 +504,17 @@ export async function composeMessage(
 
   if (!allowLlm) return { body: node.claim, argId: node.id };
 
+  if (callback) {
+    // A callback is invisible in the output: the model may quote it, paraphrase
+    // it, or ignore it, and all three read as an ordinary message. Without this
+    // line there is no way to tell "the filter matches nothing" from "it fires
+    // and the model buries it" — which is exactly how pickArgument sat broken
+    // for an hour while every test passed.
+    console.log(
+      JSON.stringify({ event: "callback", side, node: node.id, days: callback.daysAgo }),
+    );
+  }
+
   try {
     const raw = await chat(
       env,
