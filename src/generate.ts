@@ -634,11 +634,17 @@ async function lastResort(
   transcript: Message[],
 ): Promise<string | null> {
   try {
+    // Exclude the claim in SQL, not after sampling. 37% of everything the feed
+    // had published was the canned claim, so a random eight rows could easily
+    // come back all-claims and hand the fallback straight back to what it is
+    // supposed to replace.
     const { results } = await env.DB.prepare(
-      "SELECT body FROM messages WHERE arg_id = ?1 AND kind = 'message' ORDER BY RANDOM() LIMIT 8",
-    ).bind(node.id).all<{ body: string }>();
+      `SELECT body FROM messages
+         WHERE arg_id = ?1 AND kind = 'message' AND body <> ?2
+         ORDER BY RANDOM() LIMIT 8`,
+    ).bind(node.id, node.claim).all<{ body: string }>();
     const onScreen = new Set(transcript.slice(-ON_SCREEN).map((m) => m.body));
-    const past = results.filter((r) => r.body && r.body !== node.claim);
+    const past = results.filter((r) => r.body);
     // Prefer one the reader cannot currently see. But an older rendering that
     // scrolled past a while ago still beats the canned claim, so it is only the
     // preference that is dropped here, never the whole fallback: pressing the
