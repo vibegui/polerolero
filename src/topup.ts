@@ -1,0 +1,286 @@
+import type { Env, Message, Side, ThemeRow } from "./env.ts";
+import { composeMessage } from "./generate.ts";
+import { chat } from "./gateway.ts";
+import { isAsleep, sleepHours, wakeUpAfter } from "./sleep.ts";
+import { gapFor } from "./style.ts";
+import {
+  type Goal,
+  assignGoals,
+  pickSubject,
+  resolveGoal,
+  subjectNodes,
+  themeLength,
+} from "./themes.ts";
+import { NODE_BY_ID, OTHER } from "./trees.ts";
+import { inBlackout } from "./blackout.ts";
+
+/**
+ * Read a numeric var, falling back only when it is genuinely absent.
+ *
+ * This was `Number(x) || fallback`, which silently swallows a deliberate zero:
+ * MAX_PER_DAY=0 — "stop spending, run off the trees" — parsed as 0, hit the
+ * falsy branch, and came back 1600. The one setting whose whole purpose is to
+ * cap spend could not be set to its most important value.
+ */
+export function setting(raw: string | undefined, fallback: number): number {
+  if (raw === undefined || raw.trim() === "") return fallback;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+/** How far back to look for already-used arguments, and for the transcript. */
+const RECENT_WINDOW = 200;
+/** Size of the older-message pool a run draws its callbacks from. */
+const CALLBACK_POOL = 80;
+/** Chance a side hammers its own previous argument instead of a fresh one. */
+const PRESS_CHANCE = 0.18;
+/** Chance a side posts twice in a row — the afterthought, not a new turn. */
+const DOUBLE_CHANCE = 0.1;
+/** Themes kept out of the rotation, newest first. */
+const SUBJECT_MEMORY = 8;
+
+// -----------------------------------------------------------------------------
+// Buffer top-up
+// -----------------------------------------------------------------------------
+
+/**
+ * Keep BUFFER_TARGET messages queued ahead of now, generating at most
+ * MAX_PER_RUN per tick.
+ *
+ * Thinking in "keep the buffer full" rather than "emit one per minute" is what
+ * makes this self-healing: a failed run retries five minutes later with roughly
+ * fifteen minutes of runway still queued, and nobody watching sees a gap.
+ */
+export async function topUp(env: Env): Promise<void> {
+  if (inBlackout(env)) {
+    console.log("electoral blackout: not generating");
+    return;
+  }
+
+  const interval = setting(env.MESSAGE_INTERVAL_SECONDS, 60);
+  const target = setting(env.BUFFER_TARGET, 20);
+  const maxPerRun = setting(env.MAX_PER_RUN, 10);
+  const maxPerDay = setting(env.MAX_PER_DAY, 1600);
+  const now = Math.floor(Date.now() / 1000);
+
+  // Newest row first: it carries the last side, the last arg_id and MAX(due_at)
+  // in one read, because due_at is monotonic with id.
+  const { results: recentRows } = await env.DB.prepare(
+    "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages ORDER BY id DESC LIMIT ?1",
+  ).bind(RECENT_WINDOW).all<Message>();
+
+  // A pool of older messages, so the two of them can be caught repeating
+  // themselves across days. Read once per tick and reused for every message in
+  // the run: pickCallback samples it, so one read is not one callback.
+  //
+  // ponytail: ORDER BY RANDOM() sorts the whole 1–14 day window (~13k rows at
+  // steady state) 288 times a day. Fine at this size and indexed on due_at;
+  // if the table ever makes this hurt, sample a random id range instead.
+  const { results: olderRows } = await env.DB.prepare(
+    `SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages
+       WHERE kind = 'message'
+         AND due_at < unixepoch() - 86400
+         AND due_at > unixepoch() - 1209600
+       ORDER BY RANDOM() LIMIT ?1`,
+  ).bind(CALLBACK_POOL).all<Message>();
+
+  const newest = recentRows[0];
+  const pending = newest ? Math.max(0, Math.ceil((newest.due_at - now) / interval)) : 0;
+  let toGenerate = Math.min(target - pending, maxPerRun);
+  if (toGenerate <= 0) return;
+
+  // Budget guard. Bounds spend deterministically even under a retry storm or a
+  // cron misfire; past the ceiling the stream keeps running off the trees at $0.
+  const spent = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM messages WHERE created_at > unixepoch() - 86400",
+  ).first<{ n: number }>();
+  const allowLlm = (spent?.n ?? 0) < maxPerDay;
+
+  // recentRows is newest-first; the transcript reads oldest-first.
+  const transcript: Message[] = recentRows.slice().reverse();
+  const recent: string[] = recentRows.map((m) => m.arg_id);
+  let side: Side = newest ? OTHER[newest.side] : "lula";
+  let dueAt = Math.max(newest?.due_at ?? now, now);
+
+  const [sleepFrom, sleepTo] = sleepHours(env);
+  let sleptThisRun = false;
+  const insert = env.DB.prepare(
+    "INSERT INTO messages (side, body, arg_id, due_at, topic, kind, theme_id, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, unixepoch())",
+  );
+  const pause = env.DB.prepare(
+    "INSERT INTO messages (side, body, arg_id, due_at, kind, created_at) VALUES (?1, ?2, '', ?3, 'pause', unixepoch())",
+  );
+
+  // The theme currently in play, and how far into it we are. A row with a null
+  // outcome IS the live theme; there is never more than one.
+  let theme = await env.DB.prepare(
+    "SELECT * FROM themes WHERE outcome IS NULL ORDER BY id DESC LIMIT 1",
+  ).first<ThemeRow>();
+  let inTheme = theme
+    ? ((await env.DB.prepare(
+        "SELECT COUNT(*) AS n FROM messages WHERE theme_id = ?1 AND kind = 'message'",
+      ).bind(theme.id).first<{ n: number }>())?.n ?? 0)
+    : 0;
+  const { results: pastThemes } = await env.DB.prepare(
+    "SELECT subject FROM themes ORDER BY id DESC LIMIT ?1",
+  ).bind(SUBJECT_MEMORY).all<{ subject: string }>();
+  const recentSubjects = pastThemes.map((t) => t.subject);
+
+  while (toGenerate-- > 0) {
+    // Skip the night. The buffer keeps filling past the window, so the first
+    // cron tick after midnight finds ~6h of runway already queued and makes no
+    // LLM calls at all until morning.
+    const candidate = new Date((dueAt + interval) * 1000);
+    if (isAsleep(candidate, sleepFrom, sleepTo)) {
+      const wake = Math.floor(wakeUpAfter(candidate, sleepTo).getTime() / 1000);
+      if (newest?.kind !== "pause" && !sleptThisRun) {
+        await pause
+          .bind(side, "Os dois foram dormir. A briga recomeça às 6h.", dueAt + interval)
+          .run();
+        sleptThisRun = true;
+      }
+      dueAt = wake - interval;
+      continue;
+    }
+
+    // ---- theme boundary: close what was running, and open the next ----
+    if (!theme || inTheme >= theme.ends_after) {
+      if (theme) {
+        const { results: themeMsgs } = await env.DB.prepare(
+          "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages WHERE theme_id = ?1 AND kind = 'message' ORDER BY id",
+        ).bind(theme.id).all<Message>();
+        // `side` is whoever's turn it is, so they are the one walking away —
+        // which is exactly what the `encerrar` objective is scored against.
+        const verdicts = {
+          lula: resolveGoal(themeGoal(theme, "lula"), "lula", themeMsgs, side),
+          bolsonaro: resolveGoal(themeGoal(theme, "bolsonaro"), "bolsonaro", themeMsgs, side),
+        };
+        dueAt += gapFor(1.6, interval);
+        await insert
+          .bind(side, closingLine(theme, themeMsgs.length), "", dueAt, null, "fecho", theme.id)
+          .run();
+        await env.DB.prepare("UPDATE themes SET outcome = ?1 WHERE id = ?2")
+          .bind(JSON.stringify({ closedBy: side, messages: themeMsgs.length, ...verdicts }), theme.id)
+          .run();
+      }
+
+      const subject = pickSubject(recentSubjects);
+      const goals = assignGoals(subject);
+      const endsAfter = themeLength(
+        Math.min(subjectNodes(subject, "lula").length, subjectNodes(subject, "bolsonaro").length),
+      );
+      dueAt += gapFor(1.2, interval);
+      const opened = await env.DB.prepare(
+        `INSERT INTO themes
+           (subject, kind, title, opened_by, lula_goal, lula_target,
+            bolsonaro_goal, bolsonaro_target, started_at, ends_after)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) RETURNING *`,
+      )
+        .bind(
+          subject.id, subject.kind, subject.title, side,
+          goals.lula.id, goals.lula.target,
+          goals.bolsonaro.id, goals.bolsonaro.target,
+          dueAt, endsAfter,
+        )
+        .first<ThemeRow>();
+      if (!opened) throw new Error("could not open a theme");
+
+      await insert
+        .bind(
+          side,
+          await switchLine(env, side, theme?.title ?? null, subject.title, allowLlm),
+          "", dueAt, subject.kind === "topic" ? subject.id : null, "tema", opened.id,
+        )
+        .run();
+      recentSubjects.unshift(subject.id);
+      theme = opened;
+      inTheme = 0;
+      continue;
+    }
+
+    // ---- an ordinary argument, inside the theme ----
+    const subject = { id: theme.subject, kind: theme.kind as "tag" | "topic", title: theme.title };
+    // Pressing means refusing to move on: same argument, new angle. It is also
+    // the only way the `insistir` objective can ever be met.
+    const myLast = transcript.findLast(
+      (m) => m.side === side && m.theme_id === theme!.id && m.kind === "message",
+    );
+    const press = myLast && Math.random() < PRESS_CHANCE
+      ? NODE_BY_ID.get(myLast.arg_id) ?? null
+      : null;
+
+    const { body, argId, gap } = await composeMessage(
+      env, side, transcript, recent, allowLlm, subject, themeGoal(theme, side),
+      olderRows, dueAt + interval, press,
+    );
+    dueAt += gap;
+    const topic = subject.kind === "topic" ? subject.id : null;
+    await insert.bind(side, body, argId, dueAt, topic, "message", theme.id).run();
+
+    transcript.push({
+      id: 0, side, body, arg_id: argId, due_at: dueAt, topic, kind: "message", theme_id: theme.id,
+    });
+    recent.unshift(argId);
+    inTheme++;
+    // Not every turn changes hands. Sometimes someone just isn't finished.
+    if (Math.random() >= DOUBLE_CHANCE) side = OTHER[side];
+  }
+}
+
+/** The objective this theme handed to one side. */
+function themeGoal(theme: ThemeRow, side: Side): Goal {
+  return side === "lula"
+    ? { id: theme.lula_goal as Goal["id"], target: theme.lula_target }
+    : { id: theme.bolsonaro_goal as Goal["id"], target: theme.bolsonaro_target };
+}
+
+/**
+ * The closing card. Deliberately flat — a referee reading a card, not a third
+ * persona. The reveal is the payoff of the whole mechanic, so the drama has to
+ * come from what the two of them were caught doing, not from the narration.
+ */
+function closingLine(theme: ThemeRow, count: number): string {
+  return `Fim do assunto: ${theme.title}. ${count} mensagens.`;
+}
+
+/**
+ * The line a side says when it drags the conversation somewhere else.
+ *
+ * One small model call per theme — about one per 25 messages, so it barely
+ * registers on the bill. Falls back to a canned line for the same reason
+ * everything else here does: the feed never stops.
+ */
+async function switchLine(
+  env: Env,
+  side: Side,
+  from: string | null,
+  to: string,
+  allowLlm: boolean,
+): Promise<string> {
+  const canned = `Chega desse assunto. Vamos falar de ${to.toLowerCase()}.`;
+  if (!allowLlm) return canned;
+  try {
+    const raw = await chat(
+      env,
+      [
+        {
+          role: "system",
+          content:
+            "Você está num grupo de WhatsApp discutindo política brasileira e quer MUDAR DE ASSUNTO. " +
+            "Escreva UMA frase curta, no máximo 20 palavras, em português informal, virando a conversa. " +
+            "Sem emoji, sem markdown, sem aspas, sem nome de político. Responda só a frase.",
+        },
+        {
+          role: "user",
+          content: `${from ? `Assunto atual: ${from}.` : "A conversa está dispersa."} ` +
+            `Você quer que o assunto passe a ser: ${to}.`,
+        },
+      ],
+      AbortSignal.timeout(15_000),
+    );
+    const line = raw.trim().replace(/^["“']|["”']$/g, "").split("\n")[0]?.trim();
+    return line && line.length > 8 && line.length <= 160 ? line : canned;
+  } catch {
+    return canned;
+  }
+}

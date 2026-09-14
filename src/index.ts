@@ -1,17 +1,11 @@
-import type { Env, Message, Side } from "./env.ts";
-import { OTHER, composeMessage } from "./generate.ts";
-import { isAsleep, sleepHours, wakeUpAfter } from "./sleep.ts";
-import { pickTopic } from "./topics.ts";
+import type { Env, Message, ThemeRow } from "./env.ts";
+import { topUp } from "./topup.ts";
 
 export { LiveRoom } from "./live.ts";
 import { inBlackout } from "./blackout.ts";
 export { inBlackout };
 
 const PAGE = 40;
-/** How far back to look for already-used arguments, and for the transcript. */
-const RECENT_WINDOW = 200;
-/** Size of the older-message pool a run draws its callbacks from. */
-const CALLBACK_POOL = 80;
 
 // -----------------------------------------------------------------------------
 // HTTP
@@ -52,14 +46,24 @@ export default {
 
     const { results } = before === null
       ? await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages ORDER BY id DESC LIMIT ?1",
+          "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages ORDER BY id DESC LIMIT ?1",
         ).bind(PAGE).all<Message>()
       : await env.DB.prepare(
-          "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
+          "SELECT id, side, body, arg_id, due_at, topic, kind, theme_id FROM messages WHERE id < ?1 ORDER BY id DESC LIMIT ?2",
         ).bind(before, PAGE).all<Message>();
 
+    // The theme rows the page needs to render its cards. Fetched with the
+    // messages rather than on demand: the closing card is a reveal, and it has
+    // to land on the same tick as the message it follows, not one request later.
+    const themeIds = [...new Set(results.map((m) => m.theme_id).filter((x): x is number => !!x))];
+    const themes = themeIds.length > 0
+      ? (await env.DB.prepare(
+          `SELECT * FROM themes WHERE id IN (${themeIds.map(() => "?").join(",")})`,
+        ).bind(...themeIds).all<ThemeRow>()).results
+      : [];
+
     return Response.json(
-      { messages: results, now: Math.floor(Date.now() / 1000) },
+      { messages: results, themes, now: Math.floor(Date.now() / 1000) },
       {
         headers: {
           // History pages were `max-age=31536000, immutable`, which is true of
@@ -77,122 +81,14 @@ export default {
   },
 
   async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
-    ctx.waitUntil(topUp(env));
+    // A throw inside waitUntil is invisible: the cron just silently stops
+    // producing and the feed drains hours later with nothing in the log to say
+    // why. Catch and record it, then let the next tick retry.
+    ctx.waitUntil(
+      topUp(env).catch((err) => {
+        console.error("topUp failed:", err instanceof Error ? err.stack ?? err.message : err);
+      }),
+    );
   },
 };
 
-// -----------------------------------------------------------------------------
-// Buffer top-up
-// -----------------------------------------------------------------------------
-
-/**
- * Keep BUFFER_TARGET messages queued ahead of now, generating at most
- * MAX_PER_RUN per tick.
- *
- * Thinking in "keep the buffer full" rather than "emit one per minute" is what
- * makes this self-healing: a failed run retries five minutes later with roughly
- * fifteen minutes of runway still queued, and nobody watching sees a gap.
- */
-export async function topUp(env: Env): Promise<void> {
-  if (inBlackout(env)) {
-    console.log("electoral blackout: not generating");
-    return;
-  }
-
-  const interval = Number(env.MESSAGE_INTERVAL_SECONDS) || 60;
-  const target = Number(env.BUFFER_TARGET) || 20;
-  const maxPerRun = Number(env.MAX_PER_RUN) || 10;
-  const maxPerDay = Number(env.MAX_PER_DAY) || 1600;
-  const now = Math.floor(Date.now() / 1000);
-
-  // Newest row first: it carries the last side, the last arg_id and MAX(due_at)
-  // in one read, because due_at is monotonic with id.
-  const { results: recentRows } = await env.DB.prepare(
-    "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages ORDER BY id DESC LIMIT ?1",
-  ).bind(RECENT_WINDOW).all<Message>();
-
-  // A pool of older messages, so the two of them can be caught repeating
-  // themselves across days. Read once per tick and reused for every message in
-  // the run: pickCallback samples it, so one read is not one callback.
-  //
-  // ponytail: ORDER BY RANDOM() sorts the whole 1–14 day window (~13k rows at
-  // steady state) 288 times a day. Fine at this size and indexed on due_at;
-  // if the table ever makes this hurt, sample a random id range instead.
-  const { results: olderRows } = await env.DB.prepare(
-    `SELECT id, side, body, arg_id, due_at, topic, kind FROM messages
-       WHERE kind = 'message'
-         AND due_at < unixepoch() - 86400
-         AND due_at > unixepoch() - 1209600
-       ORDER BY RANDOM() LIMIT ?1`,
-  ).bind(CALLBACK_POOL).all<Message>();
-
-  const newest = recentRows[0];
-  const pending = newest ? Math.max(0, Math.ceil((newest.due_at - now) / interval)) : 0;
-  let toGenerate = Math.min(target - pending, maxPerRun);
-  if (toGenerate <= 0) return;
-
-  // Budget guard. Bounds spend deterministically even under a retry storm or a
-  // cron misfire; past the ceiling the stream keeps running off the trees at $0.
-  const spent = await env.DB.prepare(
-    "SELECT COUNT(*) AS n FROM messages WHERE created_at > unixepoch() - 86400",
-  ).first<{ n: number }>();
-  const allowLlm = (spent?.n ?? 0) < maxPerDay;
-
-  // recentRows is newest-first; the transcript reads oldest-first.
-  const transcript: Message[] = recentRows.slice().reverse();
-  const recent: string[] = recentRows.map((m) => m.arg_id);
-  // Newest-first, same as recentRows — pickTopic reads run length off the head.
-  const topics: (string | null)[] = recentRows.map((m) => m.topic);
-  let side: Side = newest ? OTHER[newest.side] : "lula";
-  let dueAt = Math.max(newest?.due_at ?? now, now);
-
-  const [sleepFrom, sleepTo] = sleepHours(env);
-  let sleptThisRun = false;
-  const insert = env.DB.prepare(
-    "INSERT INTO messages (side, body, arg_id, due_at, topic, kind, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, unixepoch())",
-  );
-
-  const pause = env.DB.prepare(
-    "INSERT INTO messages (side, body, arg_id, due_at, kind, created_at) VALUES (?1, ?2, '', ?3, 'pause', unixepoch())",
-  );
-
-  while (toGenerate-- > 0) {
-    // Skip the night. The buffer keeps filling past the window, so the first
-    // cron tick after midnight finds ~6h of runway already queued and makes no
-    // LLM calls at all until morning.
-    const candidate = new Date((dueAt + interval) * 1000);
-    if (isAsleep(candidate, sleepFrom, sleepTo)) {
-      const wake = Math.floor(wakeUpAfter(candidate, sleepTo).getTime() / 1000);
-      if (newest?.kind !== "pause" && !sleptThisRun) {
-        await pause
-          .bind(side, "Os dois foram dormir. A briga recomeça às 6h.", dueAt + interval)
-          .run();
-        sleptThisRun = true;
-      }
-      dueAt = wake - interval;
-      continue;
-    }
-
-    // One call per message, never one call writing both sides: a single
-    // completion covering the whole exchange makes the two personas converge in
-    // register, and the two voices being distinct is the entire joke.
-    const topic = pickTopic(topics);
-    const { body, argId } = await composeMessage(
-      env,
-      side,
-      transcript,
-      recent,
-      allowLlm,
-      topic,
-      olderRows,
-      dueAt + interval,
-    );
-    dueAt += interval;
-    await insert.bind(side, body, argId, dueAt, topic, "message").run();
-
-    transcript.push({ id: 0, side, body, arg_id: argId, due_at: dueAt, topic, kind: "message" });
-    recent.unshift(argId);
-    topics.unshift(topic);
-    side = OTHER[side];
-  }
-}

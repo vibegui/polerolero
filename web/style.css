@@ -572,3 +572,82 @@ a { color: inherit; }
   text-wrap: balance;
 }
 .pause span { font-size: 15px; }
+
+/* --------------------------------------------------------------------------
+   Themes: the divider that says a side changed the subject, and the card that
+   reveals what each of them was actually chasing while it ran.
+
+   Both are full-width and centred rather than side-aligned bubbles: they are
+   the feed narrating itself, not somebody shouting. The theme card keeps a
+   coloured edge on the side that made the switch, because who moved the
+   conversation is the point of it.
+   -------------------------------------------------------------------------- */
+
+.theme-card {
+  align-self: stretch;
+  margin: 22px 0 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.theme-card.lula { border-left-color: var(--lula); }
+.theme-card.bolsonaro { border-left-color: var(--bolsonaro); }
+
+.theme-who {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.theme-title {
+  margin-top: 3px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+.theme-line {
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--faint);
+  font-style: italic;
+}
+
+.reveal {
+  align-self: stretch;
+  margin: 16px 0 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--canvas);
+}
+.reveal-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.reveal-count { margin-left: auto; }
+
+.reveal-side {
+  margin-top: 11px;
+  padding-left: 10px;
+  border-left: 2px solid var(--line);
+}
+.reveal-side.lula { border-left-color: var(--lula); }
+.reveal-side.bolsonaro { border-left-color: var(--bolsonaro); }
+
+.reveal-name { font-size: 13px; font-weight: 650; color: var(--ink); }
+.reveal-goal { font-size: 13px; color: var(--faint); margin-top: 2px; }
+.reveal-goal strong { color: var(--ink); font-weight: 550; }
+.reveal-verdict { font-size: 12.5px; margin-top: 3px; }
+.reveal-verdict.won { color: var(--ink); }
+.reveal-verdict.lost { color: var(--faint); }
+.reveal-verdict::before { margin-right: 5px; }
+.reveal-verdict.won::before { content: "✓"; }
+.reveal-verdict.lost::before { content: "✗"; }

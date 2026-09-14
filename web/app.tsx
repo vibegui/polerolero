@@ -15,6 +15,43 @@ export interface Message {
   due_at: number;
   topic: string | null;
   kind: string;
+  theme_id: number | null;
+}
+
+/** A theme session. `outcome` is null while it is still running. */
+export interface Theme {
+  id: number;
+  subject: string;
+  kind: string;
+  title: string;
+  opened_by: Side;
+  lula_goal: string;
+  lula_target: string | null;
+  bolsonaro_goal: string;
+  bolsonaro_target: string | null;
+  started_at: number;
+  ends_after: number;
+  outcome: string | null;
+}
+
+export interface Outcome {
+  closedBy: Side;
+  messages: number;
+  lula: { goal: { id: string; target: string | null }; done: boolean; detail: string };
+  bolsonaro: { goal: { id: string; target: string | null }; done: boolean; detail: string };
+}
+
+/** Mirrors goalLabel() in src/themes.ts — the reveal has to read the same way
+ *  on the card as it does in the log. */
+export function goalText(goal: { id: string; target: string | null }): string {
+  switch (goal.id) {
+    case "arrastar": return `arrastar a conversa para ${goal.target}`;
+    case "evitar": return `impedir que se falasse de ${goal.target}`;
+    case "insistir": return "martelar o mesmo argumento até colar";
+    case "blindar": return "nunca responder o que foi perguntado";
+    case "encerrar": return "ser quem encerra o assunto";
+    default: return goal.id;
+  }
 }
 
 export interface ArgNode {
@@ -57,6 +94,9 @@ export interface TraceData {
 
 const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bolsonaro" };
 
+const byId = (ts: Theme[]): Record<number, Theme> =>
+  Object.fromEntries(ts.map((t) => [t.id, t]));
+
 /** Server time minus browser time, in seconds. Phone clocks drift; the whole
  *  "everyone sees the same message at the same second" property depends on
  *  scheduling against the server's clock, not the device's. */
@@ -88,13 +128,14 @@ export async function syncLive(
   return (await res.json()) as LiveState;
 }
 
-async function load(before?: number): Promise<Message[]> {
+async function load(before?: number): Promise<{ messages: Message[]; themes: Theme[] }> {
   const url = before === undefined ? "/api/messages" : `/api/messages?before=${before}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`GET ${url}: ${res.status}`);
-  const json = (await res.json()) as { messages: Message[]; now: number };
+  const json = (await res.json()) as { messages: Message[]; themes?: Theme[]; now: number };
   clockSkew = json.now - Date.now() / 1000;
-  return json.messages.slice().reverse(); // API is newest-first; the feed reads oldest-first.
+  // API is newest-first; the feed reads oldest-first.
+  return { messages: json.messages.slice().reverse(), themes: json.themes ?? [] };
 }
 
 // -----------------------------------------------------------------------------
@@ -109,6 +150,9 @@ export function App() {
   const [ready, setReady] = useState(false);
   const [trace, setTrace] = useState<TraceData | null>(null);
   const [live, setLive] = useState<LiveState>({ viewers: 0, reactions: {} });
+  // Theme rows by id. Merged rather than replaced: a page of older messages
+  // brings older themes, and the closing card still has to find its own.
+  const [themes, setThemes] = useState<Record<number, Theme>>({});
 
   const scroller = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
@@ -118,8 +162,9 @@ export function App() {
   // --- initial load ---------------------------------------------------------
   useEffect(() => {
     load()
-      .then((m) => {
+      .then(({ messages: m, themes: t }) => {
         setMessages(m);
+        setThemes(byId(t));
         // Clamp to what is already due, so a first-time visitor lands in a room
         // mid-argument instead of an empty one.
         setShown(m.filter((x) => x.due_at <= serverNow()).length);
@@ -167,9 +212,10 @@ export function App() {
     const refreshTail = async () => {
       try {
         const tail = await load();
+        setThemes((prev) => ({ ...prev, ...byId(tail.themes) }));
         setMessages((prev) => {
           const lastId = prev[prev.length - 1]?.id ?? 0;
-          const fresh = tail.filter((m) => m.id > lastId);
+          const fresh = tail.messages.filter((m) => m.id > lastId);
           return fresh.length > 0 ? [...prev, ...fresh] : prev;
         });
       } catch {
@@ -221,12 +267,13 @@ export function App() {
     loadingOlder.current = true;
     try {
       const page = await load(oldest);
-      if (page.length === 0) return;
+      if (page.messages.length === 0) return;
+      setThemes((prev) => ({ ...byId(page.themes), ...prev }));
       // Capture scrollHeight synchronously, immediately before the state
       // update. By effect time the DOM has already grown and the delta is lost.
       prependFrom.current = el.scrollHeight;
-      setMessages((prev) => [...page, ...prev]);
-      setShown((n) => n + page.length);
+      setMessages((prev) => [...page.messages, ...prev]);
+      setShown((n) => n + page.messages.length);
     } catch {
       /* ignore — the sentinel will retry when it re-intersects */
     } finally {
@@ -322,6 +369,10 @@ export function App() {
         {visible.map((m) =>
           m.kind === "pause" ? (
             <Pause key={m.id} message={m} />
+          ) : m.kind === "tema" ? (
+            <ThemeCard key={m.id} message={m} theme={m.theme_id ? themes[m.theme_id] : undefined} />
+          ) : m.kind === "fecho" ? (
+            <Reveal key={m.id} theme={m.theme_id ? themes[m.theme_id] : undefined} />
           ) : (
           <Bubble
             key={m.id}
@@ -405,6 +456,56 @@ function Pause({ message }: { message: Message }) {
     <div className="pause">
       <span aria-hidden="true">🌙</span>
       {message.body}
+    </div>
+  );
+}
+
+/** A side just dragged the conversation somewhere else, and says so. */
+function ThemeCard({ message, theme }: { message: Message; theme?: Theme }) {
+  return (
+    <div className={`theme-card ${message.side}`}>
+      <div className="theme-who">{NAME[message.side]} mudou o assunto</div>
+      <div className="theme-title">{theme?.title ?? message.body}</div>
+      <div className="theme-line">{message.body}</div>
+    </div>
+  );
+}
+
+/**
+ * The payoff. For twenty-odd messages each side was chasing something that was
+ * never the argument on screen; this is where the feed says what it was.
+ *
+ * Renders nothing without its theme row rather than guessing: a half-revealed
+ * card that says "objetivo: undefined" is worse than no card.
+ */
+function Reveal({ theme }: { theme?: Theme }) {
+  if (!theme?.outcome) return null;
+  let out: Outcome;
+  try {
+    out = JSON.parse(theme.outcome) as Outcome;
+  } catch {
+    return null;
+  }
+  return (
+    <div className="reveal">
+      <div className="reveal-head">
+        Fim do assunto — {theme.title}
+        <span className="reveal-count">{out.messages} mensagens</span>
+      </div>
+      {(["lula", "bolsonaro"] as Side[]).map((side) => {
+        const r = out[side];
+        return (
+          <div key={side} className={`reveal-side ${side}`}>
+            <div className="reveal-name">{NAME[side]}</div>
+            <div className="reveal-goal">
+              objetivo secreto: <strong>{goalText(r.goal)}</strong>
+            </div>
+            <div className={`reveal-verdict ${r.done ? "won" : "lost"}`}>
+              {r.done ? "conseguiu" : "não conseguiu"} — {r.detail}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

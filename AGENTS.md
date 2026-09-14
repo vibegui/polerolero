@@ -59,6 +59,21 @@ One Worker. One D1. One Durable Object. Everything else is a binding.
   left, so nobody sees a gap.
 - **One model call per message.** Never one call writing both sides — the two
   voices converge in register and the joke dies.
+- **Themes, and the game under them.** There is always exactly one theme
+  running (`src/themes.ts`, `themes` table). It is either a tag from the
+  standing trees or a hot topic, it lasts `themeLength(pool)` arguments — three
+  per available argument, clamped 10-30 — and a side visibly decides to change
+  it (`kind='tema'`). While it runs each side carries a secret rhetorical
+  objective: drag the subject onto a tag, keep the other side off one, hammer a
+  point, never answer, be the one who walks away. The closing card
+  (`kind='fecho'`) reveals both. **Every objective is a predicate over stored
+  rows** — side, arg_id, theme_id — scored with the trees and no model call.
+  Keep it that way: a judge call would be a second fabrication surface.
+- **Cadence is not a metronome.** Gaps come from `gapFor(length.pace, ...)`, so
+  a two-sentence jab is fired back at fast and a three-paragraph wall gets time
+  to be read. The `pace` weights are set so the weighted mean is within 2% of
+  `MESSAGE_INTERVAL_SECONDS` — this changes the texture, not the daily volume,
+  and therefore not the bill. A test asserts the mean.
 - **Callbacks — the long memory.** `CONTEXT_TURNS = 6` gives the two of them
   amnesia. On roughly a quarter of the longer messages, `pickCallback()` digs a
   message the *opponent* published 1–14 days ago out of a pool read once per
@@ -108,6 +123,24 @@ before each round.** Related: the site must name a contactable operator (Lei
 9.504 art. 57-D bans anonymity during the campaign), and history pages must stay
 removable — never put `immutable` back on `?before=`, or a court-ordered
 takedown becomes technically unexecutable.
+
+**A small argument pool still has to exclude something.** `pickArgument`'s
+window was `min(EXCLUSION_WINDOW, pool - 4)`, which is **zero** on a four-node
+theme — no exclusion at all, and a simulated run repeated one claim five times
+in twenty-three turns. It is now `max(1, min(EXCLUSION_WINDOW, pool - 2))`.
+Related: `themeLength` scales the session to the material, and `insistir` is
+never assigned to a side with fewer than six arguments, because there repeating
+is arithmetic rather than strategy.
+
+**A deliberate zero is not a missing value.** Settings are read through
+`setting()` in `topup.ts`, not `Number(x) || fallback` — that idiom turned
+`MAX_PER_DAY=0`, the spend kill switch, into 1600.
+
+**Local `wrangler dev` scheduled ticks 500 in this environment**, on unchanged
+code too (the runtime falls back from the requested compat date). Don't chase
+it to test generation: `src/topup.test.ts` runs the real `topUp` against
+bun:sqlite with the real migrations and `MAX_PER_DAY=0`, which is offline and
+exercises the whole theme lifecycle.
 
 **Facts rot.** Several arguments were wrong within months: the "taxa das
 blusinhas" was repealed two days after being written about in the present tense;

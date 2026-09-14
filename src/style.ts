@@ -38,6 +38,7 @@ export const LENGTHS = [
   {
     weight: 25,
     paragraphs: 1,
+    pace: 0.5,
     spec:
       "UMA ou DUAS frases, e só. Uma resposta seca ao que o oponente acabou de dizer. " +
       "NESTA mensagem não introduza caso novo e não explique nada — apenas reaja.",
@@ -45,11 +46,13 @@ export const LENGTHS = [
   {
     weight: 30,
     paragraphs: 1,
+    pace: 0.85,
     spec: "UM parágrafo de 3 ou 4 frases. Sem quebra de linha.",
   },
   {
     weight: 27,
     paragraphs: 2,
+    pace: 1.15,
     spec:
       "DOIS parágrafos, de 2 a 3 frases cada, separados por uma LINHA EM BRANCO. " +
       "O primeiro responde ao oponente; o segundo apresenta e explica o seu argumento.",
@@ -57,6 +60,7 @@ export const LENGTHS = [
   {
     weight: 18,
     paragraphs: 3,
+    pace: 1.6,
     spec: "TRÊS parágrafos, de 2 a 3 frases cada, separados por uma LINHA EM BRANCO.",
   },
 ] as const;
@@ -69,4 +73,22 @@ export function pickLength(rand = Math.random()): (typeof LENGTHS)[number] {
     if (r <= 0) return l;
   }
   return LENGTHS[0];
+}
+
+/**
+ * Seconds until the NEXT message, given how long this one was.
+ *
+ * Every message used to land exactly 60s after the last one, which reads as a
+ * metronome rather than as an argument. A two-sentence jab gets fired back at
+ * almost immediately; a three-paragraph wall needs time to be read. So the gap
+ * is driven by the length just published, plus jitter — the rhythm has a cause
+ * instead of being noise.
+ *
+ * The `pace` weights are set so the weighted mean lands within a couple of
+ * percent of `interval`: this changes the texture, not the daily volume, and
+ * therefore not the bill.
+ */
+export function gapFor(pace: number, interval: number, rand = Math.random()): number {
+  const jitter = 0.8 + rand * 0.45;
+  return Math.max(10, Math.round(interval * pace * jitter));
 }

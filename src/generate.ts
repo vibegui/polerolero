@@ -1,16 +1,11 @@
-import bolsonaroTree from "../arguments/bolsonaro.json" with { type: "json" };
-import lulaTree from "../arguments/lula.json" with { type: "json" };
 import type { ArgNode, Env, Message, Side } from "./env.ts";
 import { chat } from "./gateway.ts";
-import { MOVES, pickLength } from "./style.ts";
-import { TOPICS, TOPIC_BY_ID, topicNodes } from "./topics.ts";
+import { MOVES, gapFor, pickLength } from "./style.ts";
+import { TOPIC_BY_ID, topicNodes } from "./topics.ts";
+import { NODE_BY_ID, OTHER, TREES } from "./trees.ts";
+import { type Goal, type Subject, goalHint, subjectNodes } from "./themes.ts";
 
-export const TREES: Record<Side, ArgNode[]> = {
-  lula: lulaTree as ArgNode[],
-  bolsonaro: bolsonaroTree as ArgNode[],
-};
-
-export const OTHER: Record<Side, Side> = { lula: "bolsonaro", bolsonaro: "lula" };
+export { NODE_BY_ID, OTHER, TREES };
 
 const NAME: Record<Side, string> = { lula: "Fã do Lula", bolsonaro: "Fã do Bolsonaro" };
 
@@ -47,9 +42,11 @@ export function pickArgument(
 ): ArgNode {
   const oppTags = oppTree.find((n) => n.id === oppArgId)?.tags ?? [];
 
-  // A topic tree is tiny by design, so its whole point is repeating inside a
-  // short run; only the standing tree needs an exclusion window.
-  const EXCLUSION = Math.min(EXCLUSION_WINDOW, Math.max(0, tree.length - 4));
+  // A theme pool is small by design, and `tree.length - 4` hit ZERO on a
+  // four-node pool — no exclusion at all, so the same claim came back five
+  // times in twenty-three turns. Measured on a simulated run before it shipped.
+  // Never let the window fall below 1: something always has to sit out.
+  const EXCLUSION = Math.max(1, Math.min(EXCLUSION_WINDOW, tree.length - 2));
   // The exclusion window must be SMALLER than the tree, or nothing is ever
   // eligible and the whole selector collapses. This shipped broken: `recent`
   // held 200 ids across both sides against ~36 nodes per side, so every node was
@@ -86,20 +83,6 @@ function sample<T>(xs: T[]): T {
 // -----------------------------------------------------------------------------
 // Callbacks — the long memory
 // -----------------------------------------------------------------------------
-
-/**
- * Every argument in play, standing trees and hot topics alike, by id.
- *
- * A stored message only carries `arg_id`, and a callback has to know what that
- * old message was *about* to decide whether it is worth dragging back up.
- */
-export const NODE_BY_ID = new Map(
-  [
-    ...TREES.lula,
-    ...TREES.bolsonaro,
-    ...TOPICS.flatMap((t) => [...t.lula, ...t.bolsonaro]),
-  ].map((n) => [n.id, n] as const),
-);
 
 /** Below a day old it is not a callback, it is just the transcript. */
 const CALLBACK_MIN_AGE_S = 86_400;
@@ -150,8 +133,8 @@ export function pickCallback(
   });
   if (eligible.length === 0) return null;
 
-  // Reuse the gate's roll for the index, the way pickTopic does: rand is
-  // uniform on [0, CALLBACK_CHANCE) by the time it gets here.
+  // Reuse the gate's roll for the index: rand is uniform on
+  // [0, CALLBACK_CHANCE) by the time it gets here.
   const hit = eligible[Math.floor((rand / CALLBACK_CHANCE) * eligible.length)] ?? eligible[0]!;
   return {
     body: (hit.body.split("\n\n")[0] ?? hit.body).slice(0, CALLBACK_QUOTE_CHARS).trim(),
@@ -164,7 +147,7 @@ export function pickCallback(
 // Prompt
 // -----------------------------------------------------------------------------
 
-function systemPrompt(side: Side, length: string): string {
+function systemPrompt(side: Side, length: string, goal: Goal | null): string {
   return `Você é ${NAME[side]} num grupo de WhatsApp, discutindo com ${NAME[OTHER[side]]}.
 Você defende esse lado com convicção e nunca admite estar errado.
 
@@ -228,7 +211,12 @@ REGRAS:
 - Nunca saia do papel. Nunca explique que é uma IA.
 - Responda APENAS com a mensagem, sem aspas e sem prefixo de nome.
 
-FORMATO OBRIGATÓRIO DESTA MENSAGEM:
+${goal ? `${goalHint(goal)}
+Esse objetivo é SEU e é secreto. Nunca diga que tem um objetivo, nunca descreva
+sua própria estratégia, nunca use as palavras "meu objetivo". Ele muda o que
+você escolhe dizer, não vira assunto da mensagem.
+
+` : ""}FORMATO OBRIGATÓRIO DESTA MENSAGEM:
 ${length}
 Conte as frases. Esse formato não é sugestão — é o tamanho desta mensagem.
 
@@ -482,27 +470,39 @@ export async function composeMessage(
   transcript: Message[],
   recent: string[],
   allowLlm: boolean,
-  topicId: string | null,
+  /** The theme in play. Restricts which arguments are even on the table. */
+  subject: Subject | null,
+  /** This side's secret objective for the theme. */
+  goal: Goal | null,
   /** Messages from days ago, to catch the opponent repeating themselves. */
   older: Message[] = [],
   /** When this message airs — a callback's age is measured against that. */
   airsAt: number = Math.floor(Date.now() / 1000),
-): Promise<{ body: string; argId: string }> {
+  /** Argument to hammer again instead of picking a fresh one. */
+  press: ArgNode | null = null,
+): Promise<{ body: string; argId: string; gap: number }> {
   const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
-  const topic = topicId ? TOPIC_BY_ID.get(topicId) : undefined;
-  const node = topic
-    ? pickArgument(side, oppArgId, recent, topicNodes(topic, side), topicNodes(topic, OTHER[side]))
-    : pickArgument(side, oppArgId, recent);
+  const topic = subject?.kind === "topic" ? TOPIC_BY_ID.get(subject.id) : undefined;
+  const node = press ?? (
+    topic
+      ? pickArgument(side, oppArgId, recent, topicNodes(topic, side), topicNodes(topic, OTHER[side]))
+      : subject
+        ? pickArgument(side, oppArgId, recent, subjectNodes(subject, side), subjectNodes(subject, OTHER[side]))
+        : pickArgument(side, oppArgId, recent)
+  );
 
   // Move and length are sampled independently, so the same argument never comes
   // back shaped the same way twice.
-  const move = MOVES[Math.floor(Math.random() * MOVES.length)] as string;
+  const move = press
+    ? "ele não engoliu seu argumento. Volte ao MESMO ponto por outro ângulo, sem recuar e sem repetir as mesmas palavras"
+    : (MOVES[Math.floor(Math.random() * MOVES.length)] as string);
   const length = pickLength();
+  const gap = gapFor(length.pace, Number(env.MESSAGE_INTERVAL_SECONDS) || 60);
   // Nothing to call back to in a two-sentence jab, and the short bucket exists
   // precisely to be a jab — asking for both gets neither.
   const callback = length.paragraphs > 1 ? pickCallback(older, side, node, airsAt) : null;
 
-  if (!allowLlm) return { body: node.claim, argId: node.id };
+  if (!allowLlm) return { body: node.claim, argId: node.id, gap };
 
   if (callback) {
     // A callback is invisible in the output: the model may quote it, paraphrase
@@ -519,7 +519,7 @@ export async function composeMessage(
     const raw = await chat(
       env,
       [
-        { role: "system", content: systemPrompt(side, length.spec) },
+        { role: "system", content: systemPrompt(side, length.spec, goal) },
         {
           role: "user",
           content: userPrompt(
@@ -551,9 +551,9 @@ export async function composeMessage(
         JSON.stringify({ event: "guard_reject", reason: checked.reason, node: node.id, side, raw }),
       );
     }
-    return { body: checked.text ?? node.claim, argId: node.id };
+    return { body: checked.text ?? node.claim, argId: node.id, gap };
   } catch (err) {
     console.error("composeMessage fell back to the tree:", err);
-    return { body: node.claim, argId: node.id };
+    return { body: node.claim, argId: node.id, gap };
   }
 }

@@ -11,9 +11,24 @@ import {
 } from "./generate.ts";
 import { inBlackout } from "./blackout.ts";
 import { isAsleep, wakeUpAfter } from "./sleep.ts";
-import { LENGTHS, MOVES, pickLength } from "./style.ts";
+import { LENGTHS, MOVES, gapFor, pickLength } from "./style.ts";
 import type { Message, Side } from "./env.ts";
-import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
+import {
+  type Goal,
+  SUBJECTS,
+  THEME_MAX,
+  THEME_MIN,
+  assignGoals,
+  goalHint,
+  goalLabel,
+  pickSubject,
+  resolveGoal,
+  subjectNodes,
+  themeLength,
+} from "./themes.ts";
+import { OTHER } from "./trees.ts";
+import { setting } from "./topup.ts";
+import { TOPICS } from "./topics.ts";
 
 // Selection is the one piece of logic here that rots silently: it keeps
 // returning *something* while quietly repeating the same three arguments, and
@@ -197,23 +212,19 @@ test("every hot topic arms both sides and cites the episode", () => {
   }
 });
 
-test("a topic holds for a run and then releases the feed", () => {
-  const id = TOPICS[0]!.id;
-  // Mid-run: keeps going regardless of the roll.
-  expect(pickTopic([id, id], 0.99)).toBe(id);
-  // Run complete: must hand back, or a topic could hold the feed forever.
-  expect(pickTopic(Array(TOPIC_RUN).fill(id), 0.0)).toBeNull();
-  // Idle: a high roll stays out, a low roll enters.
-  expect(pickTopic([null, null], 0.99)).toBeNull();
-  expect(pickTopic([null, null], 0.0)).not.toBeNull();
-});
 
-test("topics eventually fire but do not dominate the feed", () => {
-  const history: (string | null)[] = [];
-  for (let i = 0; i < 2000; i++) history.unshift(pickTopic(history));
-  const onTopic = history.filter(Boolean).length / history.length;
-  expect(onTopic).toBeGreaterThan(0.05);
-  expect(onTopic).toBeLessThan(0.6);
+// The old dice let a topic fire 12% of the time for six turns. Themes replaced
+// that, so the property worth keeping is the opposite one: over a long run the
+// rotation must actually reach every subject, not orbit a favourite few.
+test("the rotation reaches every subject over a long run", () => {
+  const seen = new Set<string>();
+  const recent: string[] = [];
+  for (let i = 0; i < 600; i++) {
+    const s = pickSubject(recent);
+    seen.add(s.id);
+    recent.unshift(s.id);
+  }
+  expect(seen.size).toBe(SUBJECTS.length);
 });
 
 // Every one of these was measured against the previous guard, which was a
@@ -329,6 +340,7 @@ const msg = (over: Partial<Message> = {}): Message => ({
   due_at: NOW - 3 * DAY,
   topic: null,
   kind: "message",
+  theme_id: null,
   ...over,
 });
 
@@ -373,4 +385,172 @@ test("only calls back to an argument about the same thing", () => {
 
 test("an empty pool is not an error", () => {
   expect(pickCallback([], "bolsonaro", NODE, NOW, 0)).toBeNull();
+});
+
+// -----------------------------------------------------------------------------
+// Themes and the hidden game
+// -----------------------------------------------------------------------------
+
+// The objectives are scored by predicate, never by a model, so the scoreboard
+// can only be wrong if these predicates are wrong. That makes them the one part
+// of the mechanic worth pinning down.
+
+const tmsg = (side: Side, arg_id: string, id = 0): Message => ({
+  id, side, body: "", arg_id, due_at: 0, topic: null, kind: "message", theme_id: 1,
+});
+
+test("every theme has enough material on both sides to fill 20-30 turns", () => {
+  expect(SUBJECTS.length).toBeGreaterThan(8);
+  for (const s of SUBJECTS) {
+    expect(subjectNodes(s, "lula").length, `${s.id} starves lula`).toBeGreaterThan(1);
+    expect(subjectNodes(s, "bolsonaro").length, `${s.id} starves bolsonaro`).toBeGreaterThan(1);
+  }
+});
+
+test("a theme restricts the argument pool but never empties it", () => {
+  for (const s of SUBJECTS) {
+    for (const side of ["lula", "bolsonaro"] as Side[]) {
+      const pool = subjectNodes(s, side);
+      const picked = pickArgument(side, null, [], pool, subjectNodes(s, OTHER[side]));
+      expect(pool.map((n) => n.id), `${s.id}/${side} picked outside the theme`).toContain(picked.id);
+    }
+  }
+});
+
+test("the subject rotation does not repeat itself", () => {
+  const recent = SUBJECTS.slice(0, 5).map((s) => s.id);
+  for (let i = 0; i < 50; i++) expect(recent).not.toContain(pickSubject(recent, Math.random()).id);
+});
+
+test("arrastar counts only your own landings", () => {
+  const target = TREES.lula[0]!.tags[0]!;
+  const mine = TREES.lula.filter((n) => n.tags.includes(target)).slice(0, 3);
+  const goal: Goal = { id: "arrastar", target };
+  const msgs = mine.map((n) => tmsg("lula", n.id));
+  expect(resolveGoal(goal, "lula", msgs, "lula").done).toBe(true);
+  // The opponent landing the tag does nothing for you.
+  expect(resolveGoal(goal, "bolsonaro", msgs, "lula").done).toBe(false);
+});
+
+test("evitar fails the moment the other side lands the tag", () => {
+  const target = TREES.lula[0]!.tags[0]!;
+  const leak = TREES.lula.find((n) => n.tags.includes(target))!;
+  const goal: Goal = { id: "evitar", target };
+  expect(resolveGoal(goal, "bolsonaro", [tmsg("lula", leak.id)], "lula").done).toBe(false);
+  expect(resolveGoal(goal, "bolsonaro", [tmsg("bolsonaro", leak.id)], "lula").done).toBe(true);
+});
+
+test("insistir needs the same argument three times", () => {
+  const id = TREES.lula[0]!.id;
+  const goal: Goal = { id: "insistir", target: null };
+  expect(resolveGoal(goal, "lula", [tmsg("lula", id), tmsg("lula", id)], "lula").done).toBe(false);
+  expect(
+    resolveGoal(goal, "lula", [tmsg("lula", id), tmsg("lula", id), tmsg("lula", id)], "lula").done,
+  ).toBe(true);
+});
+
+test("blindar is not awarded to someone nobody asked anything", () => {
+  const goal: Goal = { id: "blindar", target: null };
+  // Never answering because you were never engaged is not stonewalling.
+  expect(resolveGoal(goal, "lula", [tmsg("lula", TREES.lula[0]!.id)], "lula").done).toBe(false);
+
+  // Three unanswered exchanges: bolsonaro plays arguments that rebut nothing
+  // lula just said. Built from the real trees so it stays honest.
+  const lulaNode = TREES.lula[0]!;
+  const dodge = TREES.bolsonaro.find((n) => !n.rebuts.some((t) => lulaNode.tags.includes(t)))!;
+  const seq: Message[] = [];
+  for (let i = 0; i < 3; i++) {
+    seq.push(tmsg("lula", lulaNode.id), tmsg("bolsonaro", dodge.id));
+  }
+  expect(resolveGoal(goal, "bolsonaro", seq, "lula").done).toBe(true);
+});
+
+test("encerrar goes to whoever walked away", () => {
+  const goal: Goal = { id: "encerrar", target: null };
+  expect(resolveGoal(goal, "lula", [], "lula").done).toBe(true);
+  expect(resolveGoal(goal, "lula", [], "bolsonaro").done).toBe(false);
+});
+
+test("goals are always describable, in the prompt and on the closing card", () => {
+  for (let i = 0; i < 200; i++) {
+    const subject = SUBJECTS[i % SUBJECTS.length]!;
+    const goals = assignGoals(subject);
+    for (const side of ["lula", "bolsonaro"] as Side[]) {
+      const g = goals[side];
+      expect(goalHint(g).length).toBeGreaterThan(20);
+      expect(goalLabel(g).length).toBeGreaterThan(10);
+      // A targeted goal without a target renders as "para null" on a public page.
+      if (g.id === "arrastar" || g.id === "evitar") expect(g.target).toBeTruthy();
+    }
+  }
+});
+
+test("pace weights keep the daily volume, and therefore the bill, unchanged", () => {
+  const mean = LENGTHS.reduce((s, l) => s + l.weight * l.pace, 0) / 100;
+  expect(mean).toBeGreaterThan(0.95);
+  expect(mean).toBeLessThan(1.05);
+  // And a gap is always a sane number of seconds, never zero or negative.
+  for (const l of LENGTHS) {
+    for (const r of [0, 0.5, 0.999]) {
+      const g = gapFor(l.pace, 60, r);
+      expect(g).toBeGreaterThan(9);
+      expect(g).toBeLessThan(150);
+    }
+  }
+});
+
+test("a zero budget actually means zero", () => {
+  // `Number(x) || fallback` turned MAX_PER_DAY=0 into 1600 — the kill switch
+  // could not be switched. See setting() in topup.ts.
+  expect(setting("0", 1600)).toBe(0);
+  expect(setting(undefined, 1600)).toBe(1600);
+  expect(setting("", 1600)).toBe(1600);
+  expect(setting("nonsense", 1600)).toBe(1600);
+  expect(setting("42", 1600)).toBe(42);
+});
+
+test("a thin theme ends before it starts looping", () => {
+  // Four arguments a side cannot carry thirty turns. Before this, ends_after
+  // was a flat 20-30 and a four-node topic repeated one claim five times.
+  expect(themeLength(4, 0.5)).toBeLessThan(16);
+  expect(themeLength(12, 0.5)).toBeGreaterThan(20);
+  for (const pool of [1, 2, 4, 8, 20, 100]) {
+    for (const r of [0, 0.5, 0.999]) {
+      const n = themeLength(pool, r);
+      expect(n).toBeGreaterThanOrEqual(THEME_MIN);
+      expect(n).toBeLessThanOrEqual(THEME_MAX);
+    }
+  }
+});
+
+test("a small argument pool still excludes something", () => {
+  // EXCLUSION was `min(24, pool - 4)`, which is ZERO at pool size 4: no
+  // exclusion at all inside a thin theme.
+  for (const s of SUBJECTS) {
+    for (const side of ["lula", "bolsonaro"] as Side[]) {
+      const pool = subjectNodes(s, side);
+      if (pool.length < 2) continue;
+      const opp = subjectNodes(s, OTHER[side]);
+      const first = pickArgument(side, null, [], pool, opp);
+      // With the freshly used argument in history it must not come straight back.
+      for (let i = 0; i < 30; i++) {
+        expect(pickArgument(side, null, [first.id], pool, opp).id).not.toBe(first.id);
+      }
+    }
+  }
+});
+
+test("insistir is never handed out where repeating is unavoidable", () => {
+  // A three-argument theme forces repeats, so awarding "martelou o mesmo
+  // argumento" there congratulates both sides for arithmetic.
+  for (const s of SUBJECTS) {
+    for (let i = 0; i < 60; i++) {
+      const goals = assignGoals(s);
+      for (const side of ["lula", "bolsonaro"] as Side[]) {
+        if (goals[side].id !== "insistir") continue;
+        expect(subjectNodes(s, side).length, `${s.id}/${side} got insistir on a thin pool`)
+          .toBeGreaterThanOrEqual(6);
+      }
+    }
+  }
 });

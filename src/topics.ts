@@ -21,6 +21,11 @@ import type { ArgNode, Side } from "./env.ts";
  * Adding one is adding a file. That is the whole point — a topic is the unit a
  * contributor can actually write in an afternoon, unlike a verdict on a
  * decade-old controversy.
+ *
+ * A topic is now one kind of THEME (see themes.ts), which is what decides how
+ * long the two of them stay on it. The old pickTopic/TOPIC_CHANCE dice — 12%
+ * chance, six turns — are gone: there is always a theme running, and it runs
+ * for 20-30 arguments.
  */
 export interface Topic {
   id: string;
@@ -46,37 +51,6 @@ export const TOPICS: Topic[] = [
 
 export const TOPIC_BY_ID = new Map(TOPICS.map((t) => [t.id, t] as const));
 
-/** Chance of wandering into a topic on any turn that is not already in one. */
-export const TOPIC_CHANCE = 0.12;
-/** How many turns the two of them stay on a topic once they start. */
-export const TOPIC_RUN = 6;
-
 export function topicNodes(topic: Topic, side: Side): ArgNode[] {
   return topic[side];
-}
-
-/**
- * Decide which topic this message belongs to, given the most recent topics
- * (newest first, one entry per message, null for the standing trees).
- *
- * Continue an unfinished run; otherwise roll for a new one. Keeping this pure
- * and derived from history means a restarted worker picks up mid-topic instead
- * of dropping the thread.
- */
-export function pickTopic(recentTopics: (string | null)[], rand = Math.random()): string | null {
-  if (TOPICS.length === 0) return null;
-
-  const current = recentTopics[0];
-  if (current) {
-    let run = 0;
-    while (run < recentTopics.length && recentTopics[run] === current) run++;
-    if (run < TOPIC_RUN) return current;
-    // Run just ended — back to the standing trees, so a topic can't chain
-    // straight into itself and hold the feed forever.
-    return null;
-  }
-
-  if (rand >= TOPIC_CHANCE) return null;
-  const pick = TOPICS[Math.floor((rand / TOPIC_CHANCE) * TOPICS.length)];
-  return (pick ?? TOPICS[0])!.id;
 }

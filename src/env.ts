@@ -32,8 +32,28 @@ export interface Message {
   due_at: number;
   /** Hot topic this message belongs to, or null for the standing trees. */
   topic: string | null;
-  /** 'message' | 'pause' — a pause is the sleep card, not an argument. */
+  /** 'message' | 'pause' | 'tema' | 'fecho'. Only 'message' is an argument. */
   kind: string;
+  /** The theme session this row belongs to. Null on rows written before 0007. */
+  theme_id: number | null;
+}
+
+/** A theme session: the subject in play, and the game running underneath it. */
+export interface ThemeRow {
+  id: number;
+  subject: string;
+  kind: string;
+  title: string;
+  opened_by: Side;
+  lula_goal: string;
+  lula_target: string | null;
+  bolsonaro_goal: string;
+  bolsonaro_target: string | null;
+  started_at: number;
+  /** Argument messages this theme runs for before a side closes it. */
+  ends_after: number;
+  /** JSON verdicts, written at close. Null while the theme is live. */
+  outcome: string | null;
 }
 
 export interface ArgNode {
