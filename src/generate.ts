@@ -3,7 +3,7 @@ import lulaTree from "../arguments/lula.json" with { type: "json" };
 import type { ArgNode, Env, Message, Side } from "./env.ts";
 import { chat } from "./gateway.ts";
 import { MOVES, pickLength } from "./style.ts";
-import { TOPIC_BY_ID, topicNodes } from "./topics.ts";
+import { TOPICS, TOPIC_BY_ID, topicNodes } from "./topics.ts";
 
 export const TREES: Record<Side, ArgNode[]> = {
   lula: lulaTree as ArgNode[],
@@ -81,6 +81,83 @@ export function pickArgument(
 
 function sample<T>(xs: T[]): T {
   return xs[Math.floor(Math.random() * xs.length)] as T;
+}
+
+// -----------------------------------------------------------------------------
+// Callbacks — the long memory
+// -----------------------------------------------------------------------------
+
+/**
+ * Every argument in play, standing trees and hot topics alike, by id.
+ *
+ * A stored message only carries `arg_id`, and a callback has to know what that
+ * old message was *about* to decide whether it is worth dragging back up.
+ */
+export const NODE_BY_ID = new Map(
+  [
+    ...TREES.lula,
+    ...TREES.bolsonaro,
+    ...TOPICS.flatMap((t) => [...t.lula, ...t.bolsonaro]),
+  ].map((n) => [n.id, n] as const),
+);
+
+/** Below a day old it is not a callback, it is just the transcript. */
+const CALLBACK_MIN_AGE_S = 86_400;
+/** How often a turn digs one up. Every turn would make it the whole show. */
+export const CALLBACK_CHANCE = 0.25;
+/**
+ * How much of the old message the model is shown. Bodies run to MAX_BODY_CHARS
+ * and the model only needs enough to quote a line back; the first paragraph is
+ * the one that answered the opponent, so it is the part worth remembering.
+ */
+const CALLBACK_QUOTE_CHARS = 400;
+
+export interface Callback {
+  /** Exactly the text handed to the model — nothing else can be quoted. */
+  body: string;
+  daysAgo: number;
+}
+
+/**
+ * Dig up something the OPPONENT said days ago that makes the same point they
+ * are making right now.
+ *
+ * The relevance test is the same tag adjacency `pickArgument` runs on: `node`
+ * was chosen because it rebuts what the opponent is arguing today, so an old
+ * opponent message whose argument carries those same tags is, by construction,
+ * the opponent saying today's thing already. That is the joke and the thesis at
+ * once — the fight is a loop, and here the loop gets named out loud.
+ *
+ * Random-but-relevant, not "most similar": this needs no embeddings, and a
+ * scored best-match would return the same greatest hit every time.
+ */
+export function pickCallback(
+  pool: Message[],
+  side: Side,
+  node: ArgNode,
+  /** When this message actually airs, not when it was generated. */
+  airsAt: number,
+  rand = Math.random(),
+): Callback | null {
+  if (rand >= CALLBACK_CHANCE) return null;
+
+  const eligible = pool.filter((m) => {
+    // Own past words are not a callback, and a pause card has no argument.
+    if (m.side === side || m.kind !== "message") return false;
+    if (airsAt - m.due_at < CALLBACK_MIN_AGE_S) return false;
+    const tags = NODE_BY_ID.get(m.arg_id)?.tags;
+    return tags !== undefined && tags.some((t) => node.rebuts.includes(t));
+  });
+  if (eligible.length === 0) return null;
+
+  // Reuse the gate's roll for the index, the way pickTopic does: rand is
+  // uniform on [0, CALLBACK_CHANCE) by the time it gets here.
+  const hit = eligible[Math.floor((rand / CALLBACK_CHANCE) * eligible.length)] ?? eligible[0]!;
+  return {
+    body: (hit.body.split("\n\n")[0] ?? hit.body).slice(0, CALLBACK_QUOTE_CHARS).trim(),
+    // Round, but never down to "há 0 dias": the pool is already >24h old.
+    daysAgo: Math.max(1, Math.round((airsAt - hit.due_at) / 86_400)),
+  };
 }
 
 // -----------------------------------------------------------------------------
@@ -168,13 +245,29 @@ function userPrompt(
   node: ArgNode,
   move: string,
   topicSummary?: string,
+  callback?: Callback | null,
 ): string {
   const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
   const topic = topicSummary
     ? `\nASSUNTO DO MOMENTO — a discussão agora é sobre isto:\n${topicSummary}\n`
     : "";
+  // The one thing a feed that runs forever can do that a chat cannot: remember.
+  // Note this is the opponent's OWN published words, so quoting them back is
+  // the opposite of inventing a quote — it is the only quote here that is
+  // checkable by scrolling up.
+  const memory = callback
+    ? `
+O OPONENTE JÁ DISSE ISTO HÁ ${callback.daysAgo} DIA${callback.daysAgo > 1 ? "S" : ""}, DEFENDENDO O MESMO PONTO:
+"${callback.body}"
+
+Ele está repetindo. Comece por aí: lembre que faz ${callback.daysAgo} dia${callback.daysAgo > 1 ? "s" : ""} que
+ele repete isso, cite um pedaço curto com as palavras dele, e diga que já foi
+respondido. Só depois emende o seu argumento. Não invente mais nada que ele
+tenha dito — só o que está entre aspas acima.
+`
+    : "";
   return `${lines}
-${topic}
+${topic}${memory}
 
 O ARGUMENTO QUE VOCÊ VAI USAR AGORA:
 "${node.claim}"
@@ -390,6 +483,10 @@ export async function composeMessage(
   recent: string[],
   allowLlm: boolean,
   topicId: string | null,
+  /** Messages from days ago, to catch the opponent repeating themselves. */
+  older: Message[] = [],
+  /** When this message airs — a callback's age is measured against that. */
+  airsAt: number = Math.floor(Date.now() / 1000),
 ): Promise<{ body: string; argId: string }> {
   const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
   const topic = topicId ? TOPIC_BY_ID.get(topicId) : undefined;
@@ -401,6 +498,9 @@ export async function composeMessage(
   // back shaped the same way twice.
   const move = MOVES[Math.floor(Math.random() * MOVES.length)] as string;
   const length = pickLength();
+  // Nothing to call back to in a two-sentence jab, and the short bucket exists
+  // precisely to be a jab — asking for both gets neither.
+  const callback = length.paragraphs > 1 ? pickCallback(older, side, node, airsAt) : null;
 
   if (!allowLlm) return { body: node.claim, argId: node.id };
 
@@ -411,14 +511,27 @@ export async function composeMessage(
         { role: "system", content: systemPrompt(side, length.spec) },
         {
           role: "user",
-          content: userPrompt(transcript.slice(-CONTEXT_TURNS), node, move, topic?.summary),
+          content: userPrompt(
+            transcript.slice(-CONTEXT_TURNS),
+            node,
+            move,
+            topic?.summary,
+            callback,
+          ),
         },
       ],
       AbortSignal.timeout(25_000),
     );
     // Everything the model was actually given about this argument. Anything it
     // cites beyond this, it made up.
-    const checked = inspect(raw, `${node.claim} ${node.explain} ${node.source ?? ""}`);
+    // The callback text counts as allowed material: every body in the table
+    // either cleared this same guard or is a vetted claim, so quoting the
+    // opponent back cannot smuggle in a source nobody ever had. Leaving it out
+    // meant a quoted "o STF decidiu" got the whole message thrown away.
+    const checked = inspect(
+      raw,
+      `${node.claim} ${node.explain} ${node.source ?? ""} ${callback?.body ?? ""}`,
+    );
     if (checked.reason) {
       // Silent rejection meant no idea how often the filter fired, or why —
       // and Res.-TSE 23.610 art. 9º-I lets a judge reverse the burden of proof

@@ -10,6 +10,8 @@ export { inBlackout };
 const PAGE = 40;
 /** How far back to look for already-used arguments, and for the transcript. */
 const RECENT_WINDOW = 200;
+/** Size of the older-message pool a run draws its callbacks from. */
+const CALLBACK_POOL = 80;
 
 // -----------------------------------------------------------------------------
 // HTTP
@@ -109,6 +111,21 @@ export async function topUp(env: Env): Promise<void> {
     "SELECT id, side, body, arg_id, due_at, topic, kind FROM messages ORDER BY id DESC LIMIT ?1",
   ).bind(RECENT_WINDOW).all<Message>();
 
+  // A pool of older messages, so the two of them can be caught repeating
+  // themselves across days. Read once per tick and reused for every message in
+  // the run: pickCallback samples it, so one read is not one callback.
+  //
+  // ponytail: ORDER BY RANDOM() sorts the whole 1–14 day window (~13k rows at
+  // steady state) 288 times a day. Fine at this size and indexed on due_at;
+  // if the table ever makes this hurt, sample a random id range instead.
+  const { results: olderRows } = await env.DB.prepare(
+    `SELECT id, side, body, arg_id, due_at, topic, kind FROM messages
+       WHERE kind = 'message'
+         AND due_at < unixepoch() - 86400
+         AND due_at > unixepoch() - 1209600
+       ORDER BY RANDOM() LIMIT ?1`,
+  ).bind(CALLBACK_POOL).all<Message>();
+
   const newest = recentRows[0];
   const pending = newest ? Math.max(0, Math.ceil((newest.due_at - now) / interval)) : 0;
   let toGenerate = Math.min(target - pending, maxPerRun);
@@ -160,7 +177,16 @@ export async function topUp(env: Env): Promise<void> {
     // completion covering the whole exchange makes the two personas converge in
     // register, and the two voices being distinct is the entire joke.
     const topic = pickTopic(topics);
-    const { body, argId } = await composeMessage(env, side, transcript, recent, allowLlm, topic);
+    const { body, argId } = await composeMessage(
+      env,
+      side,
+      transcript,
+      recent,
+      allowLlm,
+      topic,
+      olderRows,
+      dueAt + interval,
+    );
     dueAt += interval;
     await insert.bind(side, body, argId, dueAt, topic, "message").run();
 

@@ -1,16 +1,18 @@
 import { expect, test } from "bun:test";
 import {
+  CALLBACK_CHANCE,
   EXCLUSION_WINDOW,
   MAX_BODY_CHARS,
   TREES,
   fabricatedCitation,
   guard,
   pickArgument,
+  pickCallback,
 } from "./generate.ts";
 import { inBlackout } from "./blackout.ts";
 import { isAsleep, wakeUpAfter } from "./sleep.ts";
 import { LENGTHS, MOVES, pickLength } from "./style.ts";
-import type { Side } from "./env.ts";
+import type { Message, Side } from "./env.ts";
 import { TOPICS, TOPIC_RUN, pickTopic } from "./topics.ts";
 
 // Selection is the one piece of logic here that rots silently: it keeps
@@ -302,4 +304,73 @@ test("the fans sleep from midnight to six, Brasília time", () => {
   expect(wakeUpAfter(new Date("2026-09-13T08:59:00Z")).toISOString()).toBe(
     "2026-09-13T09:00:00.000Z",
   );
+});
+
+// -----------------------------------------------------------------------------
+// Callbacks
+// -----------------------------------------------------------------------------
+
+// The whole feature is a filter, and a filter that quietly matches nothing
+// degrades to "no callbacks, ever" without a single error in the log — the same
+// silent-rot failure mode pickArgument already shipped once.
+
+/** A bolsonaro argument, plus a lula argument it is an answer to. */
+const NODE = TREES.bolsonaro.find((n) => n.rebuts.length > 0)!;
+const OPP = TREES.lula.find((n) => n.tags.some((t) => NODE.rebuts.includes(t)))!;
+
+const DAY = 86_400;
+const NOW = 1_800_000_000;
+
+const msg = (over: Partial<Message> = {}): Message => ({
+  id: 1,
+  side: "lula",
+  body: "primeiro parágrafo\n\nsegundo parágrafo",
+  arg_id: OPP.id,
+  due_at: NOW - 3 * DAY,
+  topic: null,
+  kind: "message",
+  ...over,
+});
+
+// The fixtures above are derived from the real trees, so this asserts the tag
+// graph still connects the two sides at all. If it ever doesn't, callbacks are
+// dead and so is half of pickArgument.
+test("the trees still have an argument that answers the other side", () => {
+  expect(NODE).toBeDefined();
+  expect(OPP).toBeDefined();
+});
+
+test("digs up an old opponent message on the same tags", () => {
+  const hit = pickCallback([msg()], "bolsonaro", NODE, NOW, 0);
+  expect(hit).not.toBeNull();
+  expect(hit!.daysAgo).toBe(3);
+  // Only the first paragraph is handed over — that is all the model may quote.
+  expect(hit!.body).toBe("primeiro parágrafo");
+});
+
+test("callbacks stay occasional", () => {
+  expect(pickCallback([msg()], "bolsonaro", NODE, NOW, CALLBACK_CHANCE)).toBeNull();
+  expect(pickCallback([msg()], "bolsonaro", NODE, NOW, 0.99)).toBeNull();
+});
+
+test("never calls back to your own words, a pause card, or yesterday's news", () => {
+  const rejected: Partial<Message>[] = [
+    { side: "bolsonaro" }, // same side: not a callback, just repeating yourself
+    { kind: "pause" }, // the sleep card carries no argument
+    { due_at: NOW - 3600 }, // still inside the transcript
+    { arg_id: "arg-que-nao-existe-mais" }, // argument deleted from the tree
+  ];
+  for (const over of rejected) {
+    expect(pickCallback([msg(over)], "bolsonaro", NODE, NOW, 0)).toBeNull();
+  }
+});
+
+test("only calls back to an argument about the same thing", () => {
+  const offTopic = TREES.lula.find((n) => !n.tags.some((t) => NODE.rebuts.includes(t)));
+  expect(offTopic).toBeDefined();
+  expect(pickCallback([msg({ arg_id: offTopic!.id })], "bolsonaro", NODE, NOW, 0)).toBeNull();
+});
+
+test("an empty pool is not an error", () => {
+  expect(pickCallback([], "bolsonaro", NODE, NOW, 0)).toBeNull();
 });

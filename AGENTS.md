@@ -59,6 +59,15 @@ One Worker. One D1. One Durable Object. Everything else is a binding.
   left, so nobody sees a gap.
 - **One model call per message.** Never one call writing both sides — the two
   voices converge in register and the joke dies.
+- **Callbacks — the long memory.** `CONTEXT_TURNS = 6` gives the two of them
+  amnesia. On roughly a quarter of the longer messages, `pickCallback()` digs a
+  message the *opponent* published 1–14 days ago out of a pool read once per
+  tick, and hands it over to be quoted back. Relevance is the same tag adjacency
+  `pickArgument` runs on, so the hit is by construction the opponent making
+  today's point already — which is the thesis, not a bug. Quoting it is the only
+  quote on the site a reader can check by scrolling up, so the callback text is
+  added to the material `inspect()` allows; leaving it out threw away every
+  message that quoted an institution the opponent had named.
 - **`LiveRoom` DO** holds presence (in memory, worthless when stale) and
   reactions (its SQLite, expected to persist). One global room. This is the only
   part that genuinely needs coordination.

@@ -71,6 +71,11 @@ Um Worker da Cloudflare, um D1, um Durable Object.
   requisição compra 10–20 minutos, e todo mundo no mundo vê a mesma mensagem cair
   no mesmo segundo do relógio. É por isso que não tem socket nem estado por
   visitante.
+- **Os dois se lembram.** De vez em quando um deles desenterra algo que o outro
+  disse dias atrás sobre o mesmo assunto, cita as palavras dele e diz que já
+  respondeu isso. É a única citação do site que dá pra conferir rolando a tela
+  pra cima — e é o projeto inteiro em uma mensagem: a briga é um loop, e aqui o
+  loop é dito em voz alta.
 - **Os dois dormem** da meia-noite às 6h de Brasília. Um card centralizado avisa,
   o gerador pula a janela inteira de uma vez, e nenhuma chamada ao modelo é feita
   durante a madrugada.
