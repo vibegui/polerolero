@@ -148,11 +148,21 @@ export function pickCallback(
 // -----------------------------------------------------------------------------
 
 function systemPrompt(side: Side, length: string, goal: Goal | null): string {
-  return `Você é ${NAME[side]} num grupo de WhatsApp, discutindo com ${NAME[OTHER[side]]}.
+  return `Você é ${NAME[side]}. Você está numa conversa PRIVADA de WhatsApp, só
+vocês dois, trocando mensagem direto com ${NAME[OTHER[side]]}.
 Você defende esse lado com convicção e nunca admite estar errado.
 
+NÃO EXISTE PLATEIA. Isto é 1 para 1:
+- Fale COM ele, sempre em segunda pessoa: "você", "seu", "te". Nunca "ele",
+  nunca "esse cara aí", nunca falar dele em terceira pessoa como se contasse a
+  história pra outra pessoa.
+- Nunca se dirija a um grupo. Nada de "gente", "pessoal", "galera", "alguém
+  aqui", "vocês viram". Não tem mais ninguém lendo.
+- Nunca narre a discussão de fora ("ele já trouxe esse ponto", "aí ele voltou
+  com a mesma coisa"). Se ele repetiu, diga NA CARA dele: "você já disse isso".
+
 COMO ESCREVER:
-- Português brasileiro informal, de mensagem de grupo. Direto, sem floreio.
+- Português brasileiro informal, de mensagem direta. Direto, sem floreio.
 - Escreva 100% em português. Nunca use palavra em inglês.
 - Escreva como uma pessoa comum irritada, não como um personagem de novela.
   Nada de sotaque, bordão, CAIXA ALTA em bloco ou pontuação exagerada.
@@ -234,8 +244,10 @@ function userPrompt(
   move: string,
   topicSummary?: string,
   callback?: Callback | null,
+  opensTheme = false,
 ): string {
   const lines = transcript.map((m) => `${NAME[m.side]}: ${m.body}`).join("\n");
+  const last = transcript.findLast((m) => m.body);
   const topic = topicSummary
     ? `\nASSUNTO DO MOMENTO — a discussão agora é sobre isto:\n${topicSummary}\n`
     : "";
@@ -243,22 +255,30 @@ function userPrompt(
   // Note this is the opponent's OWN published words, so quoting them back is
   // the opposite of inventing a quote — it is the only quote here that is
   // checkable by scrolling up.
+  const dias = callback ? `${callback.daysAgo} dia${callback.daysAgo > 1 ? "s" : ""}` : "";
   const memory = callback
     ? `
-O OPONENTE JÁ DISSE ISTO HÁ ${callback.daysAgo} DIA${callback.daysAgo > 1 ? "S" : ""}, DEFENDENDO O MESMO PONTO:
+ELE JÁ DISSE ISTO HÁ ${dias.toUpperCase()}, DEFENDENDO O MESMO PONTO:
 "${callback.body}"
 
-Ele está repetindo. Comece por aí: lembre que faz ${callback.daysAgo} dia${callback.daysAgo > 1 ? "s" : ""} que
-ele repete isso, cite um pedaço curto com as palavras dele, e diga que já foi
-respondido. Só depois emende o seu argumento. Não invente mais nada que ele
-tenha dito — só o que está entre aspas acima.
+Ele está repetindo. Cobre isso DELE, falando DIRETO com ele em segunda pessoa —
+"você já disse isso faz ${dias}", "você repetiu essa mesma frase". Cite um
+pedaço curto entre aspas e diga que já respondeu. NUNCA narre em terceira
+pessoa ("ele disse", "ele voltou com a mesma coisa"): não tem ninguém mais
+lendo, você está falando com ele. Só depois emende o seu argumento, e não
+invente mais nada que ele tenha dito além do que está entre aspas acima.
 `
     : "";
   return `${lines}
 ${topic}${memory}
 
-O ARGUMENTO QUE VOCÊ VAI USAR AGORA:
+O ARGUMENTO QUE VOCÊ VAI USAR AGORA — esta é a IDEIA, não o texto:
 "${node.claim}"
+
+NUNCA copie essa frase. Ela é um resumo interno, não uma fala. Diga a mesma
+coisa com as SUAS palavras, com outra construção, outro começo, outro exemplo.
+Se você já usou esse argumento antes nesta conversa, articule de um jeito
+diferente do que usou.
 
 CONTEXTO FACTUAL SOBRE ESSE ARGUMENTO — leia para explicar o caso corretamente,
 com datas e fatos certos. Este texto é neutro e aponta os limites do seu próprio
@@ -266,7 +286,12 @@ argumento: use só a parte factual, e NÃO repita as ressalvas, NÃO admita o ou
 lado, NÃO conclua que é complicado. Você está convencido do seu lado:
 ${node.explain}
 
-COMO RESPONDER — ${move}
+${opensTheme ? `ESTA É A PRIMEIRA MENSAGEM DO ASSUNTO NOVO. Você acabou de virar a
+conversa para cá. Não entre no meio: abra o assunto, diga em uma frase por que
+ele importa mais do que o que vocês estavam discutindo, e SÓ ENTÃO apresente o
+argumento. Ligue ao que ele acabou de dizer, não ignore.
+
+` : ""}COMO RESPONDER — ${move}
 
 Apresente o argumento explicando o caso, não só citando o nome dele.`;
 }
@@ -373,6 +398,21 @@ const GARBLED = /\b[a-zà-ú]{2,}[A-ZÀ-Ú][a-zA-ZÀ-ú]{2,}\b/;
 const ENGLISH_LEAK =
   /\b(law|however|furthermore|moreover|therefore|indeed|understanding|actually|basically|obviously|statement|framework)\b/i;
 
+/**
+ * Addressing a crowd.
+ *
+ * The personas talk to each other, one to one — there is no room, no audience
+ * and no third party. The model kept opening with "Gente, esse ponto ele já
+ * trouxe", narrating the argument to spectators who do not exist, which breaks
+ * the premise more completely than any slur would.
+ *
+ * Vocative only: "a gente" means "we" in Brazilian Portuguese and is in half
+ * the messages on the site, so `gente` matches only at the start of a sentence
+ * and followed by punctuation.
+ */
+const AUDIENCE =
+  /(^|[.!?]\s+)(gente|pessoal|galera|povo)\s*[,:!?]|\balgu[ée]m (aqui|mais)\b|\bvoc[êe]s viram\b|\bquem mais (aqui|j[áa])\b/i;
+
 export interface GuardResult {
   text: string | null;
   /** Why it was rejected, for the log. Null when it passed. */
@@ -399,6 +439,7 @@ export function inspect(raw: string, allowedSources = ""): GuardResult {
   if (CRIME_IMPUTATION.test(raw)) return reject("crime-imputation");
   if (FRAME_LEAKS.some((t) => rawLower.includes(t))) return reject("frame-leak");
   if (ENGLISH_LEAK.test(raw)) return reject("english-leak");
+  if (AUDIENCE.test(raw)) return reject("audience");
   if (GARBLED.test(raw)) return reject("garbled");
 
   const invented = fabricatedCitation(raw, allowedSources);
@@ -480,6 +521,8 @@ export async function composeMessage(
   airsAt: number = Math.floor(Date.now() / 1000),
   /** Argument to hammer again instead of picking a fresh one. */
   press: ArgNode | null = null,
+  /** True when this is the first argument of a brand-new theme. */
+  opensTheme = false,
 ): Promise<{ body: string; argId: string; gap: number }> {
   const oppArgId = transcript.findLast((m) => m.side !== side)?.arg_id ?? null;
   const topic = subject?.kind === "topic" ? TOPIC_BY_ID.get(subject.id) : undefined;
@@ -502,7 +545,9 @@ export async function composeMessage(
   // precisely to be a jab — asking for both gets neither.
   const callback = length.paragraphs > 1 ? pickCallback(older, side, node, airsAt) : null;
 
-  if (!allowLlm) return { body: node.claim, argId: node.id, gap };
+  if (!allowLlm) {
+    return { body: (await lastResort(env, node, transcript)) ?? node.claim, argId: node.id, gap };
+  }
 
   if (callback) {
     // A callback is invisible in the output: the model may quote it, paraphrase
@@ -515,45 +560,92 @@ export async function composeMessage(
     );
   }
 
-  try {
-    const raw = await chat(
-      env,
-      [
-        { role: "system", content: systemPrompt(side, length.spec, goal) },
-        {
-          role: "user",
-          content: userPrompt(
-            transcript.slice(-CONTEXT_TURNS),
-            node,
-            move,
-            topic?.summary,
-            callback,
-          ),
-        },
-      ],
-      AbortSignal.timeout(25_000),
-    );
-    // Everything the model was actually given about this argument. Anything it
-    // cites beyond this, it made up.
-    // The callback text counts as allowed material: every body in the table
-    // either cleared this same guard or is a vetted claim, so quoting the
-    // opponent back cannot smuggle in a source nobody ever had. Leaving it out
-    // meant a quoted "o STF decidiu" got the whole message thrown away.
-    const checked = inspect(
-      raw,
-      `${node.claim} ${node.explain} ${node.source ?? ""} ${callback?.body ?? ""}`,
-    );
-    if (checked.reason) {
+  // Everything the model was actually given about this argument. Anything it
+  // cites beyond this, it made up. The callback text counts as allowed material:
+  // every body in the table either cleared this same guard or is a vetted claim,
+  // so quoting the opponent back cannot smuggle in a source nobody ever had.
+  const allowed = `${node.claim} ${node.explain} ${node.source ?? ""} ${callback?.body ?? ""}`;
+
+  // Two attempts before giving up. Publishing the canned `claim` on the first
+  // stumble put the same sentence on the feed over and over — it is a one-line
+  // internal summary, not something a person would type, and readers noticed.
+  // A rejection is usually a stylistic slip the model does not repeat.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const raw = await chat(
+        env,
+        [
+          { role: "system", content: systemPrompt(side, length.spec, goal) },
+          {
+            role: "user",
+            content: userPrompt(
+              transcript.slice(-CONTEXT_TURNS), node, move, topic?.summary, callback, opensTheme,
+            ) + (attempt === 0 ? "" : RETRY_NUDGE),
+          },
+        ],
+        AbortSignal.timeout(25_000),
+      );
+      const checked = inspect(raw, allowed);
+      if (checked.text) return { body: checked.text, argId: node.id, gap };
       // Silent rejection meant no idea how often the filter fired, or why —
       // and Res.-TSE 23.610 art. 9º-I lets a judge reverse the burden of proof
       // and demand exactly this record.
       console.log(
-        JSON.stringify({ event: "guard_reject", reason: checked.reason, node: node.id, side, raw }),
+        JSON.stringify({
+          event: "guard_reject", reason: checked.reason, node: node.id, side, attempt, raw,
+        }),
       );
+    } catch (err) {
+      console.error("composeMessage attempt failed:", err);
     }
-    return { body: checked.text ?? node.claim, argId: node.id, gap };
-  } catch (err) {
-    console.error("composeMessage fell back to the tree:", err);
-    return { body: node.claim, argId: node.id, gap };
+  }
+
+  return { body: (await lastResort(env, node, transcript)) ?? node.claim, argId: node.id, gap };
+}
+
+/** Appended to the second attempt. The rejections that repeat are stylistic. */
+const RETRY_NUDGE = `
+
+ATENÇÃO — a tentativa anterior foi descartada. Escreva de novo, do zero, e
+garanta: português 100%, falando DIRETO com ele em segunda pessoa, sem se
+dirigir a ninguém mais, sem citar instituição que não esteja no contexto acima,
+e sem copiar o resumo do argumento palavra por palavra.`;
+
+/**
+ * The last thing tried before the canned claim: something the model already
+ * wrote for THIS argument, on some earlier day.
+ *
+ * The feed has published thousands of messages, each stamped with its `arg_id`,
+ * so every argument already owns a library of phrasings that went through this
+ * same guard. Reaching for one costs a single indexed query on a path that is
+ * now rare, and it means a degraded turn reads like a person repeating
+ * themselves rather than like a database row.
+ *
+ * Only the last few messages are excluded, not the whole 200-row transcript:
+ * excluding everything in the window meant that on a young feed EVERY past
+ * rendering counted as "on screen" and the canned claim came back anyway. The
+ * point is to avoid an echo a reader can see, not to prove novelty.
+ */
+const ON_SCREEN = 10;
+
+async function lastResort(
+  env: Env,
+  node: ArgNode,
+  transcript: Message[],
+): Promise<string | null> {
+  try {
+    const { results } = await env.DB.prepare(
+      "SELECT body FROM messages WHERE arg_id = ?1 AND kind = 'message' ORDER BY RANDOM() LIMIT 8",
+    ).bind(node.id).all<{ body: string }>();
+    const onScreen = new Set(transcript.slice(-ON_SCREEN).map((m) => m.body));
+    const past = results.filter((r) => r.body && r.body !== node.claim);
+    // Prefer one the reader cannot currently see. But an older rendering that
+    // scrolled past a while ago still beats the canned claim, so it is only the
+    // preference that is dropped here, never the whole fallback: pressing the
+    // same argument four times must not push a one-line internal summary onto
+    // the feed just because the good phrasings are all in view.
+    return (past.find((r) => !onScreen.has(r.body)) ?? past[0])?.body ?? null;
+  } catch {
+    return null;
   }
 }

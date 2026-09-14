@@ -40,8 +40,10 @@ export const LENGTHS = [
     paragraphs: 1,
     pace: 0.5,
     spec:
-      "UMA ou DUAS frases, e só. Uma resposta seca ao que o oponente acabou de dizer. " +
-      "NESTA mensagem não introduza caso novo e não explique nada — apenas reaja.",
+      "UMA ou DUAS frases, e só. NESTA mensagem não introduza caso novo e não " +
+      "explique nada. Responda A ÚLTIMA COISA QUE ELE DISSE, especificamente: " +
+      "pegue a afirmação dele e devolva. Sem isso vira frase solta, que é pior " +
+      "que mensagem longa.",
   },
   {
     weight: 30,

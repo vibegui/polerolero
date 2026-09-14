@@ -554,3 +554,20 @@ test("insistir is never handed out where repeating is unavoidable", () => {
     }
   }
 });
+
+test("the personas never address a crowd", () => {
+  // There is no room and no audience; it is one to one. The model opened a
+  // message with "Gente, esse ponto ele já trouxe", narrating the argument to
+  // spectators who do not exist.
+  expect(guard("Gente, esse ponto ele já trouxe ontem.")).toBeNull();
+  expect(guard("Pessoal, olha o que ele disse.")).toBeNull();
+  expect(guard("Isso é absurdo. Galera, reparem nisso.")).toBeNull();
+  expect(guard("Alguém aqui acredita nisso?")).toBeNull();
+  expect(guard("Deixa eu perguntar: alguém mais sentiu o preço subir?")).toBeNull();
+
+  // "a gente" is "we" in Brazilian Portuguese and is everywhere. It must live.
+  expect(guard("A gente acabou com a escala 6x1, e você sabe disso.")).not.toBeNull();
+  expect(guard("Foi a gente que tirou o país do Mapa da Fome.")).not.toBeNull();
+  expect(guard("Isso é papo de gente que nunca teve funcionário.")).not.toBeNull();
+  expect(guard("O povo brasileiro pagou essa conta.")).not.toBeNull();
+});

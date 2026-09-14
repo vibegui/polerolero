@@ -132,6 +132,25 @@ Related: `themeLength` scales the session to the material, and `insistir` is
 never assigned to a side with fewer than six arguments, because there repeating
 is arithmetic rather than strategy.
 
+**It is one to one, and there is no audience.** The system prompt said "num
+grupo de WhatsApp" and the model duly opened messages with "Gente, esse ponto
+ele já trouxe", narrating the argument to spectators who do not exist. The
+personas address each OTHER, in second person, always. `AUDIENCE` in the guard
+rejects vocatives — matched only at sentence start, because "a gente" means
+"we" and is in half the messages here.
+
+**The canned `claim` is a last resort, not a fallback.** It is a one-line
+internal summary, not something a person would type, and publishing it on the
+first stumble put the same sentence on the feed repeatedly. A turn now gets two
+model attempts, then `lastResort()` — a PAST rendering of the same `arg_id`
+pulled from the feed's own history, of which every argument owns dozens. The
+prompt also tells the model the claim is the idea and never the text.
+
+**A run must finish inside its own lease.** Two attempts at a 25s timeout means
+a worst case of MAX_PER_RUN * 2 * 25s, which is twice `LOCK_SECONDS`. The loop
+stops at `RUN_BUDGET_MS`; stopping early costs nothing because the buffer is
+the point.
+
 **Cron delivery is at-least-once, and topUp is not idempotent.** Two
 overlapping runs both read the same newest row and both append from it —
 production shipped two lula messages one second apart carrying the same

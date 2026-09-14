@@ -70,6 +70,16 @@ const SUBJECT_MEMORY = 8;
  * notices. Long enough to cover MAX_PER_RUN model calls at the 25s timeout.
  */
 const LOCK_SECONDS = 240;
+/**
+ * Wall-clock budget for one run, comfortably inside the lease.
+ *
+ * Each turn may now make two model calls at a 25s timeout, so the worst case
+ * is MAX_PER_RUN * 2 * 25s = 500s — twice the lease and longer than the cron
+ * interval. A run that outlives its own lease is exactly the overlap the lease
+ * exists to prevent. Stopping early costs nothing: the buffer is the point, and
+ * the next tick tops it up.
+ */
+const RUN_BUDGET_MS = 200_000;
 
 // -----------------------------------------------------------------------------
 // Buffer top-up
@@ -173,7 +183,12 @@ async function generate(env: Env): Promise<void> {
   ).bind(SUBJECT_MEMORY).all<{ subject: string }>();
   const recentSubjects = pastThemes.map((t) => t.subject);
 
+  const started = Date.now();
   while (toGenerate-- > 0) {
+    if (Date.now() - started > RUN_BUDGET_MS) {
+      console.log(JSON.stringify({ event: "run_budget_reached", generated: inTheme }));
+      break;
+    }
     // Skip the night. The buffer keeps filling past the window, so the first
     // cron tick after midnight finds ~6h of runway already queued and makes no
     // LLM calls at all until morning.
@@ -258,7 +273,7 @@ async function generate(env: Env): Promise<void> {
 
     const { body, argId, gap } = await composeMessage(
       env, side, transcript, recent, allowLlm, subject, themeGoal(theme, side),
-      olderRows, dueAt + interval, press,
+      olderRows, dueAt + interval, press, inTheme === 0,
     );
     dueAt += gap;
     const topic = subject.kind === "topic" ? subject.id : null;
@@ -313,8 +328,12 @@ async function switchLine(
         {
           role: "system",
           content:
-            "Você está num grupo de WhatsApp discutindo política brasileira e quer MUDAR DE ASSUNTO. " +
-            "Escreva UMA frase curta, no máximo 20 palavras, em português informal, virando a conversa. " +
+            "Você discute política brasileira numa conversa PRIVADA de WhatsApp, " +
+            "só você e mais uma pessoa, e quer MUDAR DE ASSUNTO. " +
+            "Escreva UMA frase curta, no máximo 20 palavras, falando DIRETO com ela: " +
+            "\"você\", \"seu\", \"te\". Não existe plateia: nunca escreva \"gente\", " +
+            "\"pessoal\", \"galera\" nem \"alguém\". " +
+            "Diga que quer falar do assunto novo, e por que ele interessa mais. " +
             "Sem emoji, sem markdown, sem aspas, sem nome de político. Responda só a frase.",
         },
         {

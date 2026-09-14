@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import type { Env, Message, ThemeRow } from "./env.ts";
 import { callbackPool, topUp } from "./topup.ts";
 import { THEME_MAX, THEME_MIN } from "./themes.ts";
+import { TREES } from "./trees.ts";
 
 /**
  * topUp against a real SQLite, running the real migrations.
@@ -160,5 +161,39 @@ test("the callback pool query actually returns the messages it should", async ()
     expect(m.kind).toBe("message");
     expect(now - m.due_at).toBeGreaterThan(86_400);
     expect(now - m.due_at).toBeLessThan(1_209_600);
+  }
+});
+
+test("a degraded turn reuses a past rendering instead of the canned claim", async () => {
+  const { env, db } = testEnv();
+  const now = Math.floor(Date.now() / 1000);
+  // Every argument the feed has ever published owns a library of phrasings that
+  // already cleared the guard. Seed one per node, the way months of running
+  // would, then force every turn to degrade (MAX_PER_DAY=0 → no model call).
+  for (const side of ["lula", "bolsonaro"] as const) {
+    for (const n of TREES[side]) {
+      // Three phrasings each: an argument that has run for months owns several,
+      // and one alone is exhausted the moment the same point is pressed twice.
+      for (let v = 1; v <= 3; v++) {
+        db.run(
+          "INSERT INTO messages (side, body, arg_id, due_at, kind, created_at) VALUES (?, ?, ?, ?, 'message', ?)",
+          [side, `RENDERIZACAO ${v} DE ${n.id}`, n.id, now - (5 + v) * 86400, now],
+        );
+      }
+    }
+  }
+  const seeded = (db.query("SELECT COUNT(*) AS n FROM messages").get() as { n: number }).n;
+  for (let i = 0; i < 2; i++) await topUp(env);
+
+  const fresh = db.query("SELECT body, arg_id FROM messages WHERE id > ? AND kind = 'message'")
+    .all(seeded) as { body: string; arg_id: string }[];
+  expect(fresh.length).toBeGreaterThan(10);
+
+  const claims = new Set([...TREES.lula, ...TREES.bolsonaro].map((n) => n.claim));
+  const verbatim = fresh.filter((m) => claims.has(m.body));
+  expect(verbatim.map((m) => m.arg_id), "a canned claim was published verbatim").toEqual([]);
+  // And what it published is a real past rendering of the SAME argument.
+  for (const m of fresh) {
+    if (m.body.startsWith("RENDERIZACAO")) expect(m.body).toMatch(new RegExp(`DE ${m.arg_id}$`));
   }
 });
