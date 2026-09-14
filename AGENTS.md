@@ -151,6 +151,13 @@ a worst case of MAX_PER_RUN * 2 * 25s, which is twice `LOCK_SECONDS`. The loop
 stops at `RUN_BUDGET_MS`; stopping early costs nothing because the buffer is
 the point.
 
+**A callback is a jab, not a subject.** At CALLBACK_CHANCE 0.25 the live feed
+turned into two people arguing about arguing: one side gets a callback and
+accuses the other of repeating, the next turn gets one and accuses back, and
+the politics disappears under the metadata. Now 0.12, the prompt asks for one
+passing sentence rather than the body of the message, and `ACCUSED_REPEAT`
+suppresses it entirely when the opponent already played that card.
+
 **Cron delivery is at-least-once, and topUp is not idempotent.** Two
 overlapping runs both read the same newest row and both append from it —
 production shipped two lula messages one second apart carrying the same

@@ -86,8 +86,25 @@ function sample<T>(xs: T[]): T {
 
 /** Below a day old it is not a callback, it is just the transcript. */
 const CALLBACK_MIN_AGE_S = 86_400;
-/** How often a turn digs one up. Every turn would make it the whole show. */
-export const CALLBACK_CHANCE = 0.25;
+/**
+ * How often a turn digs one up.
+ *
+ * Was 0.25, and the live feed turned into two people arguing about arguing:
+ * one side gets a callback and accuses the other of repeating, the next turn
+ * gets one too and accuses back, and the politics disappears under the
+ * metadata. The callback is a jab, not a subject.
+ */
+export const CALLBACK_CHANCE = 0.12;
+
+/**
+ * The opponent already played the repetition card.
+ *
+ * Answering "you're repeating yourself" with "no, YOU are" is the spiral that
+ * ate several turns of the live feed. One accusation per exchange is a jab;
+ * two is a different, much worse conversation.
+ */
+const ACCUSED_REPEAT =
+  /\b(repet\w+|decorad\w+|copia e cola|papagai\w+|mesma (coisa|frase|ladainha)|j[áa] (te )?(disse|respondi))\b/i;
 /**
  * How much of the old message the model is shown. Bodies run to MAX_BODY_CHARS
  * and the model only needs enough to quote a line back; the first paragraph is
@@ -121,8 +138,13 @@ export function pickCallback(
   /** When this message actually airs, not when it was generated. */
   airsAt: number,
   rand = Math.random(),
+  /** What the opponent just said, to avoid trading repetition accusations. */
+  lastOpponentBody = "",
 ): Callback | null {
   if (rand >= CALLBACK_CHANCE) return null;
+
+  // Never two in a row: see ACCUSED_REPEAT.
+  if (lastOpponentBody && ACCUSED_REPEAT.test(lastOpponentBody)) return null;
 
   const eligible = pool.filter((m) => {
     // Own past words are not a callback, and a pause card has no argument.
@@ -261,12 +283,14 @@ function userPrompt(
 ELE JÁ DISSE ISTO HÁ ${dias.toUpperCase()}, DEFENDENDO O MESMO PONTO:
 "${callback.body}"
 
-Ele está repetindo. Cobre isso DELE, falando DIRETO com ele em segunda pessoa —
-"você já disse isso faz ${dias}", "você repetiu essa mesma frase". Cite um
-pedaço curto entre aspas e diga que já respondeu. NUNCA narre em terceira
-pessoa ("ele disse", "ele voltou com a mesma coisa"): não tem ninguém mais
-lendo, você está falando com ele. Só depois emende o seu argumento, e não
-invente mais nada que ele tenha dito além do que está entre aspas acima.
+Use isso como UMA ALFINETADA CURTA, no máximo uma frase, e só. O corpo da
+mensagem continua sendo o SEU argumento — a alfinetada entra de passagem, de
+preferência no fim, nunca como assunto da mensagem. Nada de dedicar a mensagem
+a discutir quem repetiu o quê: isso vira discussão sobre a discussão e é
+exatamente o que não interessa aqui.
+
+Fale em segunda pessoa ("você já dizia isso faz ${dias}"), nunca em terceira
+("ele disse"). Não invente nada que ele tenha dito além do que está acima.
 `
     : "";
   return `${lines}
@@ -543,7 +567,10 @@ export async function composeMessage(
   const gap = gapFor(length.pace, Number(env.MESSAGE_INTERVAL_SECONDS) || 60);
   // Nothing to call back to in a two-sentence jab, and the short bucket exists
   // precisely to be a jab — asking for both gets neither.
-  const callback = length.paragraphs > 1 ? pickCallback(older, side, node, airsAt) : null;
+  const lastOpponent = transcript.findLast((m) => m.side !== side)?.body ?? "";
+  const callback = length.paragraphs > 1
+    ? pickCallback(older, side, node, airsAt, Math.random(), lastOpponent)
+    : null;
 
   if (!allowLlm) {
     return { body: (await lastResort(env, node, transcript)) ?? node.claim, argId: node.id, gap };

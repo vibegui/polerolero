@@ -571,3 +571,26 @@ test("the personas never address a crowd", () => {
   expect(guard("Isso é papo de gente que nunca teve funcionário.")).not.toBeNull();
   expect(guard("O povo brasileiro pagou essa conta.")).not.toBeNull();
 });
+
+test("the two of them do not trade repetition accusations", () => {
+  // Live feed, back to back: "Você tá me cobrando de repetição com a frase dele
+  // na sua boca" answered by "Você acusa eu de repetir e na mesma mensagem
+  // cospe...". The politics vanished under the metadata.
+  const node = TREES.bolsonaro.find((n) => n.rebuts.length > 0)!;
+  const opp = TREES.lula.find((n) => n.tags.some((t) => node.rebuts.includes(t)))!;
+  const pool: Message[] = [{
+    id: 1, side: "lula", body: "primeiro parágrafo\n\nsegundo", arg_id: opp.id,
+    due_at: NOW - 3 * DAY, topic: null, kind: "message", theme_id: null,
+  }];
+  // Fires normally.
+  expect(pickCallback(pool, "bolsonaro", node, NOW, 0, "Você está errado.")).not.toBeNull();
+  // Not after the opponent already played that card.
+  for (const said of [
+    "Você já disse isso ontem, virou papagaio.",
+    "Isso é copia e cola da mesma ladainha.",
+    "Já te respondi essa mesma coisa três vezes.",
+    "Que frase decorada, hein.",
+  ]) {
+    expect(pickCallback(pool, "bolsonaro", node, NOW, 0, said), said).toBeNull();
+  }
+});
