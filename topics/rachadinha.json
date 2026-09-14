@@ -1,0 +1,91 @@
+{
+  "id": "rachadinha",
+  "title": "A rachadinha que nunca foi julgada",
+  "summary": "O Ministério Público do Rio acusou Flávio Bolsonaro de chefiar esquema de retenção de salários de funcionários de seu antigo gabinete na Assembleia Legislativa. Em 2021 a Quinta Turma do STJ anulou as decisões contra ele por vício de competência — como parlamentar, teria direito a foro privilegiado. Em 2025 o STF negou a tentativa de reabertura: Gilmar Mendes registrou que o próprio Ministério Público recorreu fora do prazo. O caso está encerrado sem que o mérito tenha sido julgado uma única vez.",
+  "active": true,
+  "source": "https://www.cartacapital.com.br/politica/o-que-aconteceu-com-o-caso-da-rachadinha-de-flavio-bolsonaro-suposto-candidato-em-2026/",
+  "lula": [
+    {
+      "id": "rac-l-nunca-julgado",
+      "claim": "Arquivado por prazo perdido não é inocentado. O mérito nunca foi julgado — nem uma vez. Você chama isso de ficha limpa; eu chamo de sorte processual.",
+      "tags": [
+        "corrupcao",
+        "justica",
+        "ladrao",
+        "lawfare"
+      ],
+      "rebuts": [
+        "justica",
+        "lawfare",
+        "corrupcao",
+        "ladrao",
+        "condenado"
+      ],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "Factualmente correto. O caso caiu por nulidade processual: o STJ anulou as decisões em 2021 por competência, e em 2025 o STF negou a reabertura porque o recurso do Ministério Público foi apresentado fora do prazo, conforme registrado por Gilmar Mendes. Em nenhum momento houve julgamento do mérito das acusações. Encerramento por vício processual não equivale a absolvição, e também não equivale a culpa — o que existe é a ausência de julgamento.",
+      "source": "https://www.cartacapital.com.br/politica/o-que-aconteceu-com-o-caso-da-rachadinha-de-flavio-bolsonaro-suposto-candidato-em-2026/"
+    },
+    {
+      "id": "rac-l-foro",
+      "claim": "Foro privilegiado. A coisa que vocês juraram acabar salvou exatamente o candidato de vocês, e agora ficou bonito de repente.",
+      "tags": [
+        "justica",
+        "instituicoes",
+        "corrupcao",
+        "elite"
+      ],
+      "rebuts": [
+        "justica",
+        "instituicoes",
+        "lawfare",
+        "stf"
+      ],
+      "register": "deboche",
+      "verdict": "verdadeiro",
+      "explain": "É verdade que a anulação de 2021 se apoiou no foro por prerrogativa de função: o STJ entendeu que, como deputado estadual à época, Flávio Bolsonaro deveria ter sido processado em instância diversa. Também é verdade que o fim do foro privilegiado é bandeira histórica do campo bolsonarista. A contradição apontada é real. Vale registrar que usar uma garantia processual existente é direito de qualquer acusado, e não é em si conduta reprovável.",
+      "source": "https://www.congressoemfoco.com.br/artigo/30315/stj-anula-decisoes-contra-flavio-bolsonaro-em-processo-sobre-rachadinhas"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "rac-b-arquivado",
+      "claim": "Arquivado é arquivado. Não tem processo, não tem condenação, não tem réu. Você quer que ele seja julgado pela sua vontade, não pela lei.",
+      "tags": [
+        "justica",
+        "lawfare",
+        "condenado"
+      ],
+      "rebuts": [
+        "corrupcao",
+        "justica",
+        "ladrao",
+        "elite"
+      ],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "Correto quanto ao estado atual: não há processo em curso, não há condenação e não há réu no caso da rachadinha. O STF negou a reabertura em 2025 e não há margem para o Ministério Público reutilizar as provas da investigação. O que a frase omite é o motivo do encerramento, que foi processual — nulidade por competência e perda de prazo — e não uma decisão que tenha examinado se os fatos ocorreram.",
+      "source": "https://www.cartacapital.com.br/politica/o-que-aconteceu-com-o-caso-da-rachadinha-de-flavio-bolsonaro-suposto-candidato-em-2026/"
+    },
+    {
+      "id": "rac-b-nulidade-vale-pros-dois",
+      "claim": "Nulidade vale pros dois. Ou anulação de processo só é justa quando é a condenação do seu que cai?",
+      "tags": [
+        "justica",
+        "lawfare",
+        "condenado",
+        "corrupcao"
+      ],
+      "rebuts": [
+        "justica",
+        "corrupcao",
+        "lawfare",
+        "ladrao"
+      ],
+      "register": "deboche",
+      "verdict": "verdadeiro",
+      "explain": "O paralelo é legítimo e desconfortável para os dois lados. As condenações de Lula na Lava Jato foram anuladas pelo STF por incompetência do juízo de Curitiba e por suspeição do juiz, sem julgamento de mérito nos casos anulados; a rachadinha caiu por nulidade de competência e perda de prazo, também sem mérito. Quem trata uma anulação como inocência e a outra como manobra está aplicando dois critérios ao mesmo instituto jurídico.",
+      "source": "https://www.congressoemfoco.com.br/artigo/30315/stj-anula-decisoes-contra-flavio-bolsonaro-em-processo-sobre-rachadinhas"
+    }
+  ]
+}

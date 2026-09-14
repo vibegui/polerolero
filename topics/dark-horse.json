@@ -1,0 +1,112 @@
+{
+  "id": "dark-horse",
+  "title": "O caso Dark Horse",
+  "summary": "O financiamento de Dark Horse, cinebiografia de Jair Bolsonaro, virou inquérito. Em 22 de julho de 2026 o STF autorizou apuração da Polícia Federal sobre a captação de cerca de R$ 134 milhões para o projeto, com participação atribuída ao senador Flávio Bolsonaro e ao empresário Daniel Vorcaro, ex-dono do Banco Master. Os investigadores rastreiam cerca de US$ 12,3 milhões que saíram de uma empresa chamada Entre Investimentos para um fundo no Texas. É inquérito: não há denúncia, não há réu, e inquérito pode terminar sem acusação nenhuma.",
+  "active": true,
+  "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/",
+  "lula": [
+    {
+      "id": "dh-l-inquerito",
+      "claim": "O seu candidato é investigado em inquérito autorizado pelo STF por causa do dinheiro de um filme sobre o pai. Cento e trinta e quatro milhões pra fazer cinema. Você chamava isso de quê quando era do outro lado?",
+      "tags": [
+        "corrupcao",
+        "justica",
+        "master",
+        "transparencia"
+      ],
+      "rebuts": [
+        "corrupcao",
+        "ladrao",
+        "lawfare",
+        "justica",
+        "master"
+      ],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "É fato que o STF autorizou, em 22 de julho de 2026, inquérito da Polícia Federal envolvendo a captação de recursos para o filme, e que Flávio Bolsonaro é alvo formal dessa apuração. O valor de cerca de R$ 134 milhões e a participação atribuída a Daniel Vorcaro constam da apuração. O que o argumento não pode virar: inquérito não é denúncia, não há réu no caso, e apuração pode ser encerrada sem qualquer acusação. Afirmar a existência do inquérito é correto; concluir culpa a partir dele, não.",
+      "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/"
+    },
+    {
+      "id": "dh-l-vorcaro",
+      "claim": "Vorcaro de novo. O mesmo nome do Banco Master, o mesmo nome do consignado em cima de aposentado, agora bancando cinebiografia. Coincidência é uma; três é método.",
+      "tags": [
+        "master",
+        "corrupcao",
+        "inss",
+        "elite"
+      ],
+      "rebuts": [
+        "master",
+        "corrupcao",
+        "gestao",
+        "inss"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Daniel Vorcaro, ex-dono do Banco Master, aparece de fato tanto no caso Master quanto na apuração sobre o financiamento do filme, e o Master foi liquidado pelo Banco Central. A recorrência do nome é factual. Chamar de método é inferência do argumento, não conclusão de autoridade: não há decisão judicial estabelecendo articulação entre os casos, e ambos seguem em apuração. A parte verificável é a coincidência de personagem; o resto é leitura política.",
+      "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/"
+    },
+    {
+      "id": "dh-l-texas",
+      "claim": "Doze milhões de dólares saindo daqui pra um fundo no Texas. Explica pro caminhoneiro que te ouve por que o dinheiro do patriota sempre termina em conta lá fora.",
+      "tags": [
+        "corrupcao",
+        "internacional",
+        "soberania",
+        "elite"
+      ],
+      "rebuts": [
+        "patriotismo",
+        "soberania",
+        "internacional",
+        "corrupcao"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Os investigadores rastreiam a movimentação de cerca de US$ 12,3 milhões de uma empresa chamada Entre Investimentos para um fundo sediado no Texas, e evasão de divisas está entre as suspeitas apuradas. Remessa internacional não é ilícita por si: depende de declaração, origem e finalidade, e nada disso foi julgado. O contraste retórico entre discurso patriótico e dinheiro no exterior é legítimo como crítica política, não como imputação de crime.",
+      "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "dh-b-inquerito-nao-e-condenacao",
+      "claim": "Inquérito não é condenação, e você sabe disso porque passou oito anos explicando exatamente isso quando era o seu que estava sendo investigado. Não tem denúncia, não tem réu, não tem nada.",
+      "tags": [
+        "justica",
+        "lawfare",
+        "corrupcao",
+        "stf"
+      ],
+      "rebuts": [
+        "corrupcao",
+        "justica",
+        "transparencia",
+        "ladrao"
+      ],
+      "register": "indignado",
+      "verdict": "verdadeiro",
+      "explain": "Correto no ponto central. O caso Dark Horse está em fase de inquérito autorizado pelo STF: não há denúncia oferecida, não há réu e não há indiciamento, e um inquérito pode ser arquivado sem acusação. A distinção entre investigado e condenado é real e vale para todos os lados — foi exatamente o argumento usado em favor de Lula durante a Lava Jato, e a simetria que o argumento aponta existe de fato.",
+      "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/"
+    },
+    {
+      "id": "dh-b-filme-nao-e-crime",
+      "claim": "Fazer filme não é crime. Captar patrocínio pra filme não é crime. O que incomoda vocês é que a história do homem vai ser contada sem passar pelo filtro de vocês.",
+      "tags": [
+        "cultura",
+        "lawfare",
+        "midia",
+        "censura"
+      ],
+      "rebuts": [
+        "corrupcao",
+        "midia",
+        "transparencia",
+        "elite"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Verdade que produzir e financiar um filme é atividade lícita, e a apuração não tem por objeto a existência do filme. O que está sob investigação é a origem e o trajeto do dinheiro — suspeitas de corrupção, lavagem, uso de recurso público e evasão de divisas. Reduzir a apuração a perseguição cultural desloca o objeto: ninguém está investigando o roteiro. Nada disso, porém, foi julgado.",
+      "source": "https://www.riotimesonline.com/brazil-flavio-bolsonaro-dark-horse-film-investigation-2026/"
+    }
+  ]
+}

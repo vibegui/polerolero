@@ -1,4 +1,10 @@
 import bancoMaster from "../topics/banco-master.json" with { type: "json" };
+import darkHorse from "../topics/dark-horse.json" with { type: "json" };
+import educacao2026 from "../topics/educacao-2026.json" with { type: "json" };
+import inssFraude from "../topics/inss-fraude.json" with { type: "json" };
+import rachadinha from "../topics/rachadinha.json" with { type: "json" };
+import saude2026 from "../topics/saude-2026.json" with { type: "json" };
+import seguranca2026 from "../topics/seguranca-2026.json" with { type: "json" };
 import mendoncaMoraes from "../topics/mendonca-moraes.json" with { type: "json" };
 import taxaBlusinhas from "../topics/taxa-blusinhas.json" with { type: "json" };
 import type { ArgNode, Side } from "./env.ts";
@@ -28,11 +34,15 @@ export interface Topic {
 
 export const TOPICS: Topic[] = [
   bancoMaster as Topic,
+  darkHorse as Topic,
+  educacao2026 as Topic,
+  inssFraude as Topic,
   mendoncaMoraes as Topic,
+  rachadinha as Topic,
+  saude2026 as Topic,
+  seguranca2026 as Topic,
   taxaBlusinhas as Topic,
-].filter(
-  (t) => t.active,
-);
+].filter((t) => t.active);
 
 export const TOPIC_BY_ID = new Map(TOPICS.map((t) => [t.id, t] as const));
 

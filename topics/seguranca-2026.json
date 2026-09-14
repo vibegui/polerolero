@@ -1,0 +1,168 @@
+{
+  "id": "seguranca-2026",
+  "title": "Segurança: repressão ou prevenção",
+  "summary": "Segurança pública é o maior contraste entre os dois planos registrados no TSE em agosto de 2026. Flávio Bolsonaro propõe cinco presídios federais de segurança máxima, 500 mil vagas prisionais, redução da maioridade penal, reconhecimento facial e classificar PCC, Comando Vermelho e milícias como organizações narcoterroristas. Lula propõe a PEC da Segurança, um ministério próprio, integração entre União, estados e municípios, câmeras corporais e policiamento de proximidade.",
+  "active": true,
+  "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/",
+  "lula": [
+    {
+      "id": "seg-l-pec",
+      "claim": "Seu plano é cadeia e mais cadeia. O meu é PEC da Segurança, ministério próprio e integração entre União, estado e município, porque facção não respeita divisa de estado e polícia trabalhando separada perde.",
+      "tags": [
+        "seguranca",
+        "crime",
+        "instituicoes",
+        "gestao"
+      ],
+      "rebuts": [
+        "crime",
+        "presos",
+        "bandido",
+        "seguranca",
+        "maioridade"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "O plano registrado no TSE em 7 de agosto de 2026 traz mesmo a PEC da Segurança, a criação de um ministério dedicado e a integração federativa como eixo central. A PEC não foi aprovada, então isso é proposta e não resultado. A crítica à fragmentação entre as polícias é reconhecida por especialistas dos dois campos; o que segue em disputa é se coordenação federal entrega resultado sem mais efetivo e mais investigação.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "seg-l-camera",
+      "claim": "Câmera na farda é o que separa polícia de milícia. Quem não fez nada errado não tem o que temer com a gravação — ou isso só vale quando é pro seu lado?",
+      "tags": [
+        "seguranca",
+        "crime",
+        "transparencia",
+        "instituicoes"
+      ],
+      "rebuts": [
+        "seguranca",
+        "crime",
+        "presos"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Câmeras corporais estão no plano de Lula. As avaliações disponíveis apontam queda em letalidade policial e em uso da força onde o equipamento foi adotado com regra clara de acionamento, mas o resultado varia muito conforme essa regra e há estudos internacionais com efeito nulo. É medida com evidência favorável, não é bala de prata, e tratá-la como consenso fechado exagera o que de fato se sabe.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "seg-l-encarceramento",
+      "claim": "Vocês já prendem como poucos países no mundo e a facção só cresceu — de dentro do presídio. Mais vaga sem inteligência é mais escritório pro PCC.",
+      "tags": [
+        "seguranca",
+        "presos",
+        "crime"
+      ],
+      "rebuts": [
+        "presos",
+        "crime",
+        "maioridade",
+        "seguranca"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "O Brasil tem uma das maiores populações carcerárias do mundo e a formação e expansão do PCC a partir de dentro do sistema prisional é fato documentado desde os anos 1990. Daí não decorre que presídio federal de segurança máxima seja inútil: isolar liderança é exatamente a resposta que o plano de Flávio propõe, e há defensores sérios dos dois lados. O que o argumento acerta é que ampliar vaga sem inteligência prisional já foi tentado.",
+      "source": "https://exame.com/brasil/flavio-bolsonaro-aposta-em-repressao-e-lula-em-prevencao-os-planos-para-seguranca/"
+    },
+    {
+      "id": "seg-l-maioridade",
+      "claim": "Reduzir maioridade penal é resposta de quem quer aparecer, não de quem quer resolver. Quem comanda facção não é adolescente: está preso e continua comandando.",
+      "tags": [
+        "seguranca",
+        "maioridade",
+        "crime",
+        "presos"
+      ],
+      "rebuts": [
+        "maioridade",
+        "crime",
+        "presos",
+        "seguranca"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A redução da maioridade penal está no plano de Flávio Bolsonaro. A literatura criminológica majoritária não encontra efeito dissuasório relevante em rebaixar a idade penal, e adolescentes respondem por parcela pequena dos crimes violentos — mas parcela pequena não é nenhuma, e há crimes graves cometidos por menores que o argumento ignora. A parte sobre lideranças que seguem operando presas é verdadeira, e vale como crítica aos dois planos.",
+      "source": "https://exame.com/brasil/flavio-bolsonaro-aposta-em-repressao-e-lula-em-prevencao-os-planos-para-seguranca/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "seg-b-presidios",
+      "claim": "Cinco presídios federais de segurança máxima e 500 mil vagas. Você chama de simplismo; o aposentado que não sai de casa depois das seis chama de plano.",
+      "tags": [
+        "seguranca",
+        "presos",
+        "crime",
+        "gestao"
+      ],
+      "rebuts": [
+        "seguranca",
+        "crime",
+        "instituicoes",
+        "transparencia"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "O plano registrado no TSE em 13 de agosto de 2026 propõe exatamente cinco presídios federais de segurança máxima e a abertura de 500 mil vagas no sistema prisional. Que a proposta exista é fato. Que ela reduza a violência é a parte não demonstrada: o país expandiu vagas por décadas com a população carcerária crescendo junto com as facções, e nenhum país resolveu segurança só com vaga. O diagnóstico do medo cotidiano, porém, não é invenção.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "seg-b-narcoterror",
+      "claim": "PCC e Comando Vermelho controlam território, cobram imposto e executam quem não paga. Isso tem nome, e o nome é narcoterrorismo. Fantasia é chamar de jovem em conflito com a lei.",
+      "tags": [
+        "seguranca",
+        "crime",
+        "milicia",
+        "presos"
+      ],
+      "rebuts": [
+        "seguranca",
+        "crime",
+        "instituicoes",
+        "maioridade"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Classificar PCC, Comando Vermelho e milícias como organizações narcoterroristas está no plano de Flávio Bolsonaro. A reclassificação teria efeitos legais concretos: muda instrumentos de investigação, cooperação internacional e dosimetria de pena. Especialistas divergem — parte vê ganho operacional real, parte alerta para o uso ampliado de legislação antiterror contra protesto e movimento social. A descrição do controle territorial e da cobrança forçada por facções é factualmente correta.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "seg-b-camera",
+      "claim": "Câmera na farda não prendeu um traficante sequer. Serve pra processar policial, e é exatamente por isso que vocês adoram.",
+      "tags": [
+        "seguranca",
+        "crime",
+        "instituicoes"
+      ],
+      "rebuts": [
+        "seguranca",
+        "transparencia",
+        "crime",
+        "instituicoes"
+      ],
+      "register": "deboche",
+      "verdict": "falso",
+      "explain": "Falso na afirmação central. Imagem de câmera corporal é meio de prova usado em processo criminal contra investigados, não apenas contra policiais, e gravação já sustentou responsabilização em ocorrências de tráfico e de homicídio. É legítimo discutir custo, regra de acionamento e guarda das imagens, e há corporações que resistem ao equipamento por razões operacionais. Dizer que a câmera não serve para prender ninguém contraria o uso corrente dela como prova.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "seg-b-ministerio",
+      "claim": "Mais um ministério. A resposta de vocês pra tudo é criar cargo. Segurança se faz com polícia na rua, não com organograma novo em Brasília.",
+      "tags": [
+        "seguranca",
+        "gestao",
+        "gastanca"
+      ],
+      "rebuts": [
+        "instituicoes",
+        "gestao",
+        "seguranca",
+        "crime"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Lula propõe mesmo criar um ministério dedicado à segurança pública. A crítica de que estrutura administrativa nova não coloca policial na rua é razoável e comum entre gestores. Por outro lado, segurança pública no Brasil é competência primariamente estadual e a coordenação federal hoje está espalhada por várias pastas — que é justamente o problema que o ministério tenta endereçar. Reduzir a proposta a cabide de emprego ignora o desenho federativo do problema.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ]
+}

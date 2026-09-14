@@ -1,0 +1,134 @@
+{
+  "id": "educacao-2026",
+  "title": "Educação: o que cada plano promete",
+  "summary": "Os dois planos registrados no TSE em agosto de 2026 concordam em expandir a escola de tempo integral e divergem no resto. Lula propõe ampliar institutos federais e o Pé-de-Meia. Flávio Bolsonaro propõe alfabetização pelo método fônico, expansão de escolas cívico-militares e mais ensino técnico no ensino médio. É um dos poucos temas da eleição em que existe uma sobreposição declarada entre os dois programas.",
+  "active": true,
+  "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/",
+  "lula": [
+    {
+      "id": "edu-l-integral",
+      "claim": "Escola de tempo integral e Pé-de-Meia, que é dinheiro na conta do aluno pobre pra ele não largar o ensino médio. Você quer discutir fardamento; eu quero discutir quem termina a escola.",
+      "tags": [
+        "educacao",
+        "escola",
+        "social",
+        "classe"
+      ],
+      "rebuts": [
+        "educacao",
+        "escola",
+        "doutrinacao",
+        "ideologia",
+        "esmola"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "Ampliar o tempo integral e expandir o Pé-de-Meia estão no plano registrado por Lula. Programas de transferência condicionada à permanência escolar têm literatura amplamente favorável sobre frequência e conclusão. O que o argumento omite é que tempo integral também está no plano de Flávio, então não é ponto de divergência, e que a expansão esbarra em prédio, professor e custeio — não é decidida só por vontade do governo federal.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "edu-l-institutos",
+      "claim": "Instituto federal é a escola pública que a elite descobriu que era boa e passou a disputar vaga. Expandir isso é o contrário de doutrinação: é técnico com diploma que o mercado aceita.",
+      "tags": [
+        "educacao",
+        "escola",
+        "universidade",
+        "emprego"
+      ],
+      "rebuts": [
+        "educacao",
+        "doutrinacao",
+        "universidade",
+        "ideologia"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "A expansão da rede federal de institutos está no plano de Lula, e os institutos federais aparecem consistentemente bem em avaliações de desempenho e de inserção no mercado de trabalho. A ressalva é de custo por aluno, que é bem mais alto que o da rede estadual comum, e de escala: mesmo expandida, a rede atende uma fração pequena da matrícula do ensino médio brasileiro.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "edu-l-civico-militar",
+      "claim": "Escola cívico-militar não alfabetiza ninguém. Disciplina não é currículo, e trocar pedagogo por sargento não resolve criança que chega no sexto ano sem ler.",
+      "tags": [
+        "educacao",
+        "escola",
+        "militares",
+        "doutrinacao"
+      ],
+      "rebuts": [
+        "escola",
+        "educacao",
+        "doutrinacao",
+        "militares",
+        "ideologia"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "A expansão das escolas cívico-militares está no plano de Flávio Bolsonaro. As avaliações disponíveis do modelo são disputadas e sofrem de um problema metodológico sério: escolas do programa costumam selecionar ou filtrar alunos, o que infla o resultado na comparação. Há ganhos relatados em indisciplina e evasão em algumas unidades. Dizer que não alfabetiza é retórica: o modelo não substitui o currículo, ele muda a gestão disciplinar da escola.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "edu-b-fonica",
+      "claim": "Método fônico, que é como o mundo inteiro alfabetiza e o Brasil se recusou a usar por trinta anos por birra ideológica. Criança tem que sair do segundo ano lendo, e a sua não está saindo.",
+      "tags": [
+        "educacao",
+        "escola",
+        "ideologia"
+      ],
+      "rebuts": [
+        "educacao",
+        "escola",
+        "classe",
+        "universidade"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A alfabetização pelo método fônico está no plano de Flávio Bolsonaro. Existe consenso internacional forte de que a instrução fônica sistemática melhora a decodificação inicial da leitura, e o Brasil de fato demorou a adotá-la de forma explícita. A ressalva: fônica resolve decodificar, não compreender texto, e a política nacional de alfabetização já vinha incorporando o método antes deste plano — apresentar como ruptura inédita é exagero de campanha.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "edu-b-tecnico",
+      "claim": "Ensino técnico no ensino médio, pro moleque sair da escola com profissão e não com boleto de faculdade que não vai pagar. Vocês querem todo mundo na universidade discutindo gênero.",
+      "tags": [
+        "educacao",
+        "escola",
+        "emprego",
+        "ideologia"
+      ],
+      "rebuts": [
+        "educacao",
+        "universidade",
+        "escola",
+        "emprego",
+        "classe"
+      ],
+      "register": "deboche",
+      "verdict": "depende",
+      "explain": "Expandir o ensino técnico está nos dois planos, com desenhos diferentes — o que já derruba a moldura de oposição. Formação técnica tem retorno de renda comprovado no curto prazo, e menor que o do ensino superior no longo prazo. A parte sobre currículo é caricatura: gênero não é disciplina obrigatória do ensino médio brasileiro. O ponto sobre endividamento com faculdade de baixa qualidade, esse, tem base real.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "edu-b-civico",
+      "claim": "Escola cívico-militar tem fila de espera formada por mãe pobre que quer o filho longe do tráfico. Explica pra ela que é doutrinação.",
+      "tags": [
+        "escola",
+        "educacao",
+        "militares",
+        "seguranca"
+      ],
+      "rebuts": [
+        "educacao",
+        "escola",
+        "doutrinacao",
+        "militares",
+        "social"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "A demanda por vagas em escolas cívico-militares é real e concentrada em periferia, e ignorar isso é ignorar uma escolha de famílias pobres. Mas fila não é evidência de eficácia, e o principal estudo do modelo é confundido pela seleção de alunos na entrada. Além disso, parte do efeito percebido vem de mais recurso por aluno, não do componente militar — o que significa que o mesmo dinheiro em escola civil poderia render igual.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ]
+}

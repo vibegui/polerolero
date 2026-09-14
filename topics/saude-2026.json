@@ -1,0 +1,92 @@
+{
+  "id": "saude-2026",
+  "title": "Saúde: fila do SUS e o que fazer com ela",
+  "summary": "Os dois planos registrados no TSE em agosto de 2026 declaram o mesmo objetivo — reduzir a fila do SUS — e propõem caminhos opostos. Lula aposta em ampliar atenção básica e especializada com o programa Agora Tem Especialistas. Flávio Bolsonaro aposta em digitalização, prontuário eletrônico unificado, telemedicina, marcação por inteligência artificial e uso da capacidade ociosa da rede privada.",
+  "active": true,
+  "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/",
+  "lula": [
+    {
+      "id": "sau-l-especialistas",
+      "claim": "Agora Tem Especialistas é fila de exame e cirurgia andando com dinheiro público e médico contratado. Você quer terceirizar pro privado o que já é obrigação do Estado.",
+      "tags": [
+        "saude",
+        "sus",
+        "social",
+        "gestao"
+      ],
+      "rebuts": [
+        "saude",
+        "sus",
+        "gestao",
+        "privatizacao",
+        "estatal"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "O programa Agora Tem Especialistas está no plano de Lula e mira o gargalo real do SUS, que é atenção especializada e exame, não atenção básica. A ressalva é que o próprio programa prevê compra de serviço da rede privada, então a oposição entre público e privado que o argumento monta é mais retórica que orçamentária. Fila de especialidade é problema estrutural de oferta de profissional e de equipamento, e não se resolve num mandato.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "sau-l-atencao-basica",
+      "claim": "Saúde não é aplicativo. Você resolve fila com posto aberto, agente de saúde na porta e médico na atenção básica, que é onde 80% do problema morre antes de virar internação.",
+      "tags": [
+        "saude",
+        "sus",
+        "social",
+        "gestao"
+      ],
+      "rebuts": [
+        "saude",
+        "sus",
+        "gestao",
+        "privatizacao"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Ampliar atenção básica e especializada está no plano de Lula, e existe evidência internacional robusta de que atenção primária forte reduz internação evitável e custo total do sistema. A parte frágil é opor isso à digitalização: prontuário eletrônico unificado e telemedicina são complementares à atenção básica, não substitutos, e o SUS já usa os dois. A moldura de escolha excludente é falsa.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "sau-b-digital",
+      "claim": "Prontuário eletrônico unificado e telemedicina. O sujeito faz exame em Manaus e o médico de São Paulo vê na hora, sem repetir tudo. Vocês acham que gestão é inaugurar posto com faixa.",
+      "tags": [
+        "saude",
+        "sus",
+        "gestao"
+      ],
+      "rebuts": [
+        "saude",
+        "sus",
+        "social",
+        "gestao"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "Digitalização, prontuário eletrônico unificado, telemedicina e marcação por inteligência artificial estão no plano de Flávio Bolsonaro. O diagnóstico é bom: fragmentação de informação e exame repetido são desperdício documentado no SUS. A ressalva é que interoperabilidade de prontuário é tentada no Brasil há mais de uma década e emperra em padrão de dado, conectividade e cadastro, não em falta de ideia. Tecnologia sem oferta de médico não encurta fila de cirurgia.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    },
+    {
+      "id": "sau-b-ociosa",
+      "claim": "Tem leito e tem aparelho parado na rede privada enquanto gente morre na fila do SUS. Usar essa capacidade ociosa é pragmatismo; deixar parada por ideologia é que é crueldade.",
+      "tags": [
+        "saude",
+        "sus",
+        "privatizacao",
+        "gestao"
+      ],
+      "rebuts": [
+        "saude",
+        "sus",
+        "estatal",
+        "social",
+        "gestao"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "Aproveitar capacidade ociosa da rede privada está no plano de Flávio Bolsonaro, e o SUS já compra serviço privado em larga escala há décadas — a proposta é de grau, não de ruptura. O ganho de curto prazo em mutirão de exame e cirurgia é real e documentado. Os riscos conhecidos são de preço, de seleção dos casos mais simples pelo prestador e de dependência de longo prazo, e nenhum deles está resolvido no texto do plano.",
+      "source": "https://www.poder360.com.br/poder-eleicoes-2026/eleicoes-2026-compare-os-planos-de-governo-de-lula-e-flavio/"
+    }
+  ]
+}

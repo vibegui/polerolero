@@ -1,0 +1,93 @@
+{
+  "id": "inss-fraude",
+  "title": "A fraude do INSS e a CPMI que não terminou",
+  "summary": "Em abril de 2025 a Polícia Federal e a CGU deflagraram a Operação Sem Desconto e revelaram descontos ilegais aplicados direto na folha de milhões de aposentados, com prejuízo estimado em mais de R$ 6 bilhões. Uma CPMI mista foi instalada, fez 38 reuniões e mais de mil quebras de sigilo, e terminou em março de 2026 sem relatório final aprovado. A base do governo barrou por 19 votos a 12 a convocação de Fábio Luís Lula da Silva, o Lulinha, que é investigado em inquéritos sobre tráfico de influência e nega irregularidade.",
+  "active": true,
+  "source": "https://pt.wikipedia.org/wiki/Esquema_de_fraudes_no_INSS",
+  "lula": [
+    {
+      "id": "inss-l-quem-descobriu",
+      "claim": "Quem descobriu foi a Polícia Federal e a CGU deste governo, na Operação Sem Desconto. Fraude que estava rodando há anos, no silêncio, e foi este governo que abriu.",
+      "tags": [
+        "inss",
+        "corrupcao",
+        "gestao",
+        "aposentado"
+      ],
+      "rebuts": [
+        "inss",
+        "corrupcao",
+        "gestao",
+        "ladrao",
+        "aposentado"
+      ],
+      "register": "orgulhoso",
+      "verdict": "depende",
+      "explain": "É verdade que a Operação Sem Desconto foi deflagrada em abril de 2025 pela Polícia Federal em conjunto com a CGU, na atual gestão, e que ela expôs o esquema. Também é verdade que os descontos vinham correndo por anos, atravessando mais de um governo. O que o argumento omite: descobrir uma fraude que ocorria dentro da própria administração não é só mérito, é também admissão de falha de controle interno — o órgão é federal e a folha é do INSS.",
+      "source": "https://pt.wikipedia.org/wiki/Esquema_de_fraudes_no_INSS"
+    },
+    {
+      "id": "inss-l-ressarcimento",
+      "claim": "Mais de seis bilhões tirados de aposentado, e a resposta foi devolver dinheiro e mudar o controle. Você prefere qual: apurar e ressarcir, ou fazer CPMI pra render vídeo?",
+      "tags": [
+        "inss",
+        "aposentado",
+        "social",
+        "gestao"
+      ],
+      "rebuts": [
+        "inss",
+        "gestao",
+        "aposentado",
+        "corrupcao"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "O prejuízo estimado supera R$ 6 bilhões e o governo montou processo de ressarcimento a beneficiários lesados, o que é fato. A oposição entre ressarcir e investigar é falsa: as duas coisas correm juntas e a CPMI determinou mais de mil quebras de sigilo. Além disso, o ritmo do ressarcimento foi criticado por lentidão, e a CPMI encerrou sem relatório final aprovado — o que é resultado ruim para quem queria a apuração concluída, dos dois lados.",
+      "source": "https://www12.senado.leg.br/noticias/materias/2026/03/28/cpmi-do-inss-termina-sem-relatorio-final"
+    }
+  ],
+  "bolsonaro": [
+    {
+      "id": "inss-b-lulinha",
+      "claim": "Seis bilhões de aposentado, e a base de vocês barrou a convocação do filho do presidente por dezenove a doze. Se não tem nada, por que travou?",
+      "tags": [
+        "inss",
+        "corrupcao",
+        "ladrao",
+        "aposentado"
+      ],
+      "rebuts": [
+        "inss",
+        "gestao",
+        "corrupcao",
+        "aposentado",
+        "social"
+      ],
+      "register": "indignado",
+      "verdict": "depende",
+      "explain": "É fato que a base governista barrou, por 19 votos a 12, a convocação de Fábio Luís Lula da Silva à CPMI do INSS, e que ele é alvo de inquéritos da Polícia Federal — a ligação com o caso passa pela proximidade com uma lobista alvo da Operação Sem Desconto. O que a frase sugere sem base: ele não é acusado de fraudar o INSS. As apurações que o envolvem tratam de tráfico de influência e ele nega irregularidade. Barrar convocação é decisão política legítima e péssima na aparência; não é prova de nada.",
+      "source": "https://www.gazetadopovo.com.br/republica/pedido-da-pf-para-investigar-lulinha-dara-novo-folego-a-cpmi-do-inss-em-2026/"
+    },
+    {
+      "id": "inss-b-cpmi-sem-relatorio",
+      "claim": "Trinta e oito reuniões, mais de mil quebras de sigilo, e a CPMI terminou sem relatório final. Enterraram no voto o que não conseguiram explicar.",
+      "tags": [
+        "inss",
+        "corrupcao",
+        "gestao",
+        "transparencia"
+      ],
+      "rebuts": [
+        "inss",
+        "gestao",
+        "corrupcao",
+        "transparencia"
+      ],
+      "register": "deboche",
+      "verdict": "verdadeiro",
+      "explain": "Correto nos números e no desfecho: a CPMI do INSS realizou 38 reuniões, determinou mais de mil quebras de sigilo e encerrou em março de 2026 sem aprovar relatório final. Encerramento sem relatório é resultado real e enfraquece a apuração parlamentar. Vale a ressalva de que CPMI sem relatório é desfecho comum no Congresso e não anula as investigações da Polícia Federal e da CGU, que seguem correndo em paralelo.",
+      "source": "https://www12.senado.leg.br/noticias/materias/2026/03/28/cpmi-do-inss-termina-sem-relatorio-final"
+    }
+  ]
+}
