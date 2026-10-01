@@ -25,9 +25,19 @@
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LiveRoom"] }],
   "triggers": {
-    // Buffer top-up, not one-message-per-minute: a failed run retries in 5min
-    // with ~15min of runway still queued.
-    "crons": ["*/5 * * * *"]
+    // PAUSED on 1 Oct 2026, by decision, not by failure. An empty array is what
+    // actually clears the trigger on Cloudflare — omitting the key leaves the
+    // existing schedule in place.
+    //
+    // Everything else stays up: the worker still serves /api/messages, the
+    // archive of ~20k messages is still browsable, and the Durable Object
+    // still answers. Nothing generates, so nothing is billed.
+    //
+    // To restart: put ["*/5 * * * *"] back and deploy. The buffer refills
+    // itself and the feed resumes — topUp is written around keeping a buffer
+    // full, not around having run recently, so a month-long gap is the same
+    // code path as a five-minute one.
+    "crons": []
   },
   "vars": {
     "AI_GATEWAY_ACCOUNT_ID": "55dd6d847f366735ef6e0f860c7bdc51",
